@@ -16,9 +16,8 @@ montagu_server_options <- function(hostname = NULL,
   api_version <- 1L
 
   opts <- if (verbose) httr::verbose() else NULL
-
   if (hostname == "localhost") {
-    opts <- c(opts, curl_insecure())
+    opts <- c(curl_insecure(), opts)
   }
   montagu$opts <- opts
   montagu$api_version <- api_version
