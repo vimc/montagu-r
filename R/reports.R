@@ -38,7 +38,8 @@ montagu_reports_report_artefact_list <- function(name, version) {
 montagu_reports_report_artefact_get <- function(name, version, filename,
                                                 dest = NULL,
                                                 progress = TRUE) {
-  path <- sprintf("reports/%s/%s/artefacts/%s/", name, version, filename)
+  filename_enc <- encode_path(filename)
+  path <- sprintf("reports/%s/%s/artefacts/%s/", name, version, filename_enc)
   montagu_GET(path, reports = TRUE,
               accept = "binary", dest = dest, progress = progress)
 }
@@ -53,7 +54,7 @@ montagu_reports_report_resource_list <- function(name, version) {
 ## /v1/reports/:name/:version/resources/:resource/
 montagu_reports_report_resource_get <- function(name, version, filename,
                                                 dest = NULL, progress = TRUE) {
-  filename_enc <- utils::URLencode(filename, TRUE)
+  filename_enc <- encode_path(filename)
   path <- sprintf("reports/%s/%s/resources/%s/", name, version, filename_enc)
   montagu_GET(path, reports = TRUE,
               accept = "binary", dest = dest, progress = progress)

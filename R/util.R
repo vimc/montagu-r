@@ -27,3 +27,11 @@ empty_default <- function(x, default) {
     x
   }
 }
+
+encode_path <- function(x) {
+  gsub("[/\\\\]", ":", x)
+}
+
+decode_path <- function(x) {
+  gsub(":", "/", x, fixed = TRUE)
+}
