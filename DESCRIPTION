@@ -2,7 +2,6 @@ Package: montagu
 Title: Interface with 'montagu'
 Version: 0.1.0
 Description: R client for montagu
-Depends: R (>= 3.3.3)
 License: MIT + file LICENSE
 Encoding: UTF-8
 Author: Rich FitzJohn
