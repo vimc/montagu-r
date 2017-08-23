@@ -39,7 +39,7 @@ montagu_authorise <- function(username = NULL, password = NULL) {
     montagu_set_credentials(username, password)
   }
   h <- httr::add_headers("Authorization" = paste("Basic", montagu$auth))
-  r <- httr::POST(file.path(montagu$url, "authenticate/"),
+  r <- httr::POST(paste0(montagu$url, "/authenticate/"),
                   h, montagu$opts,
                   body = list("grant_type" = "client_credentials"),
                   encode = "form")
@@ -64,7 +64,11 @@ montagu_request <- function(verb, path, ...,
     montagu_authorise()
   }
   base <- if (reports) montagu$url_reports else montagu$url
-  r <- verb(file.path(base, path),
+  if (!grepl("^/", path)) {
+    ## TODO: this is a stopgap
+    paste0("/", path)
+  }
+  r <- verb(paste(base, path),
             montagu$token,
             montagu$opts,
             montagu_accept(accept),
