@@ -65,10 +65,10 @@ montagu_request <- function(verb, path, ...,
   }
   base <- if (reports) montagu$url_reports else montagu$url
   if (!grepl("^/", path)) {
-    ## TODO: this is a stopgap
-    paste0("/", path)
+    stop("Expected an absolute path")
   }
-  r <- verb(paste(base, path),
+  url <- paste0(base, path)
+  r <- verb(url,
             montagu$token,
             montagu$opts,
             montagu_accept(accept),
