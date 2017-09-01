@@ -7,7 +7,7 @@ montagu_server_options <- function(hostname = NULL,
                                    port = NULL,
                                    verbose = FALSE) {
   hostname <- get_default(hostname, "hostname",
-                          "production.montagu.dide.ic.ac.uk")
+                          "montagu.vaccineimpact.org")
   port <- get_default(port, "port",
                       if (hostname == "localhost") 1443L else 443L)
 
