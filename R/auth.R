@@ -44,7 +44,7 @@ montagu_authorise <- function(username = NULL, password = NULL) {
                   body = list("grant_type" = "client_credentials"),
                   encode = "form")
   httr::stop_for_status(r)
-  t <- jsonlite::fromJSON(httr::content(r, "text"))
+  t <- jsonlite::fromJSON(httr::content(r, "text", encoding = "UTF-8"))
   montagu$token <- httr::add_headers(
     "Authorization" = paste("Bearer", t$access_token))
 }
