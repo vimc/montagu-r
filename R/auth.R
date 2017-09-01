@@ -35,6 +35,9 @@ montagu_set_credentials <- function(username = NULL, password = NULL) {
 }
 
 montagu_authorise <- function(username = NULL, password = NULL) {
+  if (is.null(montagu$url)) {
+    montagu_server_options()
+  }
   if (is.null(montagu$auth)) {
     montagu_set_credentials(username, password)
   }

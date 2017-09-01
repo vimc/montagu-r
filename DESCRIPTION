@@ -1,6 +1,6 @@
 Package: montagu
 Title: Interface with 'montagu'
-Version: 0.1.0
+Version: 0.1.1
 Description: R client for montagu
 License: MIT + file LICENSE
 Encoding: UTF-8
