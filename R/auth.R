@@ -25,6 +25,11 @@ montagu_server_options <- function(hostname = NULL,
                          hostname, port, api_version)
   montagu$url_reports <- sprintf("https://%s:%d/reports/api/v%d",
                                  hostname, port, api_version)
+  if (port == 443) {
+    montagu$url_www <- sprintf("https://%s", hostname)
+  } else {
+    montagu$url_www <- sprintf("https://%s:%s", hostname, port)
+  }
 }
 
 montagu_set_credentials <- function(username = NULL, password = NULL) {
@@ -69,6 +74,10 @@ montagu_request <- function(verb, path, ...,
   base <- if (reports) montagu$url_reports else montagu$url
   if (!grepl("^/", path)) {
     stop("Expected an absolute path")
+  }
+  re_version <- "^/v1/"
+  if (grepl(re_version, path)) {
+    path <- sub(re_version, "/", path)
   }
   url <- paste0(base, path)
   r <- verb(url,

@@ -11,9 +11,19 @@ assert_scalar_integer <- function(x, name = deparse(substitute(name))) {
   assert_scalar(x, name)
   assert_nonmissing(x, name)
 }
+assert_scalar_logical <- function(x, name = deparse(substitute(name))) {
+  assert_integer_like(x, name)
+  assert_scalar(x, name)
+  assert_nonmissing(x, name)
+}
 assert_character <- function(x, name = deparse(substitute(x))) {
   if (!is.character(x)) {
     stop(sprintf("'%s' must be a character", name), call. = FALSE)
+  }
+}
+assert_logical <- function(x, name = deparse(substitute(x))) {
+  if (!is.logical(x)) {
+    stop(sprintf("'%s' must be a logical", name), call. = FALSE)
   }
 }
 assert_scalar <- function(x, name = deparse(substitute(x))) {

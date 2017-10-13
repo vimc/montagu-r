@@ -109,3 +109,88 @@ montagu_reports_data <- function(hash, csv = FALSE,
   montagu_GET(path, reports = TRUE,
               accept = accept, dest = dest, progress = progress)
 }
+
+montagu_reports_run <- function(name, ref = NULL,
+                                timeout = 3600, poll = 0.5,
+                                open = FALSE, stop_on_error = FALSE) {
+  if (is.null(ref)) {
+    query <- NULL
+  } else {
+    assert_scalar_character(ref)
+    query <- list(ref = ref)
+  }
+  res <- montagu_POST(sprintf("/reports/%s/run/", name), reports = TRUE)
+  t_stop <- Sys.time() + timeout
+  path <- res$path
+  key <- res$key
+  fmt <- sprintf(":spin (%s) :elapsed :state", res$key)
+  p <- progress::progress_bar$new(fmt, ceiling(timeout / poll * 1.1))
+  tick <- function(state) {
+    p$tick(tokens = list(state = state))
+  }
+
+  state <- "submitted"
+
+  repeat {
+    ans <- montagu_GET(res$path, reports = TRUE)
+
+    if (state != ans$status) {
+      message(sprintf(" * %s", ans$status))
+      state <- ans$status
+    }
+    if (state %in% c("queued", "running")) {
+      tick(sprintf("%s: %s", state, ans$version %||% "???"))
+      Sys.sleep(poll)
+    } else {
+      break
+    }
+    if (Sys.time() > t_stop) {
+      stop("timeout reached")
+    }
+  }
+
+  if (stop_on_error && state == "error") {
+    stop("Report failed")
+  }
+
+  ans <- montagu_GET(res$path, query = list(output = TRUE), reports = TRUE)
+  url <- sprintf("%s/reports/%s/%s", montagu$url_www, name, ans$version)
+  if (open) {
+    browseURL(url)
+  }
+  list(name = name,
+       id = ans$version,
+       status = ans$status,
+       output = ans$output,
+       url = url)
+}
+
+montagu_reports_status <- function(key) {
+  montagu_GET(sprintf("/reports/%s/status/", key), reports = TRUE)
+}
+
+montagu_reports_publish <- function(name, id, value = NULL) {
+  if (is.null(value)) {
+    query <- NULL
+  } else {
+    assert_scalar_logical(value)
+    query <- list(value = value)
+  }
+  montagu_POST(sprintf("/reports/%s/%s/publish/", name, id),
+               query = query, reports = TRUE)
+}
+
+montagu_reports_git_status <- function() {
+  montagu_GET("/reports/git/status/", reports = TRUE)
+}
+
+## TODO: these need a bit of work:
+## 1. errors don't come back correctly (i.e., not as an array): VIMC-809
+## 2. git is not working in the container because of auth> VIMC-810
+montagu_reports_git_pull <- function() {
+  montagu_POST("/reports/git/pull/", reports = TRUE)
+}
+
+montagu_reports_git_pull <- function() {
+  montagu_POST("/reports/git/fetch/", reports = TRUE)
+}
