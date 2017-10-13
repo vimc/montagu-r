@@ -180,6 +180,10 @@ montagu_reports_publish <- function(name, id, value = NULL) {
                query = query, reports = TRUE)
 }
 
+montagu_reports_rebuild <- function() {
+  montagu_POST("/reports/rebuild/")
+}
+
 montagu_reports_git_status <- function() {
   montagu_GET("/reports/git/status/", reports = TRUE)
 }
