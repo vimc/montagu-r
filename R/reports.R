@@ -123,7 +123,7 @@ montagu_reports_run <- function(name, ref = NULL,
   t_stop <- Sys.time() + timeout
   path <- res$path
   key <- res$key
-  fmt <- sprintf(":spin (%s) :elapsed :state", res$key)
+  fmt <- sprintf("[:spin] (%s) :elapsed :state", res$key)
   p <- progress::progress_bar$new(fmt, ceiling(timeout / poll * 1.1))
   tick <- function(state) {
     p$tick(tokens = list(state = state))
