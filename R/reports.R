@@ -119,7 +119,8 @@ montagu_reports_run <- function(name, ref = NULL,
     assert_scalar_character(ref)
     query <- list(ref = ref)
   }
-  res <- montagu_POST(sprintf("/reports/%s/run/", name), reports = TRUE)
+  res <- montagu_POST(sprintf("/reports/%s/run/", name),
+                      query = query, reports = TRUE)
   t_stop <- Sys.time() + timeout
   path <- res$path
   key <- res$key
