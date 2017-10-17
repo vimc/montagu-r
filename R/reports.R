@@ -140,7 +140,8 @@ montagu_reports_run <- function(name, ref = NULL,
   key <- res$key
   fmt <- sprintf("[:spin] (%s) :elapsed :state", res$key)
   if (progress) {
-    p <- progress::progress_bar$new(fmt, ceiling(timeout / poll * 1.1))
+    p <- progress::progress_bar$new(fmt, ceiling(timeout / poll * 1.1),
+                                    show_after = 0)
     tick <- function(state) {
       p$tick(tokens = list(state = state))
     }
@@ -154,7 +155,6 @@ montagu_reports_run <- function(name, ref = NULL,
     ans <- montagu_GET(res$path, reports = TRUE, location = location)
 
     if (state != ans$status) {
-      message(sprintf(" * %s", ans$status))
       state <- ans$status
     }
     if (state %in% c("queued", "running")) {
@@ -166,6 +166,10 @@ montagu_reports_run <- function(name, ref = NULL,
     if (Sys.time() > t_stop) {
       stop("timeout reached")
     }
+  }
+
+  if (progress) {
+    message()
   }
 
   if (stop_on_error && state == "error") {
