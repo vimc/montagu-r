@@ -125,6 +125,7 @@ montagu_reports_data <- function(hash, csv = FALSE, dest = NULL,
 montagu_reports_run <- function(name, ref = NULL,
                                 timeout = 3600, poll = 0.5,
                                 open = FALSE, stop_on_error = FALSE,
+                                progress = TRUE,
                                 location = NULL) {
   if (is.null(ref)) {
     query <- NULL
@@ -138,9 +139,13 @@ montagu_reports_run <- function(name, ref = NULL,
   path <- res$path
   key <- res$key
   fmt <- sprintf("[:spin] (%s) :elapsed :state", res$key)
-  p <- progress::progress_bar$new(fmt, ceiling(timeout / poll * 1.1))
-  tick <- function(state) {
-    p$tick(tokens = list(state = state))
+  if (progress) {
+    p <- progress::progress_bar$new(fmt, ceiling(timeout / poll * 1.1))
+    tick <- function(state) {
+      p$tick(tokens = list(state = state))
+    }
+  } else {
+    tick <- function(state) {}
   }
 
   state <- "submitted"
