@@ -39,7 +39,7 @@ montagu_add_location_defaults <- function() {
   montagu_add_location("production", "montagu.vaccineimpact.org", 443L)
   montagu_add_location("science", "support.montagu.dide.ic.ac.uk", 11443L)
   montagu_add_location("uat", "support.montagu.dide.ic.ac.uk", 10443L)
-  montagu_set_default_location("production")
+  montagu_set_default_location("science")
 }
 
 montagu_credentials <- function(username, password) {
