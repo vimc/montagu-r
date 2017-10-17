@@ -122,16 +122,25 @@ montagu_reports_data <- function(hash, csv = FALSE, dest = NULL,
               accept = accept, dest = dest, progress = progress)
 }
 
-montagu_reports_run <- function(name, ref = NULL,
+montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
+                                update = TRUE,
                                 timeout = 3600, poll = 0.5,
                                 open = FALSE, stop_on_error = FALSE,
                                 progress = TRUE,
                                 location = NULL) {
-  if (is.null(ref)) {
+  if (!is.null(parameters)) {
+    stop("parameters not yet supported")
+  }
+
+  query <- list()
+  if (!is.null(ref)) {
+    query$ref <- ref
+  }
+  if (!update) {
+    query$update <- "false"
+  }
+  if (length(query) == 0L) {
     query <- NULL
-  } else {
-    assert_scalar_character(ref)
-    query <- list(ref = ref)
   }
   res <- montagu_POST(sprintf("/reports/%s/run/", name), query = query,
                       reports = TRUE, location = location)
