@@ -1,5 +1,5 @@
 montagu_reset <- function(clear = FALSE) {
-  skip_on_travis()
+  testthat::skip_on_travis()
   if (clear) {
     montagu:::.onLoad()
   }
