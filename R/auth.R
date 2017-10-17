@@ -1,60 +1,89 @@
 ## Montagu options:
 montagu <- new.env(parent = emptyenv())
 
-## TODO: work out a nice way of triggering this.  But for the vast
-## majority of users this will just be run once and forgotten
-montagu_server_options <- function(hostname = NULL,
-                                   port = NULL,
-                                   verbose = FALSE) {
-  hostname <- get_default(hostname, "hostname",
-                          "montagu.vaccineimpact.org")
-  port <- get_default(port, "port",
-                      if (hostname == "localhost") 1443L else 443L)
-
+montagu_add_location <- function(name, hostname, port, verbose = FALSE,
+                                 overwrite = FALSE) {
+  if (name %in% names(montagu$hosts) && !overwrite) {
+    return()
+  }
   assert_scalar_character(hostname)
   assert_scalar_integer(port)
+
   api_version <- 1L
 
   opts <- if (verbose) httr::verbose() else NULL
   if (hostname == "localhost") {
     opts <- c(curl_insecure(), opts)
   }
-  montagu$opts <- opts
-  montagu$api_version <- api_version
-  montagu$url <- sprintf("https://%s:%d/api/v%d",
-                         hostname, port, api_version)
-  montagu$url_reports <- sprintf("https://%s:%d/reports/api/v%d",
-                                 hostname, port, api_version)
+
   if (port == 443) {
-    montagu$url_www <- sprintf("https://%s", hostname)
+    url_www <- sprintf("https://%s", hostname)
   } else {
-    montagu$url_www <- sprintf("https://%s:%s", hostname, port)
+    url_www <- sprintf("https://%s:%s", hostname, port)
   }
+
+  montagu$hosts[[name]] <- list(
+    hostname = hostname,
+    port = port,
+    opts = opts,
+    api_version = api_version,
+    url = sprintf("https://%s:%d/api/v%d",
+                  hostname, port, api_version),
+    url_reports = sprintf("https://%s:%d/reports/api/v%d",
+                          hostname, port, api_version),
+    url_www = url_www)
 }
 
-montagu_set_credentials <- function(username = NULL, password = NULL) {
+montagu_add_location_defaults <- function() {
+  montagu$hosts <- list()
+  montagu_add_location("production", "montagu.vaccineimpact.org", 443L)
+  montagu_add_location("science", "support.montagu.dide.ic.ac.uk", 11443L)
+  montagu_add_location("uat", "support.montagu.dide.ic.ac.uk", 10443L)
+  montagu_set_default_location("production")
+}
+
+montagu_credentials <- function(username, password) {
   username <- get_input(username, "username", FALSE)
   password <- get_input(password, "password", TRUE)
-  auth <- openssl::base64_encode(sprintf("%s:%s", username, password))
-  montagu$auth <- auth
+  openssl::base64_encode(sprintf("%s:%s", username, password))
 }
 
-montagu_authorise <- function(username = NULL, password = NULL) {
-  if (is.null(montagu$url)) {
-    montagu_server_options()
+montagu_authorise <- function(username = NULL, password = NULL,
+                              location = NULL, refresh = FALSE) {
+  location <- montagu_location(location)
+  dat <- montagu$hosts[[location]]
+  if (is.null(dat)) {
+    stop(sprintf("Unknown location '%s'", location))
   }
-  if (is.null(montagu$auth)) {
-    montagu_set_credentials(username, password)
+  if (is.null(dat$token) || refresh) {
+    message(sprintf("Authorising with montagu '%s' (https://%s:%s)",
+                    location, dat$hostname, dat$port))
+    auth <- montagu_credentials(username, password)
+    h <- httr::add_headers("Authorization" = paste("Basic", auth))
+
+    r <- httr::POST(paste0(dat$url, "/authenticate/"),
+                    h, dat$opts,
+                    body = list("grant_type" = "client_credentials"),
+                    encode = "form")
+    httr::stop_for_status(r)
+    t <- jsonlite::fromJSON(httr::content(r, "text", encoding = "UTF-8"))
+    dat$token <- httr::add_headers(
+      "Authorization" = paste("Bearer", t$access_token))
+    montagu$hosts[[location]] <- dat
   }
-  h <- httr::add_headers("Authorization" = paste("Basic", montagu$auth))
-  r <- httr::POST(paste0(montagu$url, "/authenticate/"),
-                  h, montagu$opts,
-                  body = list("grant_type" = "client_credentials"),
-                  encode = "form")
-  httr::stop_for_status(r)
-  t <- jsonlite::fromJSON(httr::content(r, "text", encoding = "UTF-8"))
-  montagu$token <- httr::add_headers(
-    "Authorization" = paste("Bearer", t$access_token))
+  invisible(dat)
+}
+
+montagu_set_default_location <- function(location) {
+  if (!(location %in% names(montagu$hosts))) {
+    stop(sprintf("Unknown montagu location '%s' - must be one of %s",
+                 location, paste(names(montagu$hosts), collapse = ", ")))
+  }
+  montagu$default <- location
+}
+
+montagu_location <- function(location = NULL) {
+  location %||% montagu$default
 }
 
 montagu_GET <- function(...) {
@@ -65,13 +94,12 @@ montagu_POST <- function(...) {
   montagu_request(httr::POST, ...)
 }
 
-montagu_request <- function(verb, path, ...,
+montagu_request <- function(verb, path, ..., location = NULL,
                             accept = "json", dest = NULL, progress = TRUE,
-                            reports = FALSE) {
-  if (is.null(montagu$token)) {
-    montagu_authorise()
-  }
-  base <- if (reports) montagu$url_reports else montagu$url
+                            reports = FALSE, montagu = NULL) {
+  location <- montagu_location(location)
+  dat <- montagu_authorise(location = location)
+  base <- if (reports) dat$url_reports else dat$url
   if (!grepl("^/", path)) {
     stop("Expected an absolute path")
   }
@@ -81,8 +109,8 @@ montagu_request <- function(verb, path, ...,
   }
   url <- paste0(base, path)
   r <- verb(url,
-            montagu$token,
-            montagu$opts,
+            dat$token,
+            dat$opts,
             montagu_accept(accept),
             montagu_dest(dest, accept, progress),
             ...)
