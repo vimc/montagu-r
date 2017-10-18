@@ -128,6 +128,7 @@ montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
                                 open = FALSE, stop_on_error = FALSE,
                                 progress = TRUE,
                                 location = NULL) {
+  location <- montagu_location(location)
   if (!is.null(parameters)) {
     stop("parameters not yet supported")
   }
