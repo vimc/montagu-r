@@ -190,7 +190,7 @@ montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
   url <- sprintf("%s/reports/%s/%s",
                  montagu$hosts[[location]]$url_www, name, ans$version)
   if (open) {
-    message("Opening report in browser (you may need to log in")
+    message("Opening report in browser (you may need to log in)")
     browseURL(url)
   }
   list(name = name,
