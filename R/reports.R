@@ -231,6 +231,6 @@ montagu_reports_git_pull <- function(location = NULL) {
   montagu_POST("/reports/git/pull/", reports = TRUE, location = location)
 }
 
-montagu_reports_git_pull <- function(location = NULL) {
+montagu_reports_git_fetch <- function(location = NULL) {
   montagu_POST("/reports/git/fetch/", reports = TRUE, location = location)
 }
