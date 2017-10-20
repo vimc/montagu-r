@@ -1,4 +1,4 @@
-assert_scalar_character <- function(x, name = deparse(substitute(name))) {
+assert_scalar_character <- function(x, name = deparse(substitute(x))) {
   assert_character(x, name)
   assert_scalar(x, name)
   assert_nonmissing(x, name)
@@ -6,13 +6,13 @@ assert_scalar_character <- function(x, name = deparse(substitute(name))) {
     stop(sprintf("'%s' must be nonempty", name), call. = FALSE)
   }
 }
-assert_scalar_integer <- function(x, name = deparse(substitute(name))) {
+assert_scalar_integer <- function(x, name = deparse(substitute(x))) {
   assert_integer_like(x, name)
   assert_scalar(x, name)
   assert_nonmissing(x, name)
 }
-assert_scalar_logical <- function(x, name = deparse(substitute(name))) {
-  assert_integer_like(x, name)
+assert_scalar_logical <- function(x, name = deparse(substitute(x))) {
+  assert_logical(x, name)
   assert_scalar(x, name)
   assert_nonmissing(x, name)
 }
