@@ -202,9 +202,10 @@ montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
        url = url)
 }
 
-montagu_reports_status <- function(key, location = NULL) {
-  montagu_GET(sprintf("/reports/%s/status/", key),
-              reports = TRUE, location = location)
+montagu_reports_status <- function(key, output = FALSE, location = NULL) {
+  path <- sprintf("/reports/%s/status/", key)
+  query <- if (output) list(output = TRUE) else NULL
+  montagu_GET(path, query = query, reports = TRUE, location = location)
 }
 
 montagu_reports_publish <- function(name, id, value = NULL, location = NULL) {
