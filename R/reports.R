@@ -148,6 +148,7 @@ montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
   t_stop <- Sys.time() + timeout
   path <- res$path
   key <- res$key
+  message(sprintf("running report '%s' as '%s'", name, key))
   fmt <- sprintf("[:spin] (%s) :elapsed :state", res$key)
   if (progress) {
     p <- progress::progress_bar$new(fmt, ceiling(timeout / poll * 1.1),
