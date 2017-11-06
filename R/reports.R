@@ -6,7 +6,17 @@
 ## /v1/reports/
 montagu_reports_list <- function(location = NULL) {
   res <- montagu_GET("/reports/", reports = TRUE, location = location)
-  empty_default(res, character(0))
+  if (length(res) == 0L) {
+    name <- latest_version <- display_name <- character(0)
+  } else {
+    name <- vcapply(res, "[[", "name")
+    display_name <- vcapply(res, function(x) x$display_name %||% NA_character_)
+    latest_version <- vcapply(res, "[[", "latest_version")
+  }
+  data.frame(name = name,
+             display_name = display_name,
+             latest_version = latest_version,
+             stringsAsFactors = FALSE)
 }
 
 ## /v1/reports/:name/

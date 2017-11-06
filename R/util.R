@@ -2,6 +2,10 @@
   if (is.null(a)) b else a
 }
 
+vcapply <- function(X, FUN, ...) {
+  vapply(X, FUN, character(1), ...)
+}
+
 get_pass <- function(prompt) {
   getPass::getPass(prompt, TRUE) # nocov
 }
