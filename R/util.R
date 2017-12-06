@@ -11,7 +11,7 @@ get_pass <- function(prompt) {
 }
 
 read_line <- function(prompt) {
-  readline(prompt = prompt) # nocov
+  clean_input_text(readline(prompt = prompt)) # nocov
 }
 
 ## We'll need this when connecting to localhost.  It should be the
@@ -38,4 +38,9 @@ encode_path <- function(x) {
 
 decode_path <- function(x) {
   gsub(":", "/", x, fixed = TRUE)
+}
+
+clean_input_text <- function(x) {
+  re <- "(^\\s*[\"']?|[\"']?\\s*$)"
+  gsub(re, "", x, perl = TRUE)
 }
