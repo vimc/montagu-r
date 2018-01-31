@@ -67,7 +67,7 @@ montagu_burden_estimate_set_upload <- function(modelling_group_id,
       break
     }
   }
-  message("Done!")
+  message("...Done!")
 }
 
 montagu_burden_estimate_set_clear <- function(modelling_group_id,
