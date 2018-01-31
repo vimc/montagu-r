@@ -58,3 +58,7 @@ read_chunked <- function(con, n) {
     list(data = data, complete = complete)
   }
 }
+
+from_json <- function(x) {
+  jsonlite::fromJSON(x, simplifyDataFrame = FALSE,  simplifyMatrix = FALSE)
+}
