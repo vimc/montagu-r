@@ -145,6 +145,13 @@ montagu_response <- function(r, accept, dest) {
     stop("endpoint or resource not found")
   }
   if (accept == "json") {
+    txt <- httr::content(r, "text", encoding = "UTF-8")
+    ## The error handler here is for responding to nginx gateway
+    ## timeouts without checking the headers (because I don't know
+    ## what it returns!)
+    dat <- withCallingHandlers(
+      from_json(txt),
+      error = function(e) message("Original response:\n\n", txt))
     dat <- from_json(httr::content(r, "text", encoding = "UTF-8"))
     if (dat$status == "failure") {
       ## TODO: make this an S3 error
