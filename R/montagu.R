@@ -27,16 +27,47 @@ montagu_burden_estimate_set_upload <- function(modelling_group_id,
                                                scenario_id,
                                                burden_estimate_set_id,
                                                filename,
-                                               keep_open = NULL) {
+                                               lines = 10000L,
+                                               keep_open = FALSE) {
   url <- sprintf(
     "/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/%s/",
     modelling_group_id, touchstone_id, scenario_id, burden_estimate_set_id)
-  if (isTRUE(keep_open)) {
-    query <- list(keepOpen = "true")
-  } else {
-    query <- NULL
+
+  query <- function(complete) {
+    if (keep_open || !complete) {
+      list(keepOpen = "true")
+    }
   }
-  montagu_POST(url, body = httr::upload_file(filename), query = query)
+
+  if (lines == Inf) {
+    montagu_POST(url, body = httr::upload_file(filename),
+                 query = query(TRUE))
+    return(invisible())
+  }
+
+  ## This is not the most efficient way possible but because every
+  ## upload needs to have a header row there's not a lot of
+  ## alternatives, really - we have to build up a string each time.
+  ## And it looks like we can't just send the whole thing up in one go
+  con <- file(filename, "r")
+  on.exit(close(con))
+  header <- readLines(con, n = 1L)
+  reader <- read_chunked(con, lines)
+  headers <- httr::add_headers("Content-Type" = "text/csv")
+
+  p <- progress::progress_bar$new("[:spin] chunk :current", total = 100000)
+  message(sprintf("Uploading in %d line chunks:\n%s",
+                  lines, filename))
+  repeat {
+    d <- reader()
+    body <- paste0(c(header, d$data), "\n", collapse = "")
+    p$tick()
+    montagu_POST(url, body = body, query = query(d$complete), headers = headers)
+    if (d$complete) {
+      break
+    }
+  }
+  message("Done!")
 }
 
 montagu_burden_estimate_set_clear <- function(modelling_group_id,
