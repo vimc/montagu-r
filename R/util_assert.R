@@ -41,3 +41,8 @@ assert_integer_like <- function(x, name = deparse(substitute(x))) {
     stop(sprintf("'%s' is not integer like", name))
   }
 }
+assert_connection <- function(x, name = deparse(substitute(x))) {
+  if (!inherits(x, "connection")) {
+    stop(sprintf("'%s' must be a connection object", name), call. = FALSE)
+  }
+}

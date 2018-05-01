@@ -66,12 +66,24 @@ montagu_authorise <- function(username = NULL, password = NULL,
                     body = list("grant_type" = "client_credentials"),
                     encode = "form")
     httr::stop_for_status(r)
-    t <- jsonlite::fromJSON(httr::content(r, "text", encoding = "UTF-8"))
+    t <- from_json(httr::content(r, "text", encoding = "UTF-8"))
     dat$token <- httr::add_headers(
       "Authorization" = paste("Bearer", t$access_token))
+    ## Retain the username and password in case we reauthorise
+    dat$username <- username
+    dat$password <- password
     montagu$hosts[[location]] <- dat
   }
   invisible(dat)
+}
+
+montagu_reauthorise <- function(location) {
+  location <- montagu_location(location)
+  dat <- montagu$hosts[[location]]
+  if (is.null(dat$token)) {
+    stop(sprintf("Have not previously authorised with '%s'", location))
+  }
+  montagu_authorise(dat$username, dat$password, location, TRUE)
 }
 
 montagu_set_default_location <- function(location) {
@@ -96,7 +108,8 @@ montagu_POST <- function(...) {
 
 montagu_request <- function(verb, path, ..., location = NULL,
                             accept = "json", dest = NULL, progress = TRUE,
-                            reports = FALSE, montagu = NULL) {
+                            reports = FALSE, montagu = NULL,
+                            retry_on_auth_error = TRUE) {
   location <- montagu_location(location)
   dat <- montagu_authorise(location = location)
   base <- if (reports) dat$url_reports else dat$url
@@ -108,12 +121,21 @@ montagu_request <- function(verb, path, ..., location = NULL,
     path <- sub(re_version, "/", path)
   }
   url <- paste0(base, path)
-  r <- verb(url,
-            dat$token,
-            dat$opts,
-            montagu_accept(accept),
-            montagu_dest(dest, accept, progress),
-            ...)
+
+  request <- function() {
+    verb(url, dat$token, dat$opts, montagu_accept(accept),
+         montagu_dest(dest, accept, progress), ...)
+  }
+  r <- request()
+
+  if (httr::status_code(r) == 401L && retry_on_auth_error) {
+    errors <- from_json(httr::content(r, "text", encoding = "UTF-8"))$errors
+    if (length(errors) == 1L && errors[[1]]$code == "bearer-token-invalid") {
+      dat <- montagu_reauthorise(location = location)
+      r <- request()
+    }
+  }
+
   montagu_response(r, accept, dest)
 }
 
@@ -123,9 +145,14 @@ montagu_response <- function(r, accept, dest) {
     stop("endpoint or resource not found")
   }
   if (accept == "json") {
-    dat <- jsonlite::fromJSON(httr::content(r, "text"),
-                              simplifyDataFrame = FALSE,
-                              simplifyMatrix = FALSE)
+    txt <- httr::content(r, "text", encoding = "UTF-8")
+    ## The error handler here is for responding to nginx gateway
+    ## timeouts without checking the headers (because I don't know
+    ## what it returns!)
+    dat <- withCallingHandlers(
+      from_json(txt),
+      error = function(e) message("Original response:\n\n", txt))
+    dat <- from_json(httr::content(r, "text", encoding = "UTF-8"))
     if (dat$status == "failure") {
       ## TODO: make this an S3 error
       err_code <- vapply(dat$errors, function(x) x$code, character(1))

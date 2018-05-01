@@ -44,3 +44,21 @@ clean_input_text <- function(x) {
   re <- "(^\\s*[\"']?|[\"']?\\s*$)"
   gsub(re, "", x, perl = TRUE)
 }
+
+read_chunked <- function(con, n) {
+  assert_connection(con)
+  next_chunk <- readLines(con, n)
+  if (length(next_chunk) == 0L) {
+    stop("connection has already been completely read")
+  }
+  function() {
+    data <- next_chunk
+    next_chunk <<- readLines(con, n)
+    complete <- length(next_chunk) == 0L
+    list(data = data, complete = complete)
+  }
+}
+
+from_json <- function(x) {
+  jsonlite::fromJSON(x, simplifyDataFrame = FALSE,  simplifyMatrix = FALSE)
+}
