@@ -95,7 +95,8 @@ montagu_set_default_location <- function(location) {
 }
 
 montagu_location <- function(location = NULL) {
-  location %||% montagu$default
+  structure(location %||% montagu$default,
+            class = c("montagu_server", "orderly_api_server"))
 }
 
 montagu_GET <- function(...) {
