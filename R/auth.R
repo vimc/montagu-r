@@ -71,9 +71,9 @@ montagu_authorise <- function(username = NULL, password = NULL,
       httr::stop_for_status(r)
       dat$token <- basic_auth
     } else {
-      auth_str <- openssl::base64_encode(sprintf("Basic %s:%s",
-                                                 auth$username, auth$password))
-      headers <- httr::add_headers("Authorization" = auth_str)
+      auth_str <- openssl::base64_encode(sprintf(
+        "%s:%s", auth$username, auth$password))
+      headers <- httr::add_headers("Authorization" = paste("Basic", auth_str))
 
       r <- httr::POST(paste0(dat$url, "/authenticate/"),
                       headers, dat$opts,
