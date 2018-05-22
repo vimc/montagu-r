@@ -12,4 +12,5 @@ Imports:
     openssl,
     progress
 Suggests:
-    testthat
+    testthat,
+    withr

@@ -34,3 +34,31 @@ test_that("clean input text", {
   expect_equal(clean_input_text(" ' foo ' "), " foo ")
   expect_equal(clean_input_text("f oo"), "f oo")
 })
+
+
+test_that("get_option_cacade uses correct priority", {
+  skip_if_not_installed("withr")
+
+  expect_equal(
+    withr::with_options(list(a = 1, b = 2), get_option_cascade(c("a", "b"), 3)),
+    1)
+  expect_equal(
+    withr::with_options(list(b = 2), get_option_cascade(c("a", "b"), 3)),
+    2)
+  expect_equal(
+    withr::with_options(list(), get_option_cascade(c("a", "b"), 3)),
+    3)
+})
+
+
+test_that("get_input follows convention", {
+  skip_if_not_installed("withr")
+
+  withr::with_options(
+    list(montagu.server.key = "special",
+         montagu.key = "general"),
+    expect_equal(get_input(NULL, "key", FALSE, "server"), "special"))
+  withr::with_options(
+    list(montagu.key = "general"),
+    expect_equal(get_input(NULL, "key", FALSE, "server"), "general"))
+})

@@ -193,16 +193,26 @@ montagu_dest <- function(dest, accept, progress) {
   }
 }
 
-get_input <- function(value, name, secret) {
+
+get_input <- function(value, name, secret, location) {
   if (is.null(value)) {
     read <- if (secret) get_pass else read_line
-    value <- getOption(paste0("montagu.", name),
-                       read(sprintf("Enter montagu %s: ", name)))
+    key <- c(sprintf("montagu.%s.%s", location, name),
+             sprintf("montagu.%s", name))
+    value <- get_option_cascade(key,
+                                read(sprintf("Enter montagu %s: ", name)))
   }
   assert_scalar_character(value, name)
   value
 }
 
-get_default <- function(value, name, default) {
-  value %||% getOption(paste0("montagu.", name), default)
+
+get_option_cascade <- function(x, default) {
+  for (el in x) {
+    v <- getOption(el)
+    if (!is.null(v)) {
+      return(v)
+    }
+  }
+  default
 }
