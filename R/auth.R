@@ -102,11 +102,13 @@ montagu_reauthorise <- function(location) {
 }
 
 montagu_set_default_location <- function(location) {
+  prev <- montagu$default
   if (!(location %in% names(montagu$hosts))) {
     stop(sprintf("Unknown montagu location '%s' - must be one of %s",
                  location, paste(names(montagu$hosts), collapse = ", ")))
   }
   montagu$default <- location
+  invisible(prev)
 }
 
 ## this is going to change several times potentially.
