@@ -61,7 +61,7 @@ montagu_authorise <- function(username = NULL, password = NULL,
     stop(sprintf("Unknown location '%s'", location))
   }
   if (is.null(dat$token) || refresh) {
-    message(sprintf("Authorising with montagu '%s' (https://%s:%s)",
+    message(sprintf("Authorising with server '%s' (https://%s:%s)",
                     location, dat$hostname, dat$port))
     auth <- montagu_credentials(username, password, location)
 
