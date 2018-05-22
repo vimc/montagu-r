@@ -1,13 +1,16 @@
 ## Montagu options:
 montagu <- new.env(parent = emptyenv())
 
-montagu_add_location <- function(name, hostname, port, verbose = FALSE,
+montagu_add_location <- function(name, hostname, port,
+                                 basic = FALSE,
+                                 verbose = FALSE,
                                  overwrite = FALSE) {
   if (name %in% names(montagu$hosts) && !overwrite) {
     return()
   }
   assert_scalar_character(hostname)
   assert_scalar_integer(port)
+  assert_scalar_logical(basic)
 
   api_version <- 1L
 
@@ -25,6 +28,7 @@ montagu_add_location <- function(name, hostname, port, verbose = FALSE,
   montagu$hosts[[name]] <- list(
     hostname = hostname,
     port = port,
+    basic = basic,
     opts = opts,
     api_version = api_version,
     url = sprintf("https://%s:%d/api/v%d",
@@ -34,6 +38,7 @@ montagu_add_location <- function(name, hostname, port, verbose = FALSE,
     url_www = url_www)
 }
 
+## These might move into the orderly_config.yml for montagu-reports
 montagu_add_location_defaults <- function() {
   montagu$hosts <- list()
   montagu_add_location("production", "montagu.vaccineimpact.org", 443L)
@@ -42,10 +47,10 @@ montagu_add_location_defaults <- function() {
   montagu_set_default_location("science")
 }
 
-montagu_credentials <- function(username, password) {
-  username <- get_input(username, "username", FALSE)
-  password <- get_input(password, "password", TRUE)
-  openssl::base64_encode(sprintf("%s:%s", username, password))
+montagu_credentials <- function(username, password, location) {
+  username <- get_input(username, "username", FALSE, location)
+  password <- get_input(password, "password", TRUE, location)
+  list(username = username, password = password)
 }
 
 montagu_authorise <- function(username = NULL, password = NULL,
@@ -58,17 +63,27 @@ montagu_authorise <- function(username = NULL, password = NULL,
   if (is.null(dat$token) || refresh) {
     message(sprintf("Authorising with montagu '%s' (https://%s:%s)",
                     location, dat$hostname, dat$port))
-    auth <- montagu_credentials(username, password)
-    h <- httr::add_headers("Authorization" = paste("Basic", auth))
+    auth <- montagu_credentials(username, password, location)
 
-    r <- httr::POST(paste0(dat$url, "/authenticate/"),
-                    h, dat$opts,
-                    body = list("grant_type" = "client_credentials"),
-                    encode = "form")
-    httr::stop_for_status(r)
-    t <- from_json(httr::content(r, "text", encoding = "UTF-8"))
-    dat$token <- httr::add_headers(
-      "Authorization" = paste("Bearer", t$access_token))
+    if (dat$basic) {
+      basic_auth <- httr::authenticate(auth$username, auth$password)
+      r <- httr::GET(dat$url_reports, basic_auth)
+      httr::stop_for_status(r)
+      dat$token <- basic_auth
+    } else {
+      auth_str <- openssl::base64_encode(sprintf("Basic %s:%s",
+                                                 auth$username, auth$password))
+      headers <- httr::add_headers("Authorization" = auth_str)
+
+      r <- httr::POST(paste0(dat$url, "/authenticate/"),
+                      headers, dat$opts,
+                      body = list("grant_type" = "client_credentials"),
+                      encode = "form")
+      httr::stop_for_status(r)
+      t <- from_json(httr::content(r, "text", encoding = "UTF-8"))
+      dat$token <- httr::add_headers(
+        "Authorization" = paste("Bearer", t$access_token))
+    }
     ## Retain the username and password in case we reauthorise
     dat$username <- username
     dat$password <- password
