@@ -207,7 +207,7 @@ montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
                  montagu$hosts[[location]]$url_www, name, ans$version)
   if (open) {
     message("Opening report in browser (you may need to log in)")
-    browseURL(url)
+    utils::browseURL(url)
   }
   list(name = name,
        id = ans$version,

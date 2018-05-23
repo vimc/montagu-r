@@ -1,7 +1,9 @@
 Package: montagu
 Title: Interface with 'montagu'
-Version: 0.1.7
-Description: R client for montagu
+Version: 0.1.8
+Description: Client for interacting with the montagu APIs; both the
+  reporing API (for remote access to orderly) and the contribution API
+  are covered.  This package is part of montagu.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Author: Rich FitzJohn
@@ -9,7 +11,9 @@ Maintainer: Rich FitzJohn <rich.fitzjohn@gmail.com>
 Imports:
     getPass,
     httr,
+    jsonlite,
     openssl,
     progress
 Suggests:
-    testthat
+    testthat,
+    withr
