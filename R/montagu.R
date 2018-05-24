@@ -2,8 +2,8 @@
 ##' montagu components.
 ##' @title The Montagu API
 ##' @param location A montagu location
-##' @return
 ##' @rdname montagu_api
+##' @name montagu_api
 NULL
 
 ##' @export

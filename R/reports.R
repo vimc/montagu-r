@@ -2,13 +2,12 @@
 ##' montagu components.
 ##' @title The Montagu Reporting API
 ##' @param location A montagu location
-##' @return
 ##' @rdname montagu_reports
+##' @name montagu_reports
 NULL
 
 ##' @export
 ##' @rdname montagu_reports
-##' \code{montagu_reports_list} is \code{/v1/reports/}
 montagu_reports_list <- function(location = NULL) {
   res <- montagu_reports_GET(location, "/reports/")
   if (length(res) == 0L) {
@@ -27,7 +26,7 @@ montagu_reports_list <- function(location = NULL) {
 
 ##' @export
 ##' @rdname montagu_reports
-##' \code{montagu_reports_report_versions} is \code{/v1/reports/:name/}
+##' @param name A report name
 montagu_reports_report_versions <- function(name, location = NULL) {
   res <- montagu_reports_GET(location, sprintf("/reports/%s/", name))
   empty_default(res, character(0))
@@ -36,8 +35,7 @@ montagu_reports_report_versions <- function(name, location = NULL) {
 
 ##' @export
 ##' @rdname montagu_reports
-##' \code{montagu_reports_report_metadata} is
-##' \code{/v1/reports/:name/versions/:version/}
+##' @param version The report version identifier (YYYYMMDD-HHMMSS-xxxxxxxx)
 montagu_reports_report_metadata <- function(name, version, location = NULL) {
   montagu_reports_GET(location,
                       sprintf("/reports/%s/versions/%s/", name, version))
@@ -46,8 +44,8 @@ montagu_reports_report_metadata <- function(name, version, location = NULL) {
 
 ##' @export
 ##' @rdname montagu_reports
-##' \code{montagu_reports_report_download} is
-##' \code{/v1/reports/:name/versions/:version/all/}
+##' @param dest Destination to download to
+##' @param progress Print a progress bar
 montagu_reports_report_download <- function(name, version, dest = tempfile(),
                                             progress = TRUE, location = NULL) {
   ret <- montagu_reports_GET(
@@ -63,8 +61,6 @@ montagu_reports_report_download <- function(name, version, dest = tempfile(),
 
 ##' @export
 ##' @rdname montagu_reports
-##' \code{montagu_reports_report_artefact_list} is
-##' \code{/v1/reports/:name/versions/:version/artefacts/}
 montagu_reports_report_artefact_list <- function(name, version,
                                                  location = NULL) {
   res <- montagu_reports_GET(
@@ -76,8 +72,7 @@ montagu_reports_report_artefact_list <- function(name, version,
 
 ##' @export
 ##' @rdname montagu_reports
-##' \code{montagu_reports_report_artefact_get} is
-##' \code{/v1/reports/:name/versions/:version/artefacts/:artefact/}
+##' @param filename Name of artefact to download
 montagu_reports_report_artefact_get <- function(name, version, filename,
                                                 dest = NULL,
                                                 progress = TRUE,
@@ -92,8 +87,6 @@ montagu_reports_report_artefact_get <- function(name, version, filename,
 
 ##' @export
 ##' @rdname montagu_reports
-##' \code{montagu_reports_report_resource_list} is
-##' \code{/v1/reports/:name/versions/:version/resources/}
 montagu_reports_report_resource_list <- function(name, version,
                                                  location = NULL) {
   res <- montagu_reports_GET(
@@ -105,8 +98,6 @@ montagu_reports_report_resource_list <- function(name, version,
 
 ##' @export
 ##' @rdname montagu_reports
-##' \code{montagu_reports_report_resource_get} is
-##' \code{/v1/reports/:name/versions/:version/resources/:resource/}
 montagu_reports_report_resource_get <- function(name, version, filename,
                                                 dest = NULL, progress = TRUE,
                                                 location = NULL) {
@@ -120,8 +111,6 @@ montagu_reports_report_resource_get <- function(name, version, filename,
 
 ##' @export
 ##' @rdname montagu_reports
-##' \code{montagu_reports_report_data_list} is
-##' \code{/v1/reports/:name/versions/:version/data/}
 montagu_reports_report_data_list <- function(name, version, location = NULL) {
   res <- montagu_reports_GET(
     location,
@@ -132,8 +121,8 @@ montagu_reports_report_data_list <- function(name, version, location = NULL) {
 
 ##' @export
 ##' @rdname montagu_reports
-##' \code{montagu_reports_report_data_get} is
-##' \code{/v1/reports/:name/versions/:version/data/:data/}
+##' @param hash Hash of data to get
+##' @param csv Logical, indicating if csv (rather than rds) should be returned
 montagu_reports_report_data_get <- function(name, version, hash,
                                             dest = NULL, progress = TRUE,
                                             csv = FALSE, location = NULL) {
@@ -167,8 +156,6 @@ montagu_reports_report_sessioninfo <- function(name, version, location = NULL) {
 
 ##' @export
 ##' @rdname montagu_reports
-##' \code{montagu_reports_data} is
-##' \code{/v1/data/csv/:id/} and \code{/v1/data/rds/:id/}
 montagu_reports_data <- function(hash, csv = FALSE, dest = NULL,
                                  progress = TRUE, location = NULL) {
   if (csv) {
@@ -186,6 +173,13 @@ montagu_reports_data <- function(hash, csv = FALSE, dest = NULL,
 
 ##' @export
 ##' @rdname montagu_reports
+##' @param parameters List of parameters to run report with
+##' @param ref Git reference
+##' @param update I can't remember?
+##' @param timeout Time to give up on running report
+##' @param poll Time to poll for update
+##' @param open Open the report in a browser on completion?
+##' @param stop_on_error Throw an error if the report fails?
 montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
                                 update = TRUE,
                                 timeout = 3600, poll = 0.5,
@@ -267,8 +261,8 @@ montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
 
 ##' @export
 ##' @rdname montagu_reports
-##' \code{montagu_reports_status} is
-##' GET \code{/v1/reports/:name/status/}
+##' @param key Key to a running report (adjective_animal)
+##' @param output Download stdout/stderr from running report?
 montagu_reports_status <- function(key, output = FALSE, location = NULL) {
   path <- sprintf("/reports/%s/status/", key)
   query <- if (output) list(output = TRUE) else NULL
@@ -278,9 +272,8 @@ montagu_reports_status <- function(key, output = FALSE, location = NULL) {
 
 ##' @export
 ##' @rdname montagu_reports
-##' \code{montagu_reports_publish} is
-##' POST \code{/v1/reports/:name/:version/publish/}
-montagu_reports_publish <- function(name, id, value = NULL, location = NULL) {
+##' @param value Value to publish report as (boolean)
+montagu_reports_publish <- function(name, version, value = NULL, location = NULL) {
   if (is.null(value)) {
     query <- NULL
   } else {
@@ -288,15 +281,13 @@ montagu_reports_publish <- function(name, id, value = NULL, location = NULL) {
     query <- list(value = value)
   }
   montagu_reports_POST(location,
-                       sprintf("/reports/%s/versions/%s/publish/", name, id),
+                       sprintf("/reports/%s/versions/%s/publish/", name, version),
                        query = query)
 }
 
 
 ##' @export
 ##' @rdname montagu_reports
-##' \code{montagu_reports_rebuild} is
-##' POST \code{/v1/reports/rebuild}
 montagu_reports_rebuild <- function(location = NULL) {
   montagu_reports_POST(location, "/reports/rebuild/")
 }
@@ -304,8 +295,6 @@ montagu_reports_rebuild <- function(location = NULL) {
 
 ##' @export
 ##' @rdname montagu_reports
-##' \code{montagu_reports_git_status} is
-##' GET \code{/v1/reports/git/status}
 montagu_reports_git_status <- function(location = NULL) {
   montagu_reports_GET(location, "/reports/git/status/")
 }
@@ -318,8 +307,6 @@ montagu_reports_git_status <- function(location = NULL) {
 
 ##' @export
 ##' @rdname montagu_reports
-##' \code{montagu_reports_git_pull} is
-##' POST \code{/v1/reports/git/pull}
 montagu_reports_git_pull <- function(location = NULL) {
   montagu_reports_POST(location, "/reports/git/pull/")
 }
@@ -327,8 +314,6 @@ montagu_reports_git_pull <- function(location = NULL) {
 
 ##' @export
 ##' @rdname montagu_reports
-##' \code{montagu_reports_git_fetch} is
-##' POST \code{/v1/reports/git/fetch}
 montagu_reports_git_fetch <- function(location = NULL) {
   montagu_reports_POST(location, "/reports/git/fetch/")
 }
