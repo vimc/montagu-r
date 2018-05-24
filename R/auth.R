@@ -70,13 +70,25 @@ montagu_location <- function(location) {
   location
 }
 
-montagu_GET <- function(path, ..., location) {
-  montagu_location(location)$request(httr::GET, path, ...)
+
+## Then these are the functions to use from code
+montagu_api_GET <- function(location, path, ...) {
+  montagu_location(location)$request(httr::GET, path, ..., reports = FALSE)
 }
 
 
-montagu_POST <- function(path, ..., location) {
-  montagu_location(location)$request(httr::POST, path, ...)
+montagu_api_POST <- function(location, path, ...) {
+  montagu_location(location)$request(httr::POST, path, ..., reports = FALSE)
+}
+
+
+montagu_reports_GET <- function(location, path, ...) {
+  montagu_location(location)$request(httr::GET, path, ..., reports = TRUE)
+}
+
+
+montagu_reports_POST <- function(location, path, ...) {
+  montagu_location(location)$request(httr::POST, path, ..., reports = TRUE)
 }
 
 

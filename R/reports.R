@@ -1,11 +1,17 @@
-## This all needs to move into montagu.  To do that we need to split
-## out the auth and request processing code to get us to the point
-## where we have the GET function working.  For now, this is not a big
-## deal.
+##' This may get a name change pending splitting apart of various
+##' montagu components.
+##' @title The Montagu Reporting API
+##' @param location A montagu location
+##' @return
+##' @author Rich FitzJohn
+##' @rdname montagu_reports
+NULL
 
-## /v1/reports/
+##' @export
+##' @rdname montagu_reports
+##' \code{montagu_reports_list} is \code{/v1/reports/}
 montagu_reports_list <- function(location = NULL) {
-  res <- montagu_GET("/reports/", reports = TRUE, location = location)
+  res <- montagu_reports_GET(location, "/reports/")
   if (length(res) == 0L) {
     name <- latest_version <- display_name <- character(0)
   } else {
@@ -19,41 +25,60 @@ montagu_reports_list <- function(location = NULL) {
              stringsAsFactors = FALSE)
 }
 
-## /v1/reports/:name/
+
+##' @export
+##' @rdname montagu_reports
+##' \code{montagu_reports_report_versions} is \code{/v1/reports/:name/}
 montagu_reports_report_versions <- function(name, location = NULL) {
-  res <- montagu_GET(sprintf("/reports/%s/", name),
-                     reports = TRUE, location = location)
+  res <- montagu_reports_GET(location, sprintf("/reports/%s/", name))
   empty_default(res, character(0))
 }
 
-## /v1/reports/:name/versions/:version/
+
+##' @export
+##' @rdname montagu_reports
+##' \code{montagu_reports_report_metadata} is
+##' \code{/v1/reports/:name/versions/:version/}
 montagu_reports_report_metadata <- function(name, version, location = NULL) {
-  montagu_GET(sprintf("/reports/%s/versions/%s/", name, version),
-              reports = TRUE, location = location)
+  montagu_reports_GET(location,
+                      sprintf("/reports/%s/versions/%s/", name, version))
 }
 
-## /v1/reports/:name/versions/:version/all/
+
+##' @export
+##' @rdname montagu_reports
+##' \code{montagu_reports_report_download} is
+##' \code{/v1/reports/:name/versions/:version/all/}
 montagu_reports_report_download <- function(name, version, dest = tempfile(),
                                             progress = TRUE, location = NULL) {
-  ret <- montagu_GET(sprintf("/reports/%s/versions/%s/all/", name, version),
-                     reports = TRUE, location = location,
-                     accept = "zip", dest = dest, progress = progress)
+  ret <- montagu_reports_GET(
+    location,
+    sprintf("/reports/%s/versions/%s/all/", name, version),
+    accept = "zip", dest = dest, progress = progress)
   if (progress) {
     cat("\n") # httr's progress bar is rubbish
   }
   ret
 }
 
-## /v1/reports/:name/versions/:version/artefacts/
+
+##' @export
+##' @rdname montagu_reports
+##' \code{montagu_reports_report_artefact_list} is
+##' \code{/v1/reports/:name/versions/:version/artefacts/}
 montagu_reports_report_artefact_list <- function(name, version,
                                                  location = NULL) {
-  res <- montagu_GET(sprintf("/reports/%s/versions/%s/artefacts/",
-                             name, version),
-                     reports = TRUE, location = location)
+  res <- montagu_reports_GET(
+    location,
+    sprintf("/reports/%s/versions/%s/artefacts/", name, version))
   list_to_character(res)
 }
 
-## /v1/reports/:name/versions/:version/artefacts/:artefact/
+
+##' @export
+##' @rdname montagu_reports
+##' \code{montagu_reports_report_artefact_get} is
+##' \code{/v1/reports/:name/versions/:version/artefacts/:artefact/}
 montagu_reports_report_artefact_get <- function(name, version, filename,
                                                 dest = NULL,
                                                 progress = TRUE,
@@ -61,38 +86,55 @@ montagu_reports_report_artefact_get <- function(name, version, filename,
   filename_enc <- encode_path(filename)
   path <- sprintf("/reports/%s/versions/%s/artefacts/%s/",
                   name, version, filename_enc)
-  montagu_GET(path, reports = TRUE, location = location,
-              accept = "binary", dest = dest, progress = progress)
+  montagu_reports_GET(location, path,
+                      accept = "binary", dest = dest, progress = progress)
 }
 
-## /v1/reports/:name/versions/:version/resources/
+
+##' @export
+##' @rdname montagu_reports
+##' \code{montagu_reports_report_resource_list} is
+##' \code{/v1/reports/:name/versions/:version/resources/}
 montagu_reports_report_resource_list <- function(name, version,
                                                  location = NULL) {
-  res <- montagu_GET(sprintf("/reports/%s/versions/%s/resources/",
-                             name, version),
-                     reports = TRUE, location = location)
+  res <- montagu_reports_GET(
+    location,
+    sprintf("/reports/%s/versions/%s/resources/", name, version))
   list_to_character(res)
 }
 
-## /v1/reports/:name/versions/:version/resources/:resource/
+
+##' @export
+##' @rdname montagu_reports
+##' \code{montagu_reports_report_resource_get} is
+##' \code{/v1/reports/:name/versions/:version/resources/:resource/}
 montagu_reports_report_resource_get <- function(name, version, filename,
                                                 dest = NULL, progress = TRUE,
                                                 location = NULL) {
   filename_enc <- encode_path(filename)
   path <- sprintf("/reports/%s/versions/%s/resources/%s/",
                   name, version, filename_enc)
-  montagu_GET(path, reports = TRUE, location = location,
-              accept = "binary", dest = dest, progress = progress)
+  montagu_reports_GET(location, path,
+                      accept = "binary", dest = dest, progress = progress)
 }
 
-## /v1/reports/:name/versions/:version/data/
+
+##' @export
+##' @rdname montagu_reports
+##' \code{montagu_reports_report_data_list} is
+##' \code{/v1/reports/:name/versions/:version/data/}
 montagu_reports_report_data_list <- function(name, version, location = NULL) {
-  res <- montagu_GET(sprintf("/reports/%s/versions/%s/data/", name, version),
-                     reports = TRUE, location = location)
+  res <- montagu_reports_GET(
+    location,
+    sprintf("/reports/%s/versions/%s/data/", name, version))
   list_to_character(res)
 }
 
-## /v1/reports/:name/versions/:version/data/:data/
+
+##' @export
+##' @rdname montagu_reports
+##' \code{montagu_reports_report_data_get} is
+##' \code{/v1/reports/:name/versions/:version/data/:data/}
 montagu_reports_report_data_get <- function(name, version, hash,
                                             dest = NULL, progress = TRUE,
                                             csv = FALSE, location = NULL) {
@@ -104,24 +146,30 @@ montagu_reports_report_data_get <- function(name, version, hash,
     type <- "rds"
     accept <- "binary"
   }
-  montagu_GET(path, query = list(type = type),
-              reports = TRUE, location = location,
-              accept = accept, dest = dest, progress = progress)
+  montagu_reports_GET(location, path, query = list(type = type),
+                      accept = accept, dest = dest, progress = progress)
 }
 
+
+##' @export
+##' @rdname montagu_reports
 ## NOT IMPLEMENTED
 montagu_reports_report_sessioninfo <- function(name, version, location = NULL) {
   ## This is not implemented in the api
   dest <- tempfile()
   on.exit(file.remove(dest))
-  montagu_GET(sprintf("/reports/%s/versions/%s/sessioninfo", name, version),
-              reports = TRUE, location = location,
-              accept = "binary", dest = dest, progress = FALSE)
+  montagu_reports_GET(
+    location,
+    sprintf("/reports/%s/versions/%s/sessioninfo", name, version),
+    accept = "binary", dest = dest, progress = FALSE)
   readRDS(dest)
 }
 
-## /v1/data/csv/:id/
-## /v1/data/rds/:id/
+
+##' @export
+##' @rdname montagu_reports
+##' \code{montagu_reports_data} is
+##' \code{/v1/data/csv/:id/} and \code{/v1/data/rds/:id/}
 montagu_reports_data <- function(hash, csv = FALSE, dest = NULL,
                                  progress = TRUE, location = NULL) {
   if (csv) {
@@ -132,10 +180,13 @@ montagu_reports_data <- function(hash, csv = FALSE, dest = NULL,
     accept <- "binary"
   }
   path <- sprintf("/data/%s/%s", type, hash)
-  montagu_GET(path, reports = TRUE, location = location,
-              accept = accept, dest = dest, progress = progress)
+  montagu_reports_GET(location, path,
+                      accept = accept, dest = dest, progress = progress)
 }
 
+
+##' @export
+##' @rdname montagu_reports
 montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
                                 update = TRUE,
                                 timeout = 3600, poll = 0.5,
@@ -157,8 +208,8 @@ montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
   if (length(query) == 0L) {
     query <- NULL
   }
-  res <- montagu_POST(sprintf("/reports/%s/run/", name), query = query,
-                      reports = TRUE, location = location)
+  res <- montagu_reports_POST(location, sprintf("/reports/%s/run/", name),
+                              query = query)
   t_stop <- Sys.time() + timeout
   path <- res$path
   key <- res$key
@@ -177,7 +228,7 @@ montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
   state <- "submitted"
 
   repeat {
-    ans <- montagu_GET(res$path, reports = TRUE, location = location)
+    ans <- montagu_reports_GET(location, res$path)
 
     if (state != ans$status) {
       state <- ans$status
@@ -201,8 +252,7 @@ montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
     stop("Report failed")
   }
 
-  ans <- montagu_GET(res$path, query = list(output = TRUE),
-                     reports = TRUE, location = location)
+  ans <- montagu_reports_GET(location, res$path, query = list(output = TRUE))
   url <- sprintf("%s/reports/%s/%s",
                  montagu$hosts[[location]]$url_www, name, ans$version)
   if (open) {
@@ -216,14 +266,22 @@ montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
        url = url)
 }
 
-## GET /reports/:name/status/
+
+##' @export
+##' @rdname montagu_reports
+##' \code{montagu_reports_status} is
+##' GET \code{/v1/reports/:name/status/}
 montagu_reports_status <- function(key, output = FALSE, location = NULL) {
   path <- sprintf("/reports/%s/status/", key)
   query <- if (output) list(output = TRUE) else NULL
-  montagu_GET(path, query = query, reports = TRUE, location = location)
+  montagu_reports_GET(location, path, query = query)
 }
 
-## POST /reports/:name/:version/publish/
+
+##' @export
+##' @rdname montagu_reports
+##' \code{montagu_reports_publish} is
+##' POST \code{/v1/reports/:name/:version/publish/}
 montagu_reports_publish <- function(name, id, value = NULL, location = NULL) {
   if (is.null(value)) {
     query <- NULL
@@ -231,30 +289,48 @@ montagu_reports_publish <- function(name, id, value = NULL, location = NULL) {
     assert_scalar_logical(value)
     query <- list(value = value)
   }
-  montagu_POST(sprintf("/reports/%s/versions/%s/publish/", name, id),
-               query = query,
-               reports = TRUE, location = location)
+  montagu_reports_POST(location,
+                       sprintf("/reports/%s/versions/%s/publish/", name, id),
+                       query = query)
 }
 
-## POST /reports/rebuild
+
+##' @export
+##' @rdname montagu_reports
+##' \code{montagu_reports_rebuild} is
+##' POST \code{/v1/reports/rebuild}
 montagu_reports_rebuild <- function(location = NULL) {
-  montagu_POST("/reports/rebuild/")
+  montagu_reports_POST(location, "/reports/rebuild/")
 }
 
-## GET /reports/git/status
+
+##' @export
+##' @rdname montagu_reports
+##' \code{montagu_reports_git_status} is
+##' GET \code{/v1/reports/git/status}
 montagu_reports_git_status <- function(location = NULL) {
-  montagu_GET("/reports/git/status/", reports = TRUE, location = location)
+  montagu_reports_GET(location, "/reports/git/status/")
 }
 
-## TODO: these need a bit of work:
+
+## TODO: these two need a bit of work:
 ## 1. errors don't come back correctly (i.e., not as an array): VIMC-809
 ## 2. git is not working in the container because of auth> VIMC-810
-## POST /reports/git/pull
+
+
+##' @export
+##' @rdname montagu_reports
+##' \code{montagu_reports_git_pull} is
+##' POST \code{/v1/reports/git/pull}
 montagu_reports_git_pull <- function(location = NULL) {
-  montagu_POST("/reports/git/pull/", reports = TRUE, location = location)
+  montagu_reports_POST(location, "/reports/git/pull/")
 }
 
-## POST /reports/git/fetch
+
+##' @export
+##' @rdname montagu_reports
+##' \code{montagu_reports_git_fetch} is
+##' POST \code{/v1/reports/git/fetch}
 montagu_reports_git_fetch <- function(location = NULL) {
-  montagu_POST("/reports/git/fetch/", reports = TRUE, location = location)
+  montagu_reports_POST(location, "/reports/git/fetch/")
 }
