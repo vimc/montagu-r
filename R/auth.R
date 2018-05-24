@@ -1,139 +1,192 @@
-## Montagu options:
-montagu <- new.env(parent = emptyenv())
-
-montagu_add_location <- function(name, hostname, port,
-                                 basic = FALSE,
-                                 verbose = FALSE,
-                                 overwrite = FALSE) {
-  if (name %in% names(montagu$hosts) && !overwrite) {
-    return()
+##' Create a handle to a montagu server
+##'
+##' @title Create a handle to a montagu server
+##'
+##' @param name The name to call this server.  This appears in a few
+##'   places as a "friendly" name.  If \code{global = TRUE} then this
+##'   will be available from the package using this name.
+##'
+##' @param hostname The hostname of the server
+##'
+##' @param port The port the server is running on (default is 443
+##'   which is the standard https port)
+##'
+##' @param basic Logical, indicating if the server is secured with
+##'   http basic auth only.
+##'
+##' @param username The username.  If not given, then on
+##'   authorisation, the user will be prompted.  Falls back on the R
+##'   global options \code{montagu.<name>.username} and
+##'   \code{montagu.username} in turn.
+##'
+##' @param password The password.  If not given, then on
+##'   authorisation, the user will be prompted.  Falls back on the R
+##'   global options \code{montagu.<name>.password} and
+##'   \code{montagu.password} in turn.
+##'
+##' @param verbose Logical, indicating if verbose http communication
+##'   should be used.  This is for debugging only.
+##'
+##' @param global Logical, indicating if the server should be stored
+##'   in the global set.  If true then you can pass \code{location =
+##'   name} to most other functions in the package.
+##'
+##' @param overwrite Logical, and meaningful only if \code{global =
+##'   TRUE}, indicating if a global configuration should be replaced
+##'   if it exists.
+##'
+##' @export
+##' @return Invisibly, a \code{montagu_server} object.
+montagu_server <- function(name, hostname, port = 443, basic = FALSE,
+                           username = NULL, password = NULL,
+                           verbose = FALSE, global = TRUE, overwrite = FALSE) {
+  if (global && !overwrite && name %in% montagu_server_list_global()) {
+    return(global_servers[[name]])
   }
-  assert_scalar_character(hostname)
-  assert_scalar_integer(port)
-  assert_scalar_logical(basic)
-
-  api_version <- 1L
-
-  opts <- if (verbose) httr::verbose() else NULL
-  if (hostname == "localhost") {
-    opts <- c(curl_insecure(), opts)
+  server <- R6_montagu_server$new(name, hostname, port, basic,
+                                  username, password, verbose)
+  if (global) {
+    global_servers[[name]] <- server
   }
-
-  if (port == 443) {
-    url_www <- sprintf("https://%s", hostname)
-  } else {
-    url_www <- sprintf("https://%s:%s", hostname, port)
-  }
-
-  montagu$hosts[[name]] <- list(
-    hostname = hostname,
-    port = port,
-    basic = basic,
-    opts = opts,
-    api_version = api_version,
-    url = sprintf("https://%s:%d/api/v%d",
-                  hostname, port, api_version),
-    url_reports = sprintf("https://%s:%d/reports/api/v%d",
-                          hostname, port, api_version),
-    url_www = url_www)
+  invisible(server)
 }
 
-## These might move into the orderly_config.yml for montagu-reports
-montagu_add_location_defaults <- function() {
-  montagu$hosts <- list()
-  montagu_add_location("production", "montagu.vaccineimpact.org", 443L)
-  montagu_add_location("science", "support.montagu.dide.ic.ac.uk", 11443L)
-  montagu_add_location("uat", "support.montagu.dide.ic.ac.uk", 10443L)
-  montagu_set_default_location("science")
+
+##' List known montagu servers
+##' @title List known montagu servers
+##' @export
+montagu_server_list_global <- function() {
+  names(global_servers)
 }
 
-montagu_credentials <- function(username, password, location) {
-  username <- get_input(username, "username", FALSE, location)
-  password <- get_input(password, "password", TRUE, location)
-  list(username = username, password = password)
-}
 
-montagu_authorise <- function(username = NULL, password = NULL,
-                              location = NULL, refresh = FALSE) {
-  location <- montagu_location(location)
-  dat <- montagu$hosts[[location]]
-  if (is.null(dat)) {
-    stop(sprintf("Unknown location '%s'", location))
-  }
-  if (is.null(dat$token) || refresh) {
+R6_montagu_server <- R6::R6Class(
+  "montagu_server",
+  public = list(
+    name = NULL,
+    hostname = NULL,
+    port = NULL,
+    basic = NULL,
+    username = NULL,
+    password = NULL,
+    api_version = 1L,
+    opts = NULL,
+    url_www = NULL,
+    url_api = NULL,
+    url_reports = NULL,
+    token = NULL,
+
+    initialize = function(name, hostname, port, basic,
+                          username, password, verbose) {
+      assert_scalar_character(name)
+      assert_scalar_character(hostname)
+      assert_scalar_integer(port)
+      assert_scalar_logical(basic)
+      if (!is.null(username)) {
+        assert_scalar_character(username)
+      }
+      if (!is.null(password)) {
+        assert_scalar_character(password)
+      }
+
+      self$name <- name
+      self$hostname <- hostname
+      self$port <- port
+      self$basic <- basic
+      self$username <- username
+      self$password <- password
+
+      self$opts <- c(if (verbose) httr::verbose() else NULL,
+                     if (hostname == "localhost") curl_insecure())
+      if (port == 443) {
+        self$url_www <- sprintf("https://%s", hostname)
+      } else {
+        self$url_www <- sprintf("https://%s:%s", hostname, port)
+      }
+
+      self$url_api <- sprintf("https://%s:%d/api/v%d",
+                              hostname, port, self$api_version)
+      self$url_reports <- sprintf("https://%s:%d/reports/api/v%d",
+                                  hostname, port, self$api_version)
+    },
+
+
+    authorise = function(refresh = FALSE) {
+      montagu_server_authorise(self, refresh)
+    },
+
+    is_authorised = function() {
+      !is.null(self$token)
+    },
+
+    reauthorise = function() {
+      self$authorise(TRUE)
+    },
+
+    GET = function(...) {
+      montagu_request(self, httr::GET, ...)
+    },
+
+    POST = function(...) {
+      montagu_request(self, httr::POST, ...)
+    }
+  ))
+
+
+montagu_server_authorise <- function(x, refresh = FALSE) {
+  if (is.null(x$token) || refresh) {
     message(sprintf("Authorising with server '%s' (https://%s:%s)",
-                    location, dat$hostname, dat$port))
-    auth <- montagu_credentials(username, password, location)
+                    x$name, x$hostname, x$port))
+    username <- get_credential(x$username, "username", FALSE, x$name)
+    password <- get_credential(x$password, "password", TRUE, x$name)
 
-    if (dat$basic) {
-      basic_auth <- httr::authenticate(auth$username, auth$password)
-      r <- httr::GET(dat$url_reports, basic_auth)
+    if (x$basic) {
+      basic_auth <- httr::authenticate(username, password)
+      r <- httr::GET(x$url_reports, basic_auth)
       httr::stop_for_status(r)
-      dat$token <- basic_auth
+      x$token <- basic_auth
     } else {
       auth_str <- openssl::base64_encode(sprintf(
-        "%s:%s", auth$username, auth$password))
+        "%s:%s", username, password))
       headers <- httr::add_headers("Authorization" = paste("Basic", auth_str))
 
-      r <- httr::POST(paste0(dat$url, "/authenticate/"),
-                      headers, dat$opts,
+      r <- httr::POST(paste0(x$url_api, "/authenticate/"),
+                      headers, x$opts,
                       body = list("grant_type" = "client_credentials"),
                       encode = "form")
       httr::stop_for_status(r)
       t <- from_json(httr::content(r, "text", encoding = "UTF-8"))
-      dat$token <- httr::add_headers(
+      x$token <- httr::add_headers(
         "Authorization" = paste("Bearer", t$access_token))
     }
-    ## Retain the username and password in case we reauthorise
-    dat$username <- username
-    dat$password <- password
-    montagu$hosts[[location]] <- dat
+    ## Retain the username and password in case we reauthorise; only
+    ## do this on exit because it's only then we know they're correct
+    x$username <- username
+    x$password <- password
   }
-  invisible(dat)
+  invisible(x)
 }
 
-montagu_reauthorise <- function(location) {
-  location <- montagu_location(location)
-  dat <- montagu$hosts[[location]]
-  if (is.null(dat$token)) {
-    stop(sprintf("Have not previously authorised with '%s'", location))
+
+get_credential <- function(value, name, secret, location) {
+  if (is.null(value)) {
+    read <- if (secret) get_pass else read_line
+    key <- c(sprintf("montagu.%s.%s", location, name),
+             sprintf("montagu.%s", name))
+    prompt <- sprintf("Enter montagu %s %s: ", location, name)
+    value <- get_option_cascade(key, read(prompt))
   }
-  montagu_authorise(dat$username, dat$password, location, TRUE)
+  assert_scalar_character(value, name)
+  value
 }
 
-montagu_set_default_location <- function(location) {
-  prev <- montagu$default
-  if (!(location %in% names(montagu$hosts))) {
-    stop(sprintf("Unknown montagu location '%s' - must be one of %s",
-                 location, paste(names(montagu$hosts), collapse = ", ")))
-  }
-  montagu$default <- location
-  invisible(prev)
-}
 
-## this is going to change several times potentially.
-montagu_location <- function(location = NULL) {
-  structure(location %||% montagu$default,
-            class = c("montagu_server",
-                      "orderly_api_server",
-                      "orderly_remote_location"))
-}
-
-montagu_GET <- function(...) {
-  montagu_request(httr::GET, ...)
-}
-
-montagu_POST <- function(...) {
-  montagu_request(httr::POST, ...)
-}
-
-montagu_request <- function(verb, path, ..., location = NULL,
+montagu_request <- function(server, verb, path, ...,
                             accept = "json", dest = NULL, progress = TRUE,
                             reports = FALSE, montagu = NULL,
                             retry_on_auth_error = TRUE) {
-  location <- montagu_location(location)
-  dat <- montagu_authorise(location = location)
-  base <- if (reports) dat$url_reports else dat$url
+  server$authorise()
+  base <- if (reports) server$url_reports else server$url_api
   if (!grepl("^/", path)) {
     stop("Expected an absolute path")
   }
@@ -144,7 +197,7 @@ montagu_request <- function(verb, path, ..., location = NULL,
   url <- paste0(base, path)
 
   request <- function() {
-    verb(url, dat$token, dat$opts, montagu_accept(accept),
+    verb(url, server$token, server$opts, montagu_accept(accept),
          montagu_dest(dest, accept, progress), ...)
   }
   r <- request()
@@ -152,13 +205,14 @@ montagu_request <- function(verb, path, ..., location = NULL,
   if (httr::status_code(r) == 401L && retry_on_auth_error) {
     errors <- from_json(httr::content(r, "text", encoding = "UTF-8"))$errors
     if (length(errors) == 1L && errors[[1]]$code == "bearer-token-invalid") {
-      dat <- montagu_reauthorise(location = location)
+      server$reauthorise()
       r <- request()
     }
   }
 
   montagu_response(r, accept, dest)
 }
+
 
 montagu_response <- function(r, accept, dest) {
   if (httr::status_code(r) == 404) {
@@ -191,6 +245,7 @@ montagu_response <- function(r, accept, dest) {
   }
 }
 
+
 montagu_accept <- function(accept) {
   switch(accept,
          json = httr::accept_json(),
@@ -200,6 +255,7 @@ montagu_accept <- function(accept) {
          stop("unknown type ", accept))
 }
 
+
 montagu_dest <- function(dest, accept, progress) {
   if (is.null(dest)) {
     NULL
@@ -208,28 +264,4 @@ montagu_dest <- function(dest, accept, progress) {
   } else {
     c(httr::write_disk(dest), if (progress) httr::progress())
   }
-}
-
-
-get_input <- function(value, name, secret, location) {
-  if (is.null(value)) {
-    read <- if (secret) get_pass else read_line
-    key <- c(sprintf("montagu.%s.%s", location, name),
-             sprintf("montagu.%s", name))
-    value <- get_option_cascade(key,
-                                read(sprintf("Enter montagu %s: ", name)))
-  }
-  assert_scalar_character(value, name)
-  value
-}
-
-
-get_option_cascade <- function(x, default) {
-  for (el in x) {
-    v <- getOption(el)
-    if (!is.null(v)) {
-      return(v)
-    }
-  }
-  default
 }
