@@ -51,14 +51,14 @@ test_that("get_option_cacade uses correct priority", {
 })
 
 
-test_that("get_input follows convention", {
+test_that("get_credential follows convention", {
   skip_if_not_installed("withr")
 
   withr::with_options(
     list(montagu.server.key = "special",
          montagu.key = "general"),
-    expect_equal(get_input(NULL, "key", FALSE, "server"), "special"))
+    expect_equal(get_credential(NULL, "key", FALSE, "server"), "special"))
   withr::with_options(
     list(montagu.key = "general"),
-    expect_equal(get_input(NULL, "key", FALSE, "server"), "general"))
+    expect_equal(get_credential(NULL, "key", FALSE, "server"), "general"))
 })
