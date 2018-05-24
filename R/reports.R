@@ -3,7 +3,6 @@
 ##' @title The Montagu Reporting API
 ##' @param location A montagu location
 ##' @return
-##' @author Rich FitzJohn
 ##' @rdname montagu_reports
 NULL
 
