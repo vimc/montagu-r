@@ -1,5 +1,7 @@
 # montagu
 
+[![Travis build status](https://travis-ci.org/vimc/montagu-r.svg?branch=master)](https://travis-ci.org/vimc/montagu-r)
+
 This is the R client for the montagu API.  In the first instance, both the core API and the reporting API will be included here; the reporting API will probably later be spun out into its own thing so that it can be used for with orderly outside of montagu (but we have no timeline for that).
 
 Note that the package name is `montagu` but this repo is [`vimc/montagu-r`](https://github.com/vimc/montagu-r) to avoid colliding with the [main montagu repository](https://github.com/vimc/montagu).
