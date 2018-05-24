@@ -60,6 +60,26 @@ montagu_server_list_global <- function() {
 }
 
 
+## This is the main *internal* entrypoint
+montagu_location <- function(location) {
+  if (is.character(location)) {
+    location <- global_servers %||%
+      stop(sprintf("Unknown montagu server '%s'", location))
+  }
+  assert_is(location, "montagu_server")
+  location
+}
+
+montagu_GET <- function(path, ..., location) {
+  montagu_location(location)$request(httr::GET, path, ...)
+}
+
+
+montagu_POST <- function(path, ..., location) {
+  montagu_location(location)$request(httr::POST, path, ...)
+}
+
+
 R6_montagu_server <- R6::R6Class(
   "montagu_server",
   public = list(
@@ -123,12 +143,8 @@ R6_montagu_server <- R6::R6Class(
       self$authorise(TRUE)
     },
 
-    GET = function(...) {
-      montagu_request(self, httr::GET, ...)
-    },
-
-    POST = function(...) {
-      montagu_request(self, httr::POST, ...)
+    request = function(verb, path, ...) {
+      montagu_server_request(self, verb, path, ...)
     }
   ))
 
@@ -181,10 +197,10 @@ get_credential <- function(value, name, secret, location) {
 }
 
 
-montagu_request <- function(server, verb, path, ...,
-                            accept = "json", dest = NULL, progress = TRUE,
-                            reports = FALSE, montagu = NULL,
-                            retry_on_auth_error = TRUE) {
+montagu_server_request <- function(server, verb, path, ...,
+                                   accept = "json", dest = NULL, progress = TRUE,
+                                   reports = FALSE, montagu = NULL,
+                                   retry_on_auth_error = TRUE) {
   server$authorise()
   base <- if (reports) server$url_reports else server$url_api
   if (!grepl("^/", path)) {
@@ -196,17 +212,17 @@ montagu_request <- function(server, verb, path, ...,
   }
   url <- paste0(base, path)
 
-  request <- function() {
+  do_request <- function() {
     verb(url, server$token, server$opts, montagu_accept(accept),
          montagu_dest(dest, accept, progress), ...)
   }
-  r <- request()
+  r <- do_request()
 
   if (httr::status_code(r) == 401L && retry_on_auth_error) {
     errors <- from_json(httr::content(r, "text", encoding = "UTF-8"))$errors
     if (length(errors) == 1L && errors[[1]]$code == "bearer-token-invalid") {
       server$reauthorise()
-      r <- request()
+      r <- do_request()
     }
   }
 

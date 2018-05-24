@@ -46,3 +46,10 @@ assert_connection <- function(x, name = deparse(substitute(x))) {
     stop(sprintf("'%s' must be a connection object", name), call. = FALSE)
   }
 }
+
+assert_is <- function(x, what, name = deparse(substitute(x))) {
+  if (!inherits(x, what)) {
+    stop(sprintf("'%s' must be a %s", name,
+                 paste(what, collapse = " / ")), call. = FALSE)
+  }
+}
