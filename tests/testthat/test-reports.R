@@ -2,44 +2,55 @@ context("reporting")
 
 ## Assume that we montagu set up locally
 test_that("list", {
-  montagu_reset()
+  location <- montagu_test_server()
 
-  res <- montagu_reports_list()
+  res <- montagu_reports_list(location = location)
 
-  expect_is(res, "character")
-  expect_true(EXAMPLE %in% res)
+  expect_is(res, "data.frame")
+  expect_true(EXAMPLE %in% res$name)
 })
 
-test_that("versions", {
-  montagu_reset()
 
-  v <- montagu_reports_report_versions(EXAMPLE)
+test_that("versions", {
+  location <- montagu_test_server()
+  v <- montagu_reports_report_versions(EXAMPLE, location = location)
   expect_is(v, "character")
   expect_true(EXAMPLE_ID %in% v)
 })
 
+
 test_that("metadata", {
-  montagu_reset()
-  info <- montagu_reports_report_metadata(EXAMPLE, EXAMPLE_ID)
+  location <- montagu_test_server()
+  info <- montagu_reports_report_metadata(EXAMPLE, EXAMPLE_ID,
+                                          location = location)
+  expect_is(info, "list")
+  expect_equal(info$id, EXAMPLE_ID)
+  expect_equal(info$name, EXAMPLE)
 })
 
+
 test_that("download", {
-  montagu_reset()
-  path <- montagu_reports_report_download(EXAMPLE, EXAMPLE_ID)
+  location <- montagu_test_server()
+  path <- montagu_reports_report_download(EXAMPLE, EXAMPLE_ID,
+                                          location = location, progress = FALSE)
   expect_true(file.exists(path))
 })
 
+
 test_that("artefact list", {
-  montagu_reset()
-  dat <- montagu_reports_report_artefact_list(EXAMPLE, EXAMPLE_ID)
+  location <- montagu_test_server()
+  dat <- montagu_reports_report_artefact_list(EXAMPLE, EXAMPLE_ID, location = location)
   expect_is(names(dat), "character")
   expect_is(dat, "character")
 })
 
+
 test_that("run", {
-  montagu_reset()
+  testthat::skip("Don't test this most of the time")
+  location <- montagu_test_server()
   progress <- identical(environment(), .GlobalEnv)
-  res <- montagu_reports_run(EXAMPLE, progress = progress, poll = 0.1)
-  v <- montagu_reports_report_versions(EXAMPLE)
+  res <- montagu_reports_run(EXAMPLE, progress = progress, poll = 0.1,
+                             location = location)
+  v <- montagu_reports_report_versions(EXAMPLE, location = location)
   expect_true(res$id %in% v)
 })

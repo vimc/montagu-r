@@ -61,3 +61,16 @@ Once this hits some sort of stability we will set up a local drat for it, and th
 drat:::add("vimc")
 install.packages("montagu")
 ```
+
+
+## Testing
+
+
+Set environment variables via `.Renviron`
+
+``` r
+MONTAGU_TEST_HOST="support.montagu.dide.ic.ac.uk"
+MONTAGU_TEST_PORT="10443"
+MONTAGU_TEST_USERNAME=<username> (test user is a good idea)
+MONTAGU_TEST_PASSWORD=<password>
+```

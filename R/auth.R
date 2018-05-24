@@ -40,7 +40,7 @@
 montagu_server <- function(name, hostname, port = 443, basic = FALSE,
                            username = NULL, password = NULL,
                            verbose = FALSE, global = TRUE, overwrite = FALSE) {
-  if (global && !overwrite && name %in% montagu_server_list_global()) {
+  if (global && !overwrite && name %in% montagu_server_global_list()) {
     return(global_servers[[name]])
   }
   server <- R6_montagu_server$new(name, hostname, port, basic,
@@ -55,15 +55,35 @@ montagu_server <- function(name, hostname, port = 443, basic = FALSE,
 ##' List known montagu servers
 ##' @title List known montagu servers
 ##' @export
-montagu_server_list_global <- function() {
+montagu_server_global_list <- function() {
   names(global_servers)
+}
+
+
+montagu_server_global_clear <- function() {
+  rm(list = ls(global_servers, all.names = TRUE),
+     envir = global_servers)
+}
+
+
+##' Set a global default montagu server
+##'
+##' @title Set a global default montagu server
+##' @param location A server location
+##' @export
+montagu_server_global_default_set <- function(location) {
+  location <- montagu_location(location)
+  global_servers$.default <- location
 }
 
 
 ## This is the main *internal* entrypoint
 montagu_location <- function(location) {
-  if (is.character(location)) {
-    location <- global_servers %||%
+  if (is.null(location)) {
+    location <- global_servers$.default %||%
+      stop("No default montagu location has been set")
+  } else if (is.character(location)) {
+    location <- global_servers[[location]] %||%
       stop(sprintf("Unknown montagu server '%s'", location))
   }
   assert_is(location, "montagu_server")
