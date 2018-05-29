@@ -62,3 +62,13 @@ read_chunked <- function(con, n) {
 from_json <- function(x) {
   jsonlite::fromJSON(x, simplifyDataFrame = FALSE,  simplifyMatrix = FALSE)
 }
+
+get_option_cascade <- function(x, default) {
+  for (el in x) {
+    v <- getOption(el)
+    if (!is.null(v)) {
+      return(v)
+    }
+  }
+  default
+}

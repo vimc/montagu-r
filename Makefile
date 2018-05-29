@@ -1,4 +1,5 @@
-RSCRIPT = Rscript --no-init-file
+RSCRIPT = Rscript
+
 
 test:
 	${RSCRIPT} -e 'library(methods); devtools::test()'

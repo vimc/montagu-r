@@ -1,3 +1,1 @@
-.onLoad <- function(...) {
-  montagu_add_location_defaults()
-}
+global_servers <- new.env(parent = emptyenv())
