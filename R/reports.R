@@ -180,12 +180,16 @@ montagu_reports_data <- function(hash, csv = FALSE, dest = NULL,
 ##' @param poll Time to poll for update
 ##' @param open Open the report in a browser on completion?
 ##' @param stop_on_error Throw an error if the report fails?
+##'
+##' @param output Show output from running the report.  This is a work
+##'   in progress.  This has an effect only when \code{progress} is
+##'   \code{TRUE}.
 montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
                                 update = TRUE,
                                 timeout = 3600, poll = 0.5,
                                 open = FALSE, stop_on_error = FALSE,
                                 progress = TRUE,
-                                location = NULL) {
+                                location = NULL, output = TRUE) {
   location <- montagu_location(location)
   if (!is.null(parameters)) {
     stop("parameters not yet supported")
@@ -201,6 +205,7 @@ montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
   if (length(query) == 0L) {
     query <- NULL
   }
+
   res <- montagu_reports_POST(location, sprintf("/reports/%s/run/", name),
                               query = query)
   t_stop <- Sys.time() + timeout
@@ -208,26 +213,45 @@ montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
   key <- res$key
   message(sprintf("running report '%s' as '%s'", name, key))
   fmt <- sprintf("[:spin] (%s) :elapsed :state", res$key)
+
+  prev_output <- list(stderr = NULL, stdout = NULL)
+
   if (progress) {
     p <- progress::progress_bar$new(fmt, ceiling(timeout / poll * 1.1),
                                     show_after = 0)
-    tick <- function(state) {
+    tick <- function(state, output) {
+      new <- function(now, prev) {
+        if (length(prev) == 0) {
+          now
+        } else {
+          now[-seq_along(prev)]
+        }
+      }
+      if (!is.null(output)) {
+        new_output <- Map(new, output, prev_output)
+        if (any(lengths(new_output)) > 0L) {
+          clear_progress_bar(p)
+          stream <- environment(p$tick)$private$stream
+          cat(format_output(new_output), file = stream)
+        }
+        prev_output <<- output
+      }
       p$tick(tokens = list(state = state))
     }
   } else {
-    tick <- function(state) {}
+    tick <- function(state, output) {}
   }
 
   state <- "submitted"
 
-  repeat {
-    ans <- montagu_reports_GET(location, res$path)
+  poll_query <- list(output = progress && output)
 
-    if (state != ans$status) {
-      state <- ans$status
-    }
+  repeat {
+    ans <- montagu_reports_GET(location, res$path, query = poll_query)
+
+    state <- ans$status
+    tick(sprintf("%s: %s", state, ans$version %||% "???"), ans$output)
     if (state %in% c("queued", "running")) {
-      tick(sprintf("%s: %s", state, ans$version %||% "???"))
       Sys.sleep(poll)
     } else {
       break
@@ -242,7 +266,14 @@ montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
   }
 
   if (stop_on_error && state == "error") {
-    stop("Report failed")
+    ## TODO: It would be super nice to get the full stack trace back
+    ## here from orderly on error.  That should not be hard to do.
+    if (!progress || !output) {
+      ans <- montagu_reports_GET(location, res$path,
+                                 query = list(output = TRUE))
+      cat(format_output(ans$output))
+    }
+    stop("Report has failed: see above for details")
   }
 
   ans <- montagu_reports_GET(location, res$path, query = list(output = TRUE))

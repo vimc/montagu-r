@@ -72,3 +72,20 @@ get_option_cascade <- function(x, default) {
   }
   default
 }
+
+## TODO: this can be done more standalone but it would be nice to get
+## Gabor to add it to the package I think.
+clear_progress_bar <- function(p) {
+  private <- environment(p$tick)$private
+  if (nchar(private$last_draw) > 0) {
+    progress:::clear_line(private$stream, private$width)
+  }
+  progress:::cursor_to_start(private$stream)
+}
+
+
+format_output <- function(output) {
+  paste(c(sprintf("E> %s\n", output$stderr),
+          sprintf("O> %s\n", output$stdout)),
+        collapse = "")
+}

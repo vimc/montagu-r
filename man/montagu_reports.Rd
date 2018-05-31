@@ -54,7 +54,7 @@ montagu_reports_data(hash, csv = FALSE, dest = NULL, progress = TRUE,
 
 montagu_reports_run(name, parameters = NULL, ref = NULL, update = TRUE,
   timeout = 3600, poll = 0.5, open = FALSE, stop_on_error = FALSE,
-  progress = TRUE, location = NULL)
+  progress = TRUE, location = NULL, output = TRUE)
 
 montagu_reports_status(key, output = FALSE, location = NULL)
 
@@ -99,11 +99,15 @@ montagu_reports_git_fetch(location = NULL)
 
 \item{stop_on_error}{Throw an error if the report fails?}
 
+\item{output}{Show output from running the report.  This is a work
+in progress.  This has an effect only when \code{progress} is
+\code{TRUE}.}
+
 \item{key}{Key to a running report (adjective_animal)}
 
-\item{output}{Download stdout/stderr from running report?}
-
 \item{value}{Value to publish report as (boolean)}
+
+\item{output}{Download stdout/stderr from running report?}
 }
 \description{
 This may get a name change pending splitting apart of various
