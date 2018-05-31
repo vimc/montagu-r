@@ -5,7 +5,7 @@
 \title{Create a handle to a montagu server}
 \usage{
 montagu_server(name, hostname, port = 443, basic = FALSE, username = NULL,
-  password = NULL, protocol = "https", verbose = FALSE, global = TRUE,
+  password = NULL, orderly = FALSE, verbose = FALSE, global = TRUE,
   overwrite = FALSE)
 }
 \arguments{
@@ -31,8 +31,9 @@ authorisation, the user will be prompted.  Falls back on the R
 global options \code{montagu.<name>.password} and
 \code{montagu.password} in turn.}
 
-\item{protocol}{Either https or http.  There are no full montagu
-instances that use plain http, but this is useful for testing
+\item{orderly}{Logical, indicating if this is \emph{only} the
+orderly.server part of the API (no auth, http, only a fraction
+of endpoints missing).  This is only useful for testing
 \code{orderly.runner}.}
 
 \item{verbose}{Logical, indicating if verbose http communication
