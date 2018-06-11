@@ -252,7 +252,7 @@ montagu_server_request <- function(server, verb, path, ...,
 
   if (httr::status_code(r) == 401L && retry_on_auth_error) {
     errors <- from_json(httr::content(r, "text", encoding = "UTF-8"))$errors
-    if (length(errors) == 1L && errors[[1]]$code == "bearer-token-invalid") {
+    if (any(vcapply(errors, function(x) x$code) == "bearer-token-invalid")) {
       server$reauthorise()
       r <- do_request()
     }
