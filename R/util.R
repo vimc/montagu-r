@@ -89,3 +89,11 @@ format_output <- function(output) {
           sprintf("O> %s\n", output$stdout)),
         collapse = "")
 }
+
+
+trim_string <- function(s, w, elipsis = " ...") {
+  if (nchar(s) > w) {
+    s <- paste0(substr(s, 1L, w - nchar(elipsis)), elipsis)
+  }
+  s
+}

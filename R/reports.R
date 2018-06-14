@@ -184,12 +184,18 @@ montagu_reports_data <- function(hash, csv = FALSE, dest = NULL,
 ##' @param output Show output from running the report.  This is a work
 ##'   in progress.  This has an effect only when \code{progress} is
 ##'   \code{TRUE}.
+##'
+##' @param wait Logical, indicating if we should wait for the report
+##'   to complete
 montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
                                 update = TRUE,
                                 timeout = 3600, poll = 0.5,
-                                open = FALSE, stop_on_error = FALSE,
+                                open = FALSE,
+                                stop_on_error = FALSE,
+                                stop_on_timeout = TRUE,
                                 progress = TRUE,
-                                location = NULL, output = TRUE) {
+                                location = NULL, output = TRUE,
+                                wait = TRUE) {
   location <- montagu_location(location)
   if (!is.null(parameters)) {
     stop("parameters not yet supported")
@@ -208,18 +214,47 @@ montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
 
   res <- montagu_reports_POST(location, sprintf("/reports/%s/run/", name),
                               query = query)
-  t_stop <- Sys.time() + timeout
-  path <- res$path
-  key <- res$key
-  message(sprintf("running report '%s' as '%s'", name, key))
-  fmt <- sprintf("[:spin] (%s) :elapsed :state", res$key)
+  res$location <- location
+  class(res) <- "montagu_report_instance"
 
+  if (wait) {
+    montagu_reports_wait(res, timeout = timeout, poll = poll,
+                         open = open,
+                         stop_on_error = stop_on_error,
+                         stop_on_timeout = stop_on_timeout,
+                         progress = progress, output = output)
+  } else {
+    res
+  }
+}
+
+
+##' @export
+##' @rdname montagu_reports
+##'
+##' @param obj A \code{montagu_reports_instance} object, as created by
+##'   \code{montagu_reports_run}.
+montagu_reports_wait <- function(obj, timeout = 3600, poll = 0.5,
+                                 open = FALSE, stop_on_error = FALSE,
+                                 stop_on_timeout = TRUE,
+                                 progress = TRUE,
+                                 output = TRUE,
+                                 wait = TRUE) {
+  assert_is(obj, "montagu_report_instance")
+  path <- obj$path
+  name <- obj$name
+  key <- obj$key
+  location <- obj$location
+
+  t_stop <- Sys.time() + timeout
+  message(sprintf("running report '%s' as '%s'", name, key))
+  fmt <- sprintf("[:spin] (%s) :elapsed :status", key)
   prev_output <- list(stderr = NULL, stdout = NULL)
 
   if (progress) {
     p <- progress::progress_bar$new(fmt, ceiling(timeout / poll * 1.1),
                                     show_after = 0)
-    tick <- function(state, output) {
+    tick <- function(state, status, output) {
       new <- function(now, prev) {
         if (length(prev) == 0) {
           now
@@ -227,7 +262,7 @@ montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
           now[-seq_along(prev)]
         }
       }
-      if (!is.null(output)) {
+      if (state == "running" && !is.null(output)) {
         new_output <- Map(new, output, prev_output)
         if (any(lengths(new_output)) > 0L) {
           clear_progress_bar(p)
@@ -236,31 +271,48 @@ montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
         }
         prev_output <<- output
       }
-      p$tick(tokens = list(state = state))
+      p$tick(tokens = list(status = status))
     }
   } else {
-    tick <- function(state, output) {}
+    tick <- function(state, status, output) {}
   }
 
   state <- "submitted"
 
   poll_query <- list(output = progress && output)
+  w <- getOption("width", 80L)
 
   repeat {
-    ans <- montagu_reports_GET(location, res$path, query = poll_query)
+    ans <- montagu_reports_GET(location, path, query = poll_query)
 
     state <- ans$status
-    tick(sprintf("%s: %s", state, ans$version %||% "???"), ans$output)
+    if (state == "queued" && output) {
+      queue <- matrix(unlist(strsplit(ans$output, ":", fixed = TRUE)),
+                      length(ans$output), byrow = TRUE)
+      status <- trim_string(sprintf("queued (%d): %s", nrow(queue),
+                                    paste(queue[, 3], collapse = " < ")),
+                            w - 12L)
+    } else {
+      status <- sprintf("%s: %s", state, ans$version %||% "???")
+    }
+    tick(state, status, ans$output)
+
     if (state %in% c("queued", "running")) {
-      Sys.sleep(poll)
+      Sys.sleep(if (state == "queued") max(poll, 1) else poll)
     } else {
       break
     }
     if (Sys.time() > t_stop) {
-      stop("timeout reached")
+      if (stop_on_timeout) {
+        stop("timeout reached")
+      } else {
+        message("timeout reached")
+        return(obj)
+      }
     }
   }
 
+  ## Ensure we clear the screen:
   if (progress) {
     message()
   }
@@ -269,14 +321,14 @@ montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
     ## TODO: It would be super nice to get the full stack trace back
     ## here from orderly on error.  That should not be hard to do.
     if (!progress || !output) {
-      ans <- montagu_reports_GET(location, res$path,
+      ans <- montagu_reports_GET(location, path,
                                  query = list(output = TRUE))
       cat(format_output(ans$output))
     }
     stop("Report has failed: see above for details")
   }
 
-  ans <- montagu_reports_GET(location, res$path, query = list(output = TRUE))
+  ans <- montagu_reports_GET(location, path, query = list(output = TRUE))
   url <- sprintf("%s/reports/%s/%s", location$url_www, name, ans$version)
   if (open) {
     message("Opening report in browser (you may need to log in)")
