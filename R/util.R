@@ -95,3 +95,8 @@ trim_string <- function(s, w, elipsis = " ...") {
   }
   s
 }
+
+
+squote <- function(x) {
+  sprintf("'%s'", x)
+}
