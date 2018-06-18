@@ -85,9 +85,7 @@ clear_progress_bar <- function(p) {
 
 
 format_output <- function(output) {
-  paste(c(sprintf("E> %s\n", output$stderr),
-          sprintf("O> %s\n", output$stdout)),
-        collapse = "")
+  paste(sprintf("%s\n", c(output$stderr, output$stdout)), collapse = "")
 }
 
 
