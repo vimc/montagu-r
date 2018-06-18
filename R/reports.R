@@ -287,8 +287,8 @@ montagu_reports_wait <- function(obj, timeout = 3600, poll = 0.5,
 
     state <- ans$status
     if (state == "queued" && output) {
-      queue <- matrix(unlist(strsplit(ans$output, ":", fixed = TRUE)),
-                      length(ans$output), byrow = TRUE)
+      queue <- matrix(unlist(strsplit(ans$output$stdout, ":", fixed = TRUE)),
+                      length(ans$output$stdout), byrow = TRUE)
       status <- trim_string(sprintf("queued (%d): %s", nrow(queue),
                                     paste(queue[, 3], collapse = " < ")),
                             w - 12L)
