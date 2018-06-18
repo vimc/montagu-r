@@ -12,7 +12,7 @@ test_that("run: success", {
   remote <- montagu_server("testing", "localhost", server$port, orderly = TRUE)
 
   p <- file.path(server$path, "src", "count", "parameters.json")
-  writeLines(jsonlite::toJSON(list(time = 1, poll = 0.1),
+  writeLines(jsonlite::toJSON(list(time = 0.2, poll = 0.1),
                               auto_unbox = TRUE), p)
 
   ans <- montagu_reports_run("count", location = remote, poll = 0.01,
@@ -30,7 +30,7 @@ test_that("run: error", {
   remote <- montagu_server("testing", "localhost", server$port, orderly = TRUE)
 
   p <- file.path(server$path, "src", "count", "parameters.json")
-  writeLines(jsonlite::toJSON(list(time = 1, poll = -1),
+  writeLines(jsonlite::toJSON(list(time = 0.2, poll = -1),
                               auto_unbox = TRUE), p)
 
   ans <- montagu_reports_run("count", location = remote, poll = 0.01,
