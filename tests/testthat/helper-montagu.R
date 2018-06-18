@@ -26,6 +26,7 @@ montagu_test_server <- function() {
 
 
 orderly_test_server <- function() {
+  testthat::skip_on_travis()
   name <- "interactive"
   port <- 8321
   path <- orderly:::prepare_orderly_example(name)
