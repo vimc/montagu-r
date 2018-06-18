@@ -105,6 +105,8 @@ montagu_reports_git_fetch(location = NULL)
 
 \item{stop_on_error}{Throw an error if the report fails?}
 
+\item{stop_on_timeout}{Throw an error if report is not completed in time?}
+
 \item{output}{Show output from running the report.  This is a work
 in progress.  This has an effect only when \code{progress} is
 \code{TRUE}.}
@@ -118,8 +120,6 @@ to complete}
 \item{key}{Key to a running report (adjective_animal)}
 
 \item{value}{Value to publish report as (boolean)}
-
-\item{output}{Download stdout/stderr from running report?}
 }
 \description{
 This may get a name change pending splitting apart of various

@@ -180,6 +180,7 @@ montagu_reports_data <- function(hash, csv = FALSE, dest = NULL,
 ##' @param poll Time to poll for update
 ##' @param open Open the report in a browser on completion?
 ##' @param stop_on_error Throw an error if the report fails?
+##' @param stop_on_timeout Throw an error if report is not completed in time?
 ##'
 ##' @param output Show output from running the report.  This is a work
 ##'   in progress.  This has an effect only when \code{progress} is
@@ -345,7 +346,6 @@ montagu_reports_wait <- function(obj, timeout = 3600, poll = 0.5,
 ##' @export
 ##' @rdname montagu_reports
 ##' @param key Key to a running report (adjective_animal)
-##' @param output Download stdout/stderr from running report?
 montagu_reports_status <- function(key, output = FALSE, location = NULL) {
   path <- sprintf("/reports/%s/status/", key)
   query <- if (output) list(output = TRUE) else NULL
