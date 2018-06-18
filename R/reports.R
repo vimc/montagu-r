@@ -262,7 +262,7 @@ montagu_reports_wait <- function(obj, timeout = 3600, poll = 0.5,
           now[-seq_along(prev)]
         }
       }
-      if (state == "running" && !is.null(output)) {
+      if (state %in% c("running", "error") && !is.null(output)) {
         new_output <- Map(new, output, prev_output)
         if (any(lengths(new_output)) > 0L) {
           clear_progress_bar(p)
