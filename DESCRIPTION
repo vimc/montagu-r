@@ -16,6 +16,8 @@ Imports:
     openssl,
     progress
 Suggests:
+    orderly (>= 0.4.7),
+    orderly.server (>= 0.1.1),
     testthat,
     withr
 RoxygenNote: 6.0.1
