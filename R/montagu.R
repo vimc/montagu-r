@@ -118,3 +118,21 @@ montagu_burden_estimate_set_clear <- function(modelling_group_id,
     modelling_group_id, touchstone_id, scenario_id, burden_estimate_set_id)
   montagu_api_POST(location, path)
 }
+
+
+##' @export
+##' @rdname montagu_api
+montagu_touchstones_list <- function(location = NULL) {
+  res <- montagu_api_GET(location, "/touchstones/")
+  v <- lapply(res, "[[", "versions")
+  vv <- unlist(v, FALSE)
+
+  n <- lengths(v)
+  i <- rep(seq_along(n), n)
+
+  data_frame(id = vcapply(vv, "[[", "id"),
+             name = vcapply(res, "[[", "id")[i],
+             version = viapply(vv, "[[", "version"),
+             status = vcapply(vv, "[[", "status"))
+
+}
