@@ -89,3 +89,10 @@ get_option_cascade <- function(x, default) {
 data_frame <- function(...) {
   data.frame(..., stringsAsFactors = FALSE)
 }
+
+
+http_query <- function(...) {
+  q <- list(...)
+  i <- lengths(q) > 0
+  if (any(i)) q[i] else NULL
+}
