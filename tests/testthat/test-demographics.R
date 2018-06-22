@@ -15,3 +15,12 @@ test_that("demographic list is cached within session", {
     d2 <- montagu_demographics_list(touchstone_id, location = location),
     NA)
 })
+
+
+## Just tests that nothing fails terribly, really.
+test_that("download demographic data", {
+  location <- montagu_test_server()
+  dat <- montagu_demographics_download("201804rfp-1", "dds-201710", "cbr",
+                                       location = location)
+  expect_is(dat, "data.frame")
+})

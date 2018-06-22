@@ -27,3 +27,27 @@ montagu_demographics_list <- function(touchstone_id, location = NULL) {
     }
   )
 }
+
+
+## This one will be the cache-free version - it always downloads data.
+## If 'dest' is NULL we'll return the data, otherwise we just download
+## it.
+montagu_demographics_download <- function(touchstone_id, source_code,
+                                          type_code, gender_code = NULL,
+                                          format = NULL, dest = NULL,
+                                          location = NULL) {
+  query <- http_query(gender_code = gender_code,
+                      format = format)
+  path <- sprintf("/touchstones/%s/demographics/%s/%s/",
+                  touchstone_id, source_code, type_code)
+  res <- montagu_api_GET(location, path, accept = "csv")
+  if (is.null(dest)) {
+    tmp <- tempfile()
+    on.exit(unlink(tmp))
+    writeBin(res, tmp)
+    read.csv(tmp, stringsAsFactors = FALSE)
+  } else {
+    writeBin(res, dest)
+    invisible(dest)
+  }
+}
