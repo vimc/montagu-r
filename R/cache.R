@@ -5,8 +5,8 @@ montagu_cache_path <- function(location) {
 }
 
 
-montagu_cache <- function() {
-  storr::storr_rds(montagu_cache_path(),
+montagu_cache <- function(location) {
+  storr::storr_rds(montagu_cache_path(location),
                    mangle_key = TRUE,
                    mangle_key_pad = FALSE)
 }
