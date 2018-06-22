@@ -15,6 +15,7 @@ Imports:
     jsonlite,
     openssl,
     progress,
+    rappdirs,
     storr
 Suggests:
     testthat,
