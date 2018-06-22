@@ -96,3 +96,8 @@ http_query <- function(...) {
   i <- lengths(q) > 0
   if (any(i)) q[i] else NULL
 }
+
+
+squote <- function(x) {
+  sprintf("'%s'", x)
+}
