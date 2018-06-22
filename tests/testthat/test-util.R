@@ -62,3 +62,11 @@ test_that("get_credential follows convention", {
     list(montagu.key = "general"),
     expect_equal(get_credential(NULL, "key", FALSE, "server"), "general"))
 })
+
+
+test_that("http_query", {
+  expect_null(http_query(a = NULL))
+  expect_equal(http_query(a = "foo"), list(a = "foo"))
+  expect_equal(http_query(a = "foo", b = NULL), list(a = "foo"))
+  expect_equal(http_query(a = "foo", b = "bar"), list(a = "foo", b = "bar"))
+})
