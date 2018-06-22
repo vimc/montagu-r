@@ -14,7 +14,8 @@ Imports:
     httr,
     jsonlite,
     openssl,
-    progress
+    progress,
+    storr
 Suggests:
     testthat,
     withr

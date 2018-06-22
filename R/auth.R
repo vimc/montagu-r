@@ -127,6 +127,7 @@ R6_montagu_server <- R6::R6Class(
     url_api = NULL,
     url_reports = NULL,
     token = NULL,
+    cache = NULL,
 
     initialize = function(name, hostname, port, basic,
                           username, password, verbose) {
@@ -160,8 +161,8 @@ R6_montagu_server <- R6::R6Class(
                               hostname, port, self$api_version)
       self$url_reports <- sprintf("https://%s:%d/reports/api/v%d",
                                   hostname, port, self$api_version)
+      self$cache <- storr::storr_environment()
     },
-
 
     authorise = function(refresh = FALSE) {
       montagu_server_authorise(self, refresh)
