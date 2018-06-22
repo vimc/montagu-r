@@ -45,7 +45,7 @@ montagu_demographics_download <- function(touchstone_id, source_code,
     tmp <- tempfile()
     on.exit(unlink(tmp))
     writeBin(res, tmp)
-    read.csv(tmp, stringsAsFactors = FALSE)
+    utils::read.csv(tmp, stringsAsFactors = FALSE)
   } else {
     writeBin(res, dest)
     invisible(dest)
