@@ -135,6 +135,7 @@ R6_montagu_server <- R6::R6Class(
     url_api = NULL,
     url_reports = NULL,
     token = NULL,
+    cache = NULL,
 
     initialize = function(name, hostname, port, basic,
                           username, password, verbose,
@@ -183,7 +184,6 @@ R6_montagu_server <- R6::R6Class(
                                   self$api_version)
     },
 
-
     authorise = function(refresh = FALSE) {
       montagu_server_authorise(self, refresh)
     },
@@ -198,6 +198,10 @@ R6_montagu_server <- R6::R6Class(
 
     request = function(verb, path, ...) {
       montagu_server_request(self, verb, path, ...)
+    },
+
+    reset_cache = function() {
+      self$cache <- storr::storr_environment()
     }
   ))
 

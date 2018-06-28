@@ -17,9 +17,12 @@ montagu_test_server <- function() {
       testthat::skip("MONTAGU_TEST_PASSWORD is not set")
     }
 
-    montagu_server("testing", host, as.integer(port),
-                   username = username, password = password,
-                   global = TRUE, overwrite = FALSE)
+    server <- montagu_server("testing", host, as.integer(port),
+                             username = username, password = password,
+                             global = TRUE, overwrite = FALSE)
+    tryCatch(
+      server$authorise(),
+      error = function(e) testthat::skip("Failed to authorise"))
   }
   "testing"
 }

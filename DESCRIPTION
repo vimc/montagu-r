@@ -14,7 +14,9 @@ Imports:
     httr,
     jsonlite,
     openssl,
-    progress
+    progress,
+    rappdirs,
+    storr
 Suggests:
     orderly (>= 0.4.7),
     orderly.server (>= 0.1.1),
