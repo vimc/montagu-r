@@ -5,7 +5,8 @@
 \title{Create a handle to a montagu server}
 \usage{
 montagu_server(name, hostname, port = 443, basic = FALSE, username = NULL,
-  password = NULL, verbose = FALSE, global = TRUE, overwrite = FALSE)
+  password = NULL, orderly = FALSE, verbose = FALSE, global = TRUE,
+  overwrite = FALSE)
 }
 \arguments{
 \item{name}{The name to call this server.  This appears in a few
@@ -29,6 +30,11 @@ global options \code{montagu.<name>.username} and
 authorisation, the user will be prompted.  Falls back on the R
 global options \code{montagu.<name>.password} and
 \code{montagu.password} in turn.}
+
+\item{orderly}{Logical, indicating if this is \emph{only} the
+orderly.server part of the API (no auth, http, only a fraction
+of endpoints missing).  This is only useful for testing
+\code{orderly.runner}.}
 
 \item{verbose}{Logical, indicating if verbose http communication
 should be used.  This is for debugging only.}

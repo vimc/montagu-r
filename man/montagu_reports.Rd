@@ -15,6 +15,7 @@
 \alias{montagu_reports_report_sessioninfo}
 \alias{montagu_reports_data}
 \alias{montagu_reports_run}
+\alias{montagu_reports_wait}
 \alias{montagu_reports_status}
 \alias{montagu_reports_publish}
 \alias{montagu_reports_rebuild}
@@ -54,7 +55,12 @@ montagu_reports_data(hash, csv = FALSE, dest = NULL, progress = TRUE,
 
 montagu_reports_run(name, parameters = NULL, ref = NULL, update = TRUE,
   timeout = 3600, poll = 0.5, open = FALSE, stop_on_error = FALSE,
-  progress = TRUE, location = NULL)
+  stop_on_timeout = TRUE, progress = TRUE, location = NULL,
+  output = TRUE, wait = TRUE)
+
+montagu_reports_wait(obj, timeout = 3600, poll = 0.5, open = FALSE,
+  stop_on_error = FALSE, stop_on_timeout = TRUE, progress = TRUE,
+  output = TRUE, wait = TRUE)
 
 montagu_reports_status(key, output = FALSE, location = NULL)
 
@@ -99,9 +105,19 @@ montagu_reports_git_fetch(location = NULL)
 
 \item{stop_on_error}{Throw an error if the report fails?}
 
-\item{key}{Key to a running report (adjective_animal)}
+\item{stop_on_timeout}{Throw an error if report is not completed in time?}
 
-\item{output}{Download stdout/stderr from running report?}
+\item{output}{Show output from running the report.  This is a work
+in progress.  This has an effect only when \code{progress} is
+\code{TRUE}.}
+
+\item{wait}{Logical, indicating if we should wait for the report
+to complete}
+
+\item{obj}{A \code{montagu_reports_instance} object, as created by
+\code{montagu_reports_run}.}
+
+\item{key}{Key to a running report (adjective_animal)}
 
 \item{value}{Value to publish report as (boolean)}
 }

@@ -53,3 +53,12 @@ assert_is <- function(x, what, name = deparse(substitute(x))) {
                  paste(what, collapse = " / ")), call. = FALSE)
   }
 }
+
+match_value <- function(arg, choices, name = deparse(substitute(arg))) {
+  assert_scalar_character(arg, name = name)
+  if (!(arg %in% choices)) {
+    stop(sprintf("%s must be one of %s",
+                 name, paste(squote(choices), collapse = ", ")))
+  }
+  arg
+}

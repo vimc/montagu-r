@@ -3,3 +3,12 @@
 language: R
 sudo: false
 cache: packages
+
+r_github_packages:
+  - vimc/orderly@i1795
+  - vimc/orderly.server
+
+addons:
+  apt:
+    packages:
+      - libapparmor-dev
