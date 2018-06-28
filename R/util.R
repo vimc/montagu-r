@@ -85,6 +85,16 @@ get_option_cascade <- function(x, default) {
   default
 }
 
+data_frame <- function(...) {
+  data.frame(..., stringsAsFactors = FALSE)
+}
+
+http_query <- function(...) {
+  q <- list(...)
+  i <- lengths(q) > 0
+  if (any(i)) q[i] else NULL
+}
+
 ## TODO: this can be done more standalone but it would be nice to get
 ## Gabor to add it to the package I think.
 clear_progress_bar <- function(p) {
