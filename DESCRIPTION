@@ -1,6 +1,6 @@
 Package: montagu
 Title: Interface with 'montagu'
-Version: 0.2.1
+Version: 0.2.2
 Description: Client for interacting with the montagu APIs; both the
   reporing API (for remote access to orderly) and the contribution API
   are covered.  This package is part of montagu.
@@ -14,7 +14,7 @@ Imports:
     httr,
     jsonlite,
     openssl,
-    progress,
+    progress (>= 1.2.0),
     rappdirs,
     storr
 Suggests:
