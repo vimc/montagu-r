@@ -267,8 +267,7 @@ montagu_reports_wait <- function(obj, timeout = 3600, poll = 0.5,
         new_output <- Map(new, output, prev_output)
         if (any(lengths(new_output)) > 0L) {
           clear_progress_bar(p)
-          stream <- environment(p$tick)$private$stream
-          cat(format_output(new_output), file = stream)
+          message(format_output(new_output), appendLF = FALSE)
         }
         prev_output <<- output
       }

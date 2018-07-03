@@ -95,14 +95,17 @@ http_query <- function(...) {
   if (any(i)) q[i] else NULL
 }
 
+
 ## TODO: this can be done more standalone but it would be nice to get
-## Gabor to add it to the package I think.
+## Gabor to add it to the package I think.  Currently it exploits a
+## lot of progress internals in a way that are far from ideal.
 clear_progress_bar <- function(p) {
   private <- environment(p$tick)$private
   if (nchar(private$last_draw) > 0) {
-    progress:::clear_line(private$stream, private$width)
+    str <- paste0(c("\r", rep(" ", private$width)), collapse = "")
+    message(str, appendLF = FALSE)
   }
-  progress:::cursor_to_start(private$stream)
+  message("\r", appendLF = FALSE)
 }
 
 

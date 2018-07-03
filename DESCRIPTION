@@ -14,7 +14,7 @@ Imports:
     httr,
     jsonlite,
     openssl,
-    progress,
+    progress (>= 1.2.0),
     rappdirs,
     storr
 Suggests:
