@@ -53,10 +53,10 @@ montagu_reports_report_sessioninfo(name, version, location = NULL)
 montagu_reports_data(hash, csv = FALSE, dest = NULL, progress = TRUE,
   location = NULL)
 
-montagu_reports_run(name, parameters = NULL, ref = NULL, update = TRUE,
-  timeout = 3600, poll = 0.5, open = FALSE, stop_on_error = FALSE,
-  stop_on_timeout = TRUE, progress = TRUE, location = NULL,
-  output = TRUE, wait = TRUE)
+montagu_reports_run(name, parameters = NULL, ref = NULL,
+  update = TRUE, timeout = 3600, poll = 0.5, open = FALSE,
+  stop_on_error = FALSE, stop_on_timeout = TRUE, progress = TRUE,
+  location = NULL, output = TRUE, wait = TRUE)
 
 montagu_reports_wait(obj, timeout = 3600, poll = 0.5, open = FALSE,
   stop_on_error = FALSE, stop_on_timeout = TRUE, progress = TRUE,

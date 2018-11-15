@@ -42,6 +42,7 @@
 ##'
 ##' @export
 ##' @return Invisibly, a \code{montagu_server} object.
+##' @importFrom R6 R6Class
 montagu_server <- function(name, hostname, port = 443, basic = FALSE,
                            username = NULL, password = NULL,
                            orderly = FALSE,
