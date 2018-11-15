@@ -14,3 +14,4 @@ addons:
       - libapparmor-dev
 
 r_check_args: --no-vignettes
+r_build_args: --no-build-vignettes
