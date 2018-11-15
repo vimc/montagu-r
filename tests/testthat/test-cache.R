@@ -2,17 +2,18 @@ context("cache")
 
 
 test_that("cache path responds to option", {
-  location <- montagu_server("server", "address", global = FALSE)
   withr::with_options(
-    list(montagu.cache_path = "foo"),
-    expect_equal(montagu_cache_path(location), file.path("foo", "server")))
-})
+    list(montagu.cache_path = NULL), {
+      location <- montagu_server("server", "address", global = FALSE)
+      expect_is(location$cache, "storr")
+      expect_equal(location$cache$driver$type(), "environment")
+    })
 
-
-test_that("cache path defaults to rappdirs", {
-  location <- montagu_server("server", "address", global = FALSE)
+  path <- tempfile()
   withr::with_options(
-    list(montagu.cache_path = NULL),
-    expect_equal(montagu_cache_path(location),
-                 file.path(rappdirs::user_data_dir("montagu"), "server")))
+    list(montagu.cache_path = path), {
+      location <- montagu_server("server", "address", global = FALSE)
+      expect_is(location$cache, "storr")
+      expect_equal(location$cache$driver$type(), "rds")
+    })
 })
