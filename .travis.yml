@@ -12,3 +12,5 @@ addons:
   apt:
     packages:
       - libapparmor-dev
+
+r_check_args: --no-vignettes
