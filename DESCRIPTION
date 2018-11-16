@@ -1,6 +1,6 @@
 Package: montagu
 Title: Interface with 'montagu'
-Version: 0.2.2
+Version: 0.2.3
 Description: Client for interacting with the montagu APIs; both the
   reporing API (for remote access to orderly) and the contribution API
   are covered.  This package is part of montagu.
@@ -15,12 +15,14 @@ Imports:
     jsonlite,
     openssl,
     progress (>= 1.2.0),
-    rappdirs,
     storr
 Suggests:
+    knitr,
     orderly (>= 0.4.7),
     orderly.server (>= 0.1.1),
+    rmarkdown,
     sys,
     testthat,
     withr
 RoxygenNote: 6.0.1
+VignetteBuilder: knitr

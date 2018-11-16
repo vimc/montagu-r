@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="VIMC Technical Team" />
+
+<meta name="date" content="2018-11-15" />
+
+<title>Montagu API</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Montagu API</h1>
+<h4 class="author"><em>VIMC Technical Team</em></h4>
+<h4 class="date"><em>2018-11-15</em></h4>
+
+
+
+<p>Montagu has an HTTP API, and this package wraps it to allow programmatic access to the data in montagu. The API is evolving and this package does not yet implement the full set of API features.</p>
+<p>The package currently contains two somewhat unrelated tasks - authentication and working with the data. As things evolve then this will become less painful to use.</p>
+<p>For external users, this is particularly awkward - internally we have several copies of the montagu server for different purposes, but externally there is only one.</p>
+<div id="authentication" class="section level3">
+<h3>Authentication</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1">montagu<span class="op">::</span><span class="kw">montagu_server_global_default_set</span>(</a>
+<a class="sourceLine" id="cb1-2" title="2">  montagu<span class="op">::</span><span class="kw">montagu_server</span>(<span class="st">&quot;production&quot;</span>, <span class="st">&quot;montagu.vaccineimpact.org&quot;</span>))</a></code></pre></div>
+<p>On the first request you will be prompted for a password</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">montagu<span class="op">::</span><span class="kw">montagu_touchstones_list</span>()</a></code></pre></div>
+<pre><code>## Authorising with server &#39;production&#39; (https://montagu.vaccineimpact.org)</code></pre>
+<pre><code>##                         id                  name version   status
+## 1            201310gavi-42            201310gavi      42 finished
+## 2             201310gavi-1            201310gavi       1 finished
+## 3            201510gavi-42            201510gavi      42 finished
+## 4             201510gavi-9            201510gavi       9 finished
+## 5             201510gavi-7            201510gavi       7 finished
+## 6             201510gavi-5            201510gavi       5 finished
+## 7             201510gavi-4            201510gavi       4 finished
+## 8   201210gavi-201607wue-1  201210gavi-201607wue       1 finished
+## 9  201210gavi-201303gavi-1 201210gavi-201303gavi       1 finished
+## 10  201310gavi-201707wue-1  201310gavi-201707wue       1 finished
+## 11  201510gavi-201707wue-1  201510gavi-201707wue       1 finished
+## 12  201210gavi-201707wue-1  201210gavi-201707wue       1 finished
+## 13            201708test-2            201708test       2 finished
+## 14            201708test-1            201708test       1 finished
+## 15            201710gavi-5            201710gavi       5     open
+## 16            201710gavi-4            201710gavi       4 finished
+## 17            201710gavi-3            201710gavi       3 finished
+## 18            201710gavi-2            201710gavi       2 finished
+## 19            201710gavi-1            201710gavi       1 finished
+## 20            201403gavi-1            201403gavi       1 finished
+## 21             201801rfp-1             201801rfp       1 finished
+## 22             201804rfp-1             201804rfp       1 finished
+## 23             201809hpv-1             201809hpv       1     open
+## 24             201810rfp-1             201810rfp       1     open</code></pre>
+</div>
+<div id="demographic-data" class="section level3">
+<h3>Demographic data</h3>
+<p>List available demographic data (this is cached within a session)</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">touchstone_id &lt;-<span class="st"> &quot;201710gavi-5&quot;</span></a>
+<a class="sourceLine" id="cb5-2" title="2">montagu<span class="op">::</span><span class="kw">montagu_demographics_list</span>(touchstone_id)</a></code></pre></div>
+<pre><code>##              id                                             name gendered
+## 1       as_fert                Fertility: Age-specific fertility    FALSE
+## 2        births                    Fertility: Births (number of)    FALSE
+## 3     qq_births     Fertility: Births (number of) - quinquennial    FALSE
+## 4     as_births               Fertility: Births by age of mother    FALSE
+## 5           cbr                Fertility: Crude birth rate (CBR)    FALSE
+## 6      birth_mf                    Fertility: Sex-ratio at birth    FALSE
+## 7      fert_tot                       Fertility: Total Fertility    FALSE
+## 8  net_mig_rate                    Migration: Net migration rate    FALSE
+## 9     mort_rate             Mortality: Central Death Rate (ASMR)     TRUE
+## 10          cdr                Mortality: Crude death rate (CDR)    FALSE
+## 11     mort_age                Mortality: Deaths (number) by age     TRUE
+## 12     mort_tot                 Mortality: Deaths (total number)     TRUE
+## 13      life_ex      Mortality: Expected remaining years of life     TRUE
+## 14          lx0              Mortality: Life expectancy at birth     TRUE
+## 15 unwpp_cm_nmr  Mortality: Neonatal Mortality Rate (28-day NMR)    FALSE
+## 16      p_dying           Mortality: Probability of dying by age     TRUE
+## 17  n_survivors Mortality: Survivors from a birth-cohort of 100k     TRUE
+## 18    unwpp_imr          Mortality: Under 1 Mortality Rate (IMR)    FALSE
+## 19   unwpp_u5mr         Mortality: Under 5 Mortality Rate (U5MR)    FALSE
+## 20          pgr                          Population: Growth Rate    FALSE
+## 21      int_pop   Population: Interpolated (1-year time and age)     TRUE
+## 22       qq_pop   Population: Quinquennial (5-year time and age)     TRUE
+## 23      tot_pop                                Population: Total     TRUE
+##        source
+## 1  dds-201710
+## 2  dds-201710
+## 3  dds-201710
+## 4  dds-201710
+## 5  dds-201710
+## 6  dds-201710
+## 7  dds-201710
+## 8  dds-201710
+## 9  dds-201710
+## 10 dds-201710
+## 11 dds-201710
+## 12 dds-201710
+## 13 dds-201710
+## 14 dds-201710
+## 15 dds-201710
+## 16 dds-201710
+## 17 dds-201710
+## 18 dds-201710
+## 19 dds-201710
+## 20 dds-201710
+## 21 dds-201710
+## 22 dds-201710
+## 23 dds-201710</code></pre>
+<p>From this list, download a data set</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">dat &lt;-<span class="st"> </span>montagu<span class="op">::</span><span class="kw">montagu_demographic_data</span>(</a>
+<a class="sourceLine" id="cb7-2" title="2">    <span class="st">&quot;cbr&quot;</span>, <span class="st">&quot;201710gavi-5&quot;</span>, <span class="dt">source_code =</span> <span class="st">&quot;dds-201710&quot;</span>)</a>
+<a class="sourceLine" id="cb7-3" title="3"><span class="kw">head</span>(dat)</a></code></pre></div>
+<pre><code>##   country_code_numeric country_code     country age_from age_to year
+## 1                    4          AFG Afghanistan        0      0 1950
+## 2                    4          AFG Afghanistan        0      0 1951
+## 3                    4          AFG Afghanistan        0      0 1952
+## 4                    4          AFG Afghanistan        0      0 1953
+## 5                    4          AFG Afghanistan        0      0 1954
+## 6                    4          AFG Afghanistan        0      0 1955
+##   gender    value
+## 1   both 0.050000
+## 2   both 0.050082
+## 3   both 0.050244
+## 4   both 0.050399
+## 5   both 0.050546
+## 6   both 0.050688</code></pre>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

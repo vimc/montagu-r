@@ -4,9 +4,9 @@
 \alias{montagu_server}
 \title{Create a handle to a montagu server}
 \usage{
-montagu_server(name, hostname, port = 443, basic = FALSE, username = NULL,
-  password = NULL, orderly = FALSE, verbose = FALSE, global = TRUE,
-  overwrite = FALSE)
+montagu_server(name, hostname, port = 443, basic = FALSE,
+  username = NULL, password = NULL, orderly = FALSE,
+  verbose = FALSE, global = TRUE, overwrite = FALSE)
 }
 \arguments{
 \item{name}{The name to call this server.  This appears in a few

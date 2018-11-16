@@ -42,6 +42,7 @@
 ##'
 ##' @export
 ##' @return Invisibly, a \code{montagu_server} object.
+##' @importFrom R6 R6Class
 montagu_server <- function(name, hostname, port = 443, basic = FALSE,
                            username = NULL, password = NULL,
                            orderly = FALSE,
@@ -182,6 +183,8 @@ R6_montagu_server <- R6::R6Class(
       self$url_reports <- sprintf("%s://%s:%d%s/v%d",
                                   self$protocol, hostname, port, prefix,
                                   self$api_version)
+
+      self$cache <- montagu_cache(name)
     },
 
     authorise = function(refresh = FALSE) {
