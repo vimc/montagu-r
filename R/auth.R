@@ -291,8 +291,15 @@ montagu_server_request <- function(server, verb, path, ...,
 
 
 montagu_response <- function(r, accept, dest) {
-  if (httr::status_code(r) == 404) {
+  code <- httr::status_code(r)
+  if (code == 404) {
     ## Not sure about 403
+    if (is_json_response(r)) {
+      res <- response_to_json(r)
+      if (length(res$errors) == 1L) {
+        stop(montagu_api_error(res$errors[[1]]$message, code, res$errors))
+      }
+    }
     stop("endpoint or resource not found")
   }
   if (accept == "json") {
@@ -305,13 +312,11 @@ montagu_response <- function(r, accept, dest) {
       error = function(e) message("Original response:\n\n", txt))
     dat <- from_json(httr::content(r, "text", encoding = "UTF-8"))
     if (dat$status == "failure") {
-      ## TODO: make this an S3 error
       err_code <- vapply(dat$errors, function(x) x$code, character(1))
       err_msg <- vapply(dat$errors, function(x) x$message, character(1))
-      err_str <- sprintf("\n\t - %s: %s", err_code, err_msg)
-      stop(sprintf("Error (code %s) in request:%s",
-                   httr::status_code(r), paste(err_str, collapse = "")),
-           call. = FALSE)
+      err_str <- paste0("Error running request:",
+                        sprintf("\n\t - %s: %s", err_code, err_msg))
+      stop(montagu_api_error(err_str, code, dat$errors))
     }
     dat$data
   } else if (is.null(dest)) {
@@ -340,4 +345,11 @@ montagu_dest <- function(dest, accept, progress) {
   } else {
     c(httr::write_disk(dest), if (progress) httr::progress())
   }
+}
+
+
+montagu_api_error <- function(msg, code, errors) {
+  err <- list(message = msg, errors = errors)
+  class(err) <- c("montagu_api_error", "error", "condition")
+  err
 }

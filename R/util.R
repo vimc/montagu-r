@@ -125,3 +125,15 @@ trim_string <- function(s, w, elipsis = " ...") {
 squote <- function(x) {
   sprintf("'%s'", x)
 }
+
+
+is_json_response <- function(r) {
+  type <- r$headers[["Content-Type"]]
+  httr::parse_media(type)$complete == "application/json"
+}
+
+
+response_to_json <- function(r) {
+  txt <- httr::content(r, "text", encoding = "UTF-8")
+  from_json(txt)
+}
