@@ -27,9 +27,26 @@ montagu_reports_list <- function(location = NULL) {
 ##' @export
 ##' @rdname montagu_reports
 ##' @param name A report name
-montagu_reports_report_versions <- function(name, location = NULL) {
-  res <- montagu_reports_GET(location, sprintf("/reports/%s/", name))
-  empty_default(res, character(0))
+##'
+##' @param error_if_missing Throw an error if the report is missing -
+##'   this is often not desired.
+montagu_reports_report_versions <- function(name, error_if_missing = TRUE,
+                                            location = NULL) {
+  allow_missing <- !error_if_missing
+  res <- tryCatch(
+    montagu_reports_GET(location, sprintf("/reports/%s/", name)),
+    error = function(e) e)
+
+  if (inherits(res, "character")) {
+    return(res)
+  } else if (allow_missing &&
+             inherits(res, "montagu_api_error") &&
+             length(res$errors) == 1L &&
+             res$errors[[1]]$code == "unknown-report") {
+    return(character(0))
+  } else {
+    stop(res)
+  }
 }
 
 

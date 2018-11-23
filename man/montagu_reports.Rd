@@ -26,7 +26,8 @@
 \usage{
 montagu_reports_list(location = NULL)
 
-montagu_reports_report_versions(name, location = NULL)
+montagu_reports_report_versions(name, error_if_missing = TRUE,
+  location = NULL)
 
 montagu_reports_report_metadata(name, version, location = NULL)
 
@@ -78,6 +79,9 @@ montagu_reports_git_fetch(location = NULL)
 \item{location}{A montagu location}
 
 \item{name}{A report name}
+
+\item{error_if_missing}{Throw an error if the report is missing -
+this is often not desired.}
 
 \item{version}{The report version identifier (YYYYMMDD-HHMMSS-xxxxxxxx)}
 
