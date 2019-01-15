@@ -50,13 +50,12 @@ R6_montagu_orderly_remote <- R6::R6Class(
       montagu_reports_publish(name, id, value, self$location)
     },
 
-    run = function(name, config, parameters = NULL, ref = NULL,
-                   timeout = 3600, poll = 1,
-                   open = TRUE, stop_on_error = TRUE,
-                   progress = TRUE, remote = NULL) {
+    run = function(name, parameters = NULL, ref = NULL,
+                   timeout = 3600, poll = 1, progress = TRUE,
+                   stop_on_error = TRUE, open = FALSE) {
       montagu_reports_run(name, parameters = parameters, ref = ref,
-                          timeout = timeout, poll = poll,
-                          open = open, stop_on_error = stop_on_error,
-                          progress = progress, location = self$location)
+                          timeout = timeout, poll = poll, progress = progress,
+                          stop_on_error = stop_on_error, open = open,
+                          location = self$location)
     }
   ))
