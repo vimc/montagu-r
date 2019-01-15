@@ -8,17 +8,17 @@
 ##' @param username Username
 ##' @param password Password
 ##' @export
-montagu_orderly <- function(name, host, port = 443, basic = FALSE,
+montagu_orderly_remote <- function(name, host, port = 443, basic = FALSE,
                             username = NULL, password = NULL) {
   location <- montagu_server(name, hostname = host, port = port,
                              basic = basic,
                              username = username, password = password)
-  R6_montagu_orderly$new(location)
+  R6_montagu_orderly_remote$new(location)
 }
 
 
-R6_montagu_orderly <- R6::R6Class(
-  "montagu_orderly",
+R6_montagu_orderly_remote <- R6::R6Class(
+  "montagu_orderly_remote",
 
   public = list(
     location = NULL,
