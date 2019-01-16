@@ -51,14 +51,6 @@ Note that the package name is `montagu` but this repo is [`vimc/montagu-r`](http
 
 ## Installation
 
-For now, use devtools:
-
-```r
-devtools::install_github("vimc/montagu-r")
-```
-
-Once this hits some sort of stability we will set up a local drat for it, and the following will work:
-
 ```
 drat:::add("vimc")
 install.packages("montagu")
