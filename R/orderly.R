@@ -28,7 +28,7 @@ R6_montagu_orderly_remote <- R6::R6Class(
     },
 
     ## in orderly we currently use report_names, report_versions
-    list = function() {
+    list_reports = function() {
       montagu_reports_list(self$location)$name
     },
 
