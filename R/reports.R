@@ -264,7 +264,8 @@ montagu_reports_wait <- function(obj, timeout = 3600, poll = 0.5,
   key <- obj$key
   location <- obj$location
 
-  t_stop <- Sys.time() + timeout
+  t_start <- Sys.time()
+  t_stop <- t_start + timeout
   message(sprintf("running report '%s' as '%s'", name, key))
   fmt <- sprintf("[:spin] (%s) :elapsed :status", key)
   prev_output <- list(stderr = NULL, stdout = NULL)
@@ -316,6 +317,9 @@ montagu_reports_wait <- function(obj, timeout = 3600, poll = 0.5,
 
     if (state %in% c("queued", "running")) {
       Sys.sleep(if (state == "queued") max(poll, 1) else poll)
+    } else if (state == "killed") {
+      stop(sprintf("job killed by remote server after %d secs",
+                   round(as.numeric(Sys.time() - t_start, "secs"))))
     } else {
       break
     }
