@@ -21,3 +21,9 @@ test_that("download incorrect disease id", {
   expect_error(montagu_disease_by_id(disease_id = "ZZZ", location = location),
                "Unknown disease with id 'ZZZ'")
 })
+
+test_that("download empty disease id", {
+  location <- montagu_test_server()
+  expect_error(montagu_disease_by_id(disease_id = "", location = location),
+               "'disease_id' must be nonempty")
+})
