@@ -10,9 +10,8 @@ test_that("download disease list", {
 test_that("download correct disease id", {
   location <- montagu_test_server()
   dat <- montagu_disease_by_id(disease_id = "YF", location = location)
-  expect_is(dat, "data.frame")
+  expect_is(dat, "list")
   expect_equal(names(dat), c("id", "name"))
-  expect_equal(nrow(dat), 1)
   expect_true(dat$id == "YF")
 })
 

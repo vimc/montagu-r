@@ -17,8 +17,5 @@ montagu_disease_list <- function(location = NULL) {
 montagu_disease_by_id <- function(disease_id, location = NULL) {
   assert_scalar_character(disease_id)
   path <- sprintf("/diseases/%s/", disease_id)
-  res <- montagu_api_GET(location, path)
-  data_frame(
-    id = res$id, 
-    name = res$name)
+  montagu_api_GET(location, path)
 }
