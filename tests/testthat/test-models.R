@@ -18,8 +18,11 @@ test_that("download correct model id", {
 
 test_that("download incorrect model id", {
   location <- montagu_test_server()
-  expect_error(montagu_model_by_id(model_id = "YFICZZZ", location = location),
-    paste0("Error running request:\n\t - unexpected-error: ",
-           "An unexpected error occurred. Please contact support at ",
-           "montagu-help@imperial.ac.uk and quote this code: (.*)"))
+  tryCatch({
+    montagu_model_by_id(model_id = "YFICZZZ", location = location)
+    fail(message = "Expect to fail, but did not")
+  }, error = function(e) {
+    class(e)
+    expect_equal(class(e)[[1]], "montagu_api_error")
+  })
 })
