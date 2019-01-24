@@ -20,5 +20,5 @@ montagu_model_by_id <- function(model_id, location = NULL) {
   assert_scalar_character(model_id)
   path <- sprintf("/models/%s/", model_id)
   res <- montagu_api_GET(location, path)
-  res[c("id", "name", "citation", "modelling_group")]
+  res[c("id", "description", "citation", "modelling_group")]
 }
