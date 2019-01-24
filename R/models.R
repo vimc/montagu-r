@@ -13,11 +13,12 @@ montagu_models_list <- function(location = NULL) {
 }
 
 ##' @title Retrieve model with given id.
-##' @param model_id The disease id.
+##' @param model_id The model id.
 ##' @inheritParams montagu_models_list
 ##' @export
 montagu_model_by_id <- function(model_id, location = NULL) {
   assert_scalar_character(model_id)
   path <- sprintf("/models/%s/", model_id)
-  montagu_api_GET(location, path)
+  res <- montagu_api_GET(location, path)
+  res[c("id", "name", "citation", "modelling_group")]
 }
