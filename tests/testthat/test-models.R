@@ -22,7 +22,6 @@ test_that("download incorrect model id", {
     montagu_model_by_id(model_id = "YFICZZZ", location = location)
     fail(message = "Expect to fail, but did not")
   }, error = function(e) {
-    class(e)
     expect_equal(class(e)[[1]], "montagu_api_error")
   })
 })
