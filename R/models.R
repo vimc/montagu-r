@@ -7,7 +7,7 @@ montagu_models_list <- function(location = NULL) {
   res <- montagu_api_GET(location, "/models/")
   data_frame(
     id = vcapply(res, "[[", "id"),
-    name = vcapply(res, "[[", "description"),
+    description = vcapply(res, "[[", "description"),
     citation = vcapply(res, "[[", "citation"),
     modelling_group = vcapply(res, "[[", "modelling_group"))
 }
