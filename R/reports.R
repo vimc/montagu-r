@@ -203,17 +203,18 @@ montagu_reports_data <- function(hash, csv = FALSE, dest = NULL,
 ##'   in progress.  This has an effect only when \code{progress} is
 ##'   \code{TRUE}.
 ##'
-##' @param wait Logical, indicating if we should wait for the report
-##'   to complete
+##' @param wait Integer value indicating time to wait on the client
+##'   side for the report to run.  If \code{0} (or less) we do not
+##'   wait.  If you provide a timeout you should make wait at least
+##'   the timeout value.
 montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
                                 update = TRUE,
-                                timeout = 3600, poll = 0.5,
+                                timeout = NULL, wait = 3600, poll = 0.5,
                                 open = FALSE,
                                 stop_on_error = FALSE,
                                 stop_on_timeout = TRUE,
                                 progress = TRUE,
-                                location = NULL, output = TRUE,
-                                wait = TRUE) {
+                                location = NULL, output = TRUE) {
   location <- montagu_location(location)
   if (!is.null(parameters)) {
     stop("parameters not yet supported")
@@ -226,6 +227,10 @@ montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
   if (!update) {
     query$update <- "false"
   }
+  if (!is.null(timeout)) {
+    assert_scalar_integer(timeout)
+    query$timeout <- as.character(timeout)
+  }
   if (length(query) == 0L) {
     query <- NULL
   }
@@ -235,8 +240,8 @@ montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
   res$location <- location
   class(res) <- "montagu_report_instance"
 
-  if (wait) {
-    montagu_reports_wait(res, timeout = timeout, poll = poll,
+  if (wait > 0) {
+    montagu_reports_wait(res, timeout = wait, poll = poll,
                          open = open,
                          stop_on_error = stop_on_error,
                          stop_on_timeout = stop_on_timeout,
