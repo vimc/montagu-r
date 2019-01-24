@@ -1,3 +1,7 @@
+## 0.2.6
+
+* Add support for diseases and models endpoints
+
 ## 0.2.5
 
 * Support new orderly pluggable remotes (VIMC-2453)
