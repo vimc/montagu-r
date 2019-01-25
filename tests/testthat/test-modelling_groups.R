@@ -87,3 +87,6 @@ test_that("add and remove user to/from modelling group", {
                "Not sure what error")
   
 })
+
+# Missing test for adding modelling group; there's no remove-modelling-group endpoint,
+# so unsure how to test this in a pleasant way.

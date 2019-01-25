@@ -85,3 +85,26 @@ montagu_remove_user_from_modelling_group <- function(modelling_group_id,
   montagu_edit_user_in_modelling_group(modelling_group_id, 
                                        username, "remove", location)
 }
+
+##' @title Add a new modelling group
+##' @param modelling_group_id Id for new group, typicallly in form Institution-LeadModeller.
+##' @param modelling_group_description A text description of the group
+##' @param modelling_group_institution Name of institution
+##' @param modelling_group_pi The principal investigator for the group.
+##' @inheritParams montagu_modelling_group_by_id
+##' @export
+montagu_add_modelling_group <- function(modelling_group_id,
+                                        modelling_group_description,
+                                        modelling_group_institution,
+                                        modelling_group_pi,
+                                        location = NULL) {
+  path <- sprintf("/modelling-groups/", 
+                  modelling_group_id)
+  data <- list(
+    id = modelling_group_id,
+    description = modelling_group_description,
+    institution = modelling_group_institution,
+    pi = modelling_group_pi)
+  
+  montagu_api_POST(location, path, body = data, encode = "json")
+}
