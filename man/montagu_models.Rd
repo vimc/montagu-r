@@ -9,6 +9,9 @@ montagu_models(location = NULL)
 \arguments{
 \item{location}{The montagu server to connect to.}
 }
+\value{
+Data frame of information about models.
+}
 \description{
 This may get a name change pending splitting apart of various
 montagu components.

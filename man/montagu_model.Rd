@@ -8,6 +8,11 @@ montagu_model(model_id, location = NULL)
 }
 \arguments{
 \item{model_id}{The model id.}
+
+\item{location}{The montagu server to connect to.}
+}
+\value{
+List of information about one model
 }
 \description{
 Retrieve model with given id.
