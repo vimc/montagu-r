@@ -341,12 +341,11 @@ test_that("download expectation applicable scenarios - wrong expectation", {
 
 test_that("download central burden_estimate_template", {
   location <- montagu_test_server()
-  dat <- montagu_central_burden_estimate_template("IC-Garske", "201710gavi-5", 
+  dat <- montagu_central_burden_estimate_template("IC-Garske", "201710gavi-5",
                                           30, location)
   expect_is(dat, "data.frame")
   expect_equal(ncol(dat), 9)
   expect_gt(nrow(dat),1)
-  
 })
 
 test_that("download central burden_estimate_template - wrong modelling group", {
@@ -372,12 +371,11 @@ test_that("download central burden_estimate_template - wrong expectation id", {
 
 test_that("download stochsatic burden_estimate_template", {
   location <- montagu_test_server()
-  dat <- montagu_stochastic_burden_estimate_template("IC-Garske", "201710gavi-5", 
+  dat <- montagu_stochastic_burden_estimate_template("IC-Garske", "201710gavi-5",
                                                   30, location)
   expect_is(dat, "data.frame")
   expect_equal(ncol(dat), 10)
   expect_gt(nrow(dat),1)
-  
 })
 
 test_that("download stochastic burden_estimate_template - wrong group", {

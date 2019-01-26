@@ -271,13 +271,13 @@ montagu_expectation_applicable_scenarios <- function(
 
 helper_burden_estimate_template <- function(
   modelling_group_id, touchstone_id, expectation_id, type, location = NULL) {
-  
+
   assert_scalar_character(modelling_group_id)
   assert_scalar_character(touchstone_id)
   assert_integer_like(expectation_id)
   path <- sprintf("/modelling-groups/%s/expectations/%s/%s/?type=%s",
                   modelling_group_id, touchstone_id, expectation_id, type)
-  
+
   res <- rawToChar(montagu_api_GET(location, path, accept = "csv"))
   read.csv(text = res, header = TRUE)
 }
@@ -287,11 +287,11 @@ helper_burden_estimate_template <- function(
 ##' @title Get central burden estimate template for expectation
 ##' @inheritParams montagu_expectation
 ##' @importFrom utils read.csv
-##' @return A data frame with columns disease, year, age, country, and 
+##' @return A data frame with columns disease, year, age, country, and
 ##'         country_name with given values, then cohort_size, deaths,
 ##'         cases and dalys, all NA.
 ##' @export
-montagu_central_burden_estimate_template <- function(modelling_group_id, 
+montagu_central_burden_estimate_template <- function(modelling_group_id,
   touchstone_id, expectation_id, location) {
   helper_burden_estimate_template(modelling_group_id, touchstone_id,
                                   expectation_id, "central", location)
@@ -302,13 +302,13 @@ montagu_central_burden_estimate_template <- function(modelling_group_id,
 ##' @title Get central burden estimate template for expectation
 ##' @inheritParams montagu_expectation
 ##' @importFrom utils read.csv
-##' @return A data frame with columns disease (given) run_id (NA), year, age, 
-##'         country, and country_name (given), and finally 
+##' @return A data frame with columns disease (given) run_id (NA), year, age,
+##'         country, and country_name (given), and finally
 ##'         cohort_size, deaths, cases and dalys, (all NA).
 ##' @export
-montagu_stochastic_burden_estimate_template <- function(modelling_group_id, 
+montagu_stochastic_burden_estimate_template <- function(modelling_group_id,
                                   touchstone_id, expectation_id, location) {
-  
+
   helper_burden_estimate_template(modelling_group_id, touchstone_id,
                                   expectation_id, "stochastic", location)
 }
