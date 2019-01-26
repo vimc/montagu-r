@@ -339,9 +339,9 @@ test_that("download expectation applicable scenarios - wrong expectation", {
                "Unknown expectation with id '-5'")
 })
 
-test_that("download burden_estimate_template", {
+test_that("download central burden_estimate_template", {
   location <- montagu_test_server()
-  dat <- montagu_burden_estimate_template("IC-Garske", "201710gavi-5", 
+  dat <- montagu_central_burden_estimate_template("IC-Garske", "201710gavi-5", 
                                           30, location)
   expect_is(dat, "data.frame")
   expect_equal(ncol(dat), 9)
@@ -349,23 +349,54 @@ test_that("download burden_estimate_template", {
   
 })
 
-test_that("download burden_estimate_template - wrong modelling group", {
+test_that("download central burden_estimate_template - wrong modelling group", {
   location <- montagu_test_server()
-  expect_error(montagu_burden_estimate_template(
+  expect_error(montagu_central_burden_estimate_template(
     "ZZZIC-Garske", "201710gavi-5", 30, location),
     "Unknown modelling-group with id 'ZZZIC-Garske'")
 })
 
-test_that("download burden_estimate_template - wrong touchstone", {
+test_that("download central burden_estimate_template - wrong touchstone", {
   location <- montagu_test_server()
-  expect_error(montagu_burden_estimate_template(
+  expect_error(montagu_central_burden_estimate_template(
     "IC-Garske", "ZZZ201710gavi-5", 30, location),
     "Unknown touchstone-version with id 'ZZZ201710gavi-5'")
 })
 
-test_that("download burden_estimate_template - wrong expectation id", {
+test_that("download central burden_estimate_template - wrong expectation id", {
   location <- montagu_test_server()
-  expect_error(montagu_burden_estimate_template(
+  expect_error(montagu_central_burden_estimate_template(
+    "IC-Garske", "201710gavi-5", -5, location),
+    "Unknown burden-estimate-expectation with id '-5'")
+})
+
+test_that("download stochsatic burden_estimate_template", {
+  location <- montagu_test_server()
+  dat <- montagu_stochastic_burden_estimate_template("IC-Garske", "201710gavi-5", 
+                                                  30, location)
+  expect_is(dat, "data.frame")
+  expect_equal(ncol(dat), 10)
+  expect_gt(nrow(dat),1)
+  
+})
+
+test_that("download stochastic burden_estimate_template - wrong group", {
+  location <- montagu_test_server()
+  expect_error(montagu_stochastic_burden_estimate_template(
+    "ZZZIC-Garske", "201710gavi-5", 30, location),
+    "Unknown modelling-group with id 'ZZZIC-Garske'")
+})
+
+test_that("download stochastic burden_estimate_template - wrong touchstone", {
+  location <- montagu_test_server()
+  expect_error(montagu_stochastic_burden_estimate_template(
+    "IC-Garske", "ZZZ201710gavi-5", 30, location),
+    "Unknown touchstone-version with id 'ZZZ201710gavi-5'")
+})
+
+test_that("download stochastic burden_estimate_template wrong expectation id", {
+  location <- montagu_test_server()
+  expect_error(montagu_stochastic_burden_estimate_template(
     "IC-Garske", "201710gavi-5", -5, location),
     "Unknown burden-estimate-expectation with id '-5'")
 })
