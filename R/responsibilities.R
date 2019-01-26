@@ -273,6 +273,7 @@ montagu_expectation_applicable_scenarios <- function(
 ##' montagu components.
 ##' @title Get burden estimate template for expectation
 ##' @inheritParams montagu_expectation
+##' @importFrom utils read.csv
 ##' @return A data frame with columns disease, year, age, country, and 
 ##'         country_name with given values, then cohort_size, deaths,
 ##'         cases and dalys, all NA.
