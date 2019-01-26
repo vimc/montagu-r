@@ -1,6 +1,6 @@
 Package: montagu
 Title: Interface with 'montagu'
-Version: 0.2.5
+Version: 0.2.6
 Description: Client for interacting with the montagu APIs; both the
   reporing API (for remote access to orderly) and the contribution API
   are covered.  This package is part of montagu.
