@@ -3,7 +3,7 @@
 ##' @title Retrieve list of all model ids, names, citations and groups.
 ##' @param location The montagu server to connect to.
 ##' @export
-montagu_models_list <- function(location = NULL) {
+montagu_models <- function(location = NULL) {
   res <- montagu_api_GET(location, "/models/")
   data_frame(
     id = vcapply(res, "[[", "id"),
@@ -16,7 +16,7 @@ montagu_models_list <- function(location = NULL) {
 ##' @param model_id The model id.
 ##' @inheritParams montagu_models_list
 ##' @export
-montagu_model_by_id <- function(model_id, location = NULL) {
+montagu_model <- function(model_id, location = NULL) {
   assert_scalar_character(model_id)
   path <- sprintf("/models/%s/", model_id)
   res <- montagu_api_GET(location, path)
