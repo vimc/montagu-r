@@ -117,7 +117,7 @@ montagu_scenario_problems <- function(
 ##' This may get a name change pending splitting apart of various
 ##' montagu components.
 ##' @title Get information on current estimate set for a scenario.
-##' @inheritParams montagu_current_estimate_set_info
+##' @inheritParams montagu_scenario_status
 ##' @return A list of fields about the current estimate set
 ##' @export
 montagu_current_estimate_set_info <- function(
@@ -267,4 +267,25 @@ montagu_expectation_applicable_scenarios <- function(
 
   helper_get_expectation(modelling_group_id, touchstone_id,
                          expectation_id, location)$applicable_scenarios
+}
+
+##' This may get a name change pending splitting apart of various
+##' montagu components.
+##' @title Get burden estimate template for expectation
+##' @inheritParams montagu_expectation
+##' @return A data frame with columns disease, year, age, country, and 
+##'         country_name with given values, then cohort_size, deaths,
+##'         cases and dalys, all NA.
+##' @export
+montagu_burden_estimate_template <- function(
+  modelling_group_id, touchstone_id, expectation_id, location = NULL) {
+  
+  assert_scalar_character(modelling_group_id)
+  assert_scalar_character(touchstone_id)
+  assert_integer_like(expectation_id)
+  path <- sprintf("/modelling-groups/%s/expectations/%s/%s/",
+                  modelling_group_id, touchstone_id, expectation_id)
+  
+  res <- rawToChar(montagu_api_GET(location, path, accept = "csv"))
+  read.csv(text = res, header = TRUE)
 }
