@@ -37,10 +37,10 @@ test_that("download coverage info, wrong scenario", {
 
 test_that("download coverage data - check all-countries flag", {
   location <- montagu_test_server()
-  dat_some <- montagu_coverage_data("IC-Garske", "201710gavi-5",
-                                    "yf-routine-gavi", location = location)
-  dat_all <- montagu_coverage_data("IC-Garske", "201710gavi-5",
-                  "yf-routine-gavi", all_countries = TRUE, location = location)
+  dat_some <- montagu_coverage_data("CDA-Razavi", "201710gavi-5",
+                                   "hepb-bd-routine-with", location = location)
+  dat_all <- montagu_coverage_data("CDA-Razavi", "201710gavi-5",
+             "hepb-bd-routine-with", all_countries = TRUE, location = location)
 
   expect_is(dat_some, "data.frame")
   expect_is(dat_all, "data.frame")
