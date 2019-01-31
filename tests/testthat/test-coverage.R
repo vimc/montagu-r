@@ -46,8 +46,9 @@ test_that("download coverage data - check all-countries flag", {
   expect_is(dat_all, "data.frame")
   expect_equal(length(dat_some), 13)
   expect_equal(length(dat_all), 13)
+  expect_gt(length(unique(dat_all$country_code)),
+            length(unique(dat_some$country_code)))
   
-  # Looking for an example where all_countries = TRUE makes a difference
 })
 
 test_that("download coverage data, long or wide format", {
