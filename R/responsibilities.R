@@ -279,7 +279,7 @@ helper_burden_estimate_template <- function(
                   modelling_group_id, touchstone_id, expectation_id, type)
 
   res <- rawToChar(montagu_api_GET(location, path, accept = "csv"))
-  read.csv(text = res, header = TRUE)
+  read.csv(text = res, header = TRUE, stringsAsFactors = FALSE)
 }
 
 ##' This may get a name change pending splitting apart of various
