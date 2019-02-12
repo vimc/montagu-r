@@ -2,8 +2,11 @@
 
 export(montagu_burden_estimate_set_clear)
 export(montagu_burden_estimate_set_create)
+export(montagu_burden_estimate_set_data)
+export(montagu_burden_estimate_set_info)
+export(montagu_burden_estimate_set_problems)
 export(montagu_burden_estimate_set_upload)
-export(montagu_burden_estimates)
+export(montagu_burden_estimate_sets)
 export(montagu_demographic_data)
 export(montagu_demographics_list)
 export(montagu_disease_by_id)

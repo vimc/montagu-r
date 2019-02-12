@@ -8,16 +8,106 @@ NULL
 
 ##' @export
 ##' @rdname montagu_api
+##' @title Retrieves list of estimate sets for a group, touchstone and scenario.
 ##' @param modelling_group_id Modelling group identifier
 ##' @param touchstone_id Touchstone identifier
 ##' @param scenario_id Scenario identifier
-montagu_burden_estimates <- function(modelling_group_id, touchstone_id,
+##' @param location The montagu server to connect to.
+##' @return A data frame of information about all relevant estimate sets.
+montagu_burden_estimate_sets <- function(modelling_group_id, touchstone_id,
                                      scenario_id, location = NULL) {
   path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/",
                   modelling_group_id, touchstone_id, scenario_id)
   res <- montagu_api_GET(location, path)
+  data_frame(id = viapply(res, "[[", "id"),
+             uploaded_on = vcapply(res, "[[", "uploaded_on"),
+             uploaded_by = vcapply(res, "[[", "uploaded_by"),
+             type = vcapply(res, function(x) x$type$type),
+             details = vcapply(res, function(x) x$type$details),
+             status = vcapply(res, "[[", "status"))
 }
 
+##' @export
+##' @rdname montagu_api
+##' @title Retrieves information about a specific burden estimate set.
+##' @inheritParams montagu_burden_estimate_sets
+##' @return A list of information about a specific estimate set.
+montagu_burden_estimate_set_info <- function(modelling_group_id, touchstone_id,
+              scenario_id, burden_estimate_set_id, location = NULL) {
+  
+  
+  # path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/%s/",
+  #      modelling_group_id, touchstone_id, scenario_id, burden_estimate_set_id)
+  # res <- montagu_api_GET(location, path)
+  
+  # The endpoint for the above is currently not working 
+  # see https://vimc.myjetbrains.com/youtrack/issue/VIMC-2600
+  # So below code does the selection in R from the full list and mimics a
+  # likely error message for invalid ids.
+  
+  path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/",
+                  modelling_group_id, touchstone_id, scenario_id)
+  res <- montagu_api_GET(location, path)
+  
+  df <- data_frame(id = viapply(res, "[[", "id"),
+             uploaded_on = vcapply(res, "[[", "uploaded_on"),
+             uploaded_by = vcapply(res, "[[", "uploaded_by"),
+             type = vcapply(res, function(x) x$type$type),
+             details = vcapply(res, function(x) x$type$details),
+             status = vcapply(res, "[[", "status"))
+  
+  if (!burden_estimate_set_id %in% df$id) {
+    stop(sprintf("Unknown burden estimate set with id '%d'",
+                  burden_estimate_set_id))
+  }
+  
+  as.list(df[df$id == burden_estimate_set_id, ])
+}
+
+##' @export
+##' @rdname montagu_api
+##' @title Retrieves the data for a specific burden estimate set.
+##' @inheritParams montagu_burden_estimate_sets
+##' @return A list of information about a specific estimate set.
+montagu_burden_estimate_set_data <- function(modelling_group_id, touchstone_id,
+                      scenario_id, burden_estimate_set_id, location = NULL) {
+  
+  
+  path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/%s/",
+        modelling_group_id, touchstone_id, scenario_id, burden_estimate_set_id)
+  res <- rawToChar(montagu_api_GET(location, path, accept="csv"))
+  read.csv(text = res, header = TRUE, stringsAsFactors = FALSE)
+  
+  # The endpoint for the above is currently not working 
+  # see https://vimc.myjetbrains.com/youtrack/issue/VIMC-2632
+}
+
+##' @export
+##' @rdname montagu_api
+##' @inheritParams montagu_burden_estimates
+##' @param burden_estimate_set_id Burden estimate set identifier
+##' @param modelling_group_id Modelling group identifier
+##' @param touchstone_id Touchstone identifier
+##' @param scenario_id Scenario identifier
+##' @param location The montagu server to connect to.
+##' @return A list of any problems with this burden estimate set
+montagu_burden_estimate_set_problems <- function(modelling_group_id, 
+    touchstone_id, scenario_id, burden_estimate_set_id, location = NULL) {
+  
+  # Could simplify this when 
+  # see https://vimc.myjetbrains.com/youtrack/issue/VIMC-2600 is done
+  
+  path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/",
+                  modelling_group_id, touchstone_id, scenario_id)
+  res <- montagu_api_GET(location, path)
+  ids <- viapply(res, "[[", "id")
+  if (! burden_estimate_set_id %in% ids) {
+    stop(sprintf("Unknown burden estimate set with id '%d'",
+                  burden_estimate_set_id))
+  }
+  probs <- lapply(res, "[[", "problems")
+  probs[[which(burden_estimate_set_id == ids)]]
+}
 
 ##' @export
 ##' @rdname montagu_api
