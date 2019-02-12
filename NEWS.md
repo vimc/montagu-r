@@ -1,3 +1,23 @@
+## 0.2.10
+
+* Add support for model run parameter sets (VIMC-2634)
+
+## 0.2.9
+
+* Add support for burden estimate set endpoints (VIMC-2625)
+
+## 0.2.8
+
+* Add support for coverage endpoints (VIMC-2567)
+
+## 0.2.7
+
+* Add support for diseases and models endpoints (VIMC-2545)
+
+## 0.2.6
+
+* Support for querying responsibilities and expectations (VIMC-2562)
+
 ## 0.2.5
 
 * Support new orderly pluggable remotes (VIMC-2453)
