@@ -5,12 +5,14 @@
 \title{Upload a mode_run_parameter_set to Montagu.}
 \usage{
 montagu_model_run_parameter_set_upload(modelling_group_id, touchstone_id,
-  params, location = NULL)
+  disease_id, params, location = NULL)
 }
 \arguments{
 \item{modelling_group_id}{The id of the modelling group}
 
 \item{touchstone_id}{The id of the touchstone}
+
+\item{disease_id}{The id of the disease associated with this model}
 
 \item{location}{The montagu server to connect to.}
 
