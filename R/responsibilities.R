@@ -52,7 +52,7 @@ helper_get_touchstone <- function(modelling_group_id, touchstone_id,
                                   location = NULL) {
   assert_scalar_character(modelling_group_id)
   assert_scalar_character(touchstone_id)
-  path <- sprintf("/modelling-groups/%s/responsibilities/%s",
+  path <- sprintf("/modelling-groups/%s/responsibilities/%s/",
                   modelling_group_id, touchstone_id)
   montagu_api_GET(location, path)
 }
@@ -275,10 +275,14 @@ helper_burden_estimate_template <- function(
   assert_scalar_character(modelling_group_id)
   assert_scalar_character(touchstone_id)
   assert_integer_like(expectation_id)
-  path <- sprintf("/modelling-groups/%s/expectations/%s/%s/?type=%s",
-                  modelling_group_id, touchstone_id, expectation_id, type)
 
-  res <- rawToChar(montagu_api_GET(location, path, accept = "csv"))
+  path <- sprintf("/modelling-groups/%s/expectations/%s/%s/",
+                  modelling_group_id, touchstone_id, expectation_id)
+
+  res <- rawToChar(montagu_api_GET(location, path, 
+                                   accept = "csv",
+                                   query = list(type = type)))
+
   read.csv(text = res, header = TRUE, stringsAsFactors = FALSE)
 }
 
