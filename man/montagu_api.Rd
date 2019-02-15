@@ -7,8 +7,9 @@
 \alias{montagu_burden_estimate_set_data}
 \alias{montagu_burden_estimate_set_problems}
 \alias{montagu_burden_estimate_set_create}
-\alias{montagu_burden_estimate_set_upload}
 \alias{montagu_burden_estimate_set_clear}
+\alias{montagu_burden_estimate_set_close}
+\alias{montagu_burden_estimate_set_upload}
 \alias{montagu_touchstones_list}
 \title{The Montagu API}
 \usage{
@@ -28,12 +29,15 @@ montagu_burden_estimate_set_create(modelling_group_id, touchstone_id,
   scenario_id, type, model_run_parameter_set, details = NULL,
   location = NULL)
 
-montagu_burden_estimate_set_upload(modelling_group_id, touchstone_id,
-  scenario_id, burden_estimate_set_id, filename, lines = 10000L,
-  keep_open = FALSE, location = NULL)
-
 montagu_burden_estimate_set_clear(modelling_group_id, touchstone_id,
   scenario_id, burden_estimate_set_id, location = NULL)
+
+montagu_burden_estimate_set_close(modelling_group_id, touchstone_id,
+  scenario_id, burden_estimate_set_id, location = NULL)
+
+montagu_burden_estimate_set_upload(modelling_group_id, touchstone_id,
+  scenario_id, burden_estimate_set_id, data, lines = 10000L,
+  keep_open = FALSE, location = NULL)
 
 montagu_touchstones_list(location = NULL)
 }
@@ -48,13 +52,13 @@ montagu_touchstones_list(location = NULL)
 
 \item{burden_estimate_set_id}{Burden estimate set identifier}
 
-\item{type}{Either "stochastic" or "central" (I think)}
+\item{type}{Can be `central-single-run`, `central-averaged`, `central-unknown` or `stochastic`}
 
 \item{model_run_parameter_set}{Identifier for the parameter set}
 
 \item{details}{Optional details string}
 
-\item{filename}{Filename to upload}
+\item{data}{Data frame containing burden estimates.}
 
 \item{lines}{Number of lines to chunk the files into}
 
@@ -72,6 +76,9 @@ montagu_touchstones_list(location = NULL)
 
 \item{burden_estimate_set_id}{Burden estimate set created by
 \code{montagu_burden_estimate_set_crete}}
+
+\item{burden_estimate_set_id}{Burden estimate set created by
+\code{montagu_burden_estimate_set_crete}}
 }
 \value{
 A data frame of information about all relevant estimate sets.
@@ -81,6 +88,8 @@ A list of information about a specific estimate set.
 A list of information about a specific estimate set.
 
 A list of any problems with this burden estimate set
+
+The id of the burden estimate set
 }
 \description{
 This may get a name change pending splitting apart of various
