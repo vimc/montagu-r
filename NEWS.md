@@ -1,4 +1,4 @@
-## 0.2.6
+## 0.3.0
 
 * Support for querying responsibilities and expectations
 
