@@ -4,8 +4,6 @@ helper_touchstones <- function(modelling_group_id, location = NULL) {
   montagu_api_GET(location, path)
 }
 
-##' This may get a name change pending splitting apart of various
-##' montagu components.
 ##' @title Retrieve touchstones a modelling group is responsible for.
 ##' @param location The montagu server to connect to.
 ##' @param modelling_group_id Id of the modelling group.
@@ -19,19 +17,18 @@ montagu_touchstones <- function(modelling_group_id, location = NULL) {
     comment = vcapply(res, "[[", "comment"))
 }
 
-##' This may get a name change pending splitting apart of various
-##' montagu components.
 ##' @title Retrieve list of all versions of a given touchstone.
 ##' @param touchstone_name Name of the touchstone (ie, no version suffix)
 ##' @inheritParams montagu_touchstones
 ##' @return Data frame of touchstine id, name, version, description and status
 ##' @export
-montagu_touchstone_versions <- function(modelling_group_id,
-                                        touchstone_name, location = NULL) {
+montagu_touchstone_versions <- function(modelling_group_id, touchstone_name,
+                                        location = NULL) {
+
   assert_scalar_character(touchstone_name)
   res <- helper_touchstones(modelling_group_id, location)
 
-  if (length(res)==0) {
+  if (length(res) == 0) {
     stop(sprintf("Unknown touchstone with id '%s'", touchstone_name))
 
   } else if (sum(which(vcapply(res, "[[", "id") == touchstone_name))>0) {
@@ -64,7 +61,7 @@ helper_get_responsibility <- function(modelling_group_id, touchstone_id,
                                  location)$responsibilities
 
   select <- which(vcapply(resps, function(x) x$scenario$id) == scenario_id)
-  if (length(select)==0) {
+  if (length(select) == 0) {
     stop(sprintf("Unknown scenario with id '%s'", scenario_id))
   }
   resps[[select]]
@@ -77,8 +74,9 @@ helper_get_responsibility <- function(modelling_group_id, touchstone_id,
 ##' @inheritParams montagu_touchstone_versions
 ##' @return Data frame of scenario_id, description and disease.
 ##' @export
-montagu_scenarios <- function(modelling_group_id,
-                              touchstone_id, location = NULL) {
+montagu_scenarios <- function(modelling_group_id, touchstone_id,
+                              location = NULL) {
+
   resps <- helper_get_touchstone(modelling_group_id, touchstone_id,
                                  location)$responsibilities
   data_frame(
@@ -94,11 +92,11 @@ montagu_scenarios <- function(modelling_group_id,
 ##' @inheritParams montagu_scenarios
 ##' @return "invalid", "complete", "valid", or "empty"
 ##' @export
-montagu_scenario_status <- function(
-  modelling_group_id, touchstone_id, scenario_id, location = NULL) {
+montagu_scenario_status <- function(modelling_group_id, touchstone_id,
+                                    scenario_id, location = NULL) {
 
   helper_get_responsibility(modelling_group_id, touchstone_id, scenario_id,
-                      location)$status
+                            location)$status
 }
 
 ##' This may get a name change pending splitting apart of various
@@ -107,11 +105,11 @@ montagu_scenario_status <- function(
 ##' @inheritParams montagu_scenario_status
 ##' @return A list of problems.
 ##' @export
-montagu_scenario_problems <- function(
-  modelling_group_id, touchstone_id, scenario_id, location = NULL) {
+montagu_scenario_problems <- function(modelling_group_id, touchstone_id,
+                                      scenario_id, location = NULL) {
 
-  helper_get_responsibility(modelling_group_id,
-    touchstone_id, scenario_id, location)$problems
+  helper_get_responsibility(modelling_group_id, touchstone_id,
+                            scenario_id, location)$problems
 }
 
 ##' This may get a name change pending splitting apart of various
@@ -120,8 +118,9 @@ montagu_scenario_problems <- function(
 ##' @inheritParams montagu_scenario_status
 ##' @return A list of fields about the current estimate set
 ##' @export
-montagu_current_estimate_set_info <- function(
-  modelling_group_id, touchstone_id, scenario_id, location = NULL) {
+montagu_current_estimate_set_info <- function(modelling_group_id,
+                                              touchstone_id, scenario_id,
+                                              location = NULL) {
 
   ces <- helper_get_responsibility(modelling_group_id,
     touchstone_id, scenario_id, location)$current_estimate_set
@@ -140,8 +139,9 @@ montagu_current_estimate_set_info <- function(
 ##' @inheritParams montagu_scenario_status
 ##' @return A list of problems.
 ##' @export
-montagu_current_estimate_set_problems <- function(
-  modelling_group_id, touchstone_id, scenario_id, location = NULL) {
+montagu_current_estimate_set_problems <- function(modelling_group_id,
+                                                  touchstone_id, scenario_id,
+                                                  location = NULL) {
 
   helper_get_responsibility(modelling_group_id,
      touchstone_id, scenario_id, location)$current_estimate_set$problems
@@ -153,21 +153,20 @@ montagu_current_estimate_set_problems <- function(
 ##' @inheritParams montagu_scenario_status
 ##' @return A vector of touchstone ids
 ##' @export
-montagu_touchstones_for_scenario <- function(
-  modelling_group_id, touchstone_id, scenario_id, location = NULL) {
+montagu_touchstones_for_scenario <- function(modelling_group_id, touchstone_id,
+                                             scenario_id, location = NULL) {
 
   helper_get_responsibility(modelling_group_id,
             touchstone_id, scenario_id, location)$scenario$touchstones
 }
 
-##' This may get a name change pending splitting apart of various
-##' montagu components.
+
 ##' @title Get expectations for a modelling group's touchstone
 ##' @inheritParams montagu_scenario_status
 ##' @return A data frame of information about the expectation
 ##' @export
-montagu_expectations <- function(
-  modelling_group_id, touchstone_id, location = NULL) {
+montagu_expectations <- function(modelling_group_id, touchstone_id,
+                                 location = NULL) {
 
   exps <- helper_get_touchstone(modelling_group_id, touchstone_id,
                                 location)$expectations
@@ -194,8 +193,9 @@ helper_get_expectation <- function(modelling_group_id, touchstone_id,
                                 location)$expectations
   select <- which(viapply(exps, function(x) x$expectation$id) == expectation_id)
 
-  if (length(select)==0) {
-    stop(sprintf("Unknown expectation with id '%s'", as.character(expectation_id)))
+  if (length(select) == 0) {
+    stop(sprintf("Unknown expectation with id '%s'",
+                 as.character(expectation_id)))
   } else {
     exps[[select]]
   }
@@ -208,21 +208,21 @@ helper_get_expectation <- function(modelling_group_id, touchstone_id,
 ##' @param expectation_id Integer ID of the expectation
 ##' @return A list of data about the expectation
 ##' @export
-montagu_expectation <- function(
-  modelling_group_id, touchstone_id, expectation_id, location = NULL) {
+montagu_expectation <- function(modelling_group_id, touchstone_id,
+                                expectation_id, location = NULL) {
 
   expect <- helper_get_expectation(modelling_group_id, touchstone_id,
-                                 expectation_id, location)$expectation
+                                   expectation_id, location)$expectation
   list(
-    id = expect$id,
-    description = expect$description,
-    min_year = expect$years$minimum_inclusive,
-    max_year = expect$years$maximum_inclusive,
-    min_age = expect$ages$minimum_inclusive,
-    max_age = expect$ages$maximum_inclusive,
+                  id = expect$id,
+         description = expect$description,
+            min_year = expect$years$minimum_inclusive,
+            max_year = expect$years$maximum_inclusive,
+             min_age = expect$ages$minimum_inclusive,
+             max_age = expect$ages$maximum_inclusive,
     min_birth_cohort = expect$cohorts$minimum_birth_year,
     max_birth_cohort = expect$cohorts$maximum_birth_year,
-    disease = expect$disease
+             disease = expect$disease
   )
 }
 
@@ -233,14 +233,15 @@ montagu_expectation <- function(
 ##' @param expectation_id Integer ID of the expectation
 ##' @return A data frame of country id and name
 ##' @export
-montagu_expectation_countries <- function(
-  modelling_group_id, touchstone_id, expectation_id, location = NULL) {
+montagu_expectation_countries <- function(modelling_group_id, touchstone_id,
+                                          expectation_id, location = NULL) {
 
   countries <- helper_get_expectation(modelling_group_id, touchstone_id,
-                expectation_id, location)$expectation$countries
+                                      expectation_id,
+                                      location)$expectation$countries
 
-  data_frame(id = vcapply(countries, function(x) x$id),
-             name = vcapply(countries, function(x) x$name))
+  data_frame(   id = vcapply(countries, function(x) x$id),
+              name = vcapply(countries, function(x) x$name))
 }
 
 ##' This may get a name change pending splitting apart of various
@@ -249,8 +250,8 @@ montagu_expectation_countries <- function(
 ##' @inheritParams montagu_expectation
 ##' @return A vector of outcome names
 ##' @export
-montagu_expectation_outcomes <- function(
-  modelling_group_id, touchstone_id, expectation_id, location = NULL) {
+montagu_expectation_outcomes <- function(modelling_group_id, touchstone_id,
+                                         expectation_id, location = NULL) {
 
   helper_get_expectation(modelling_group_id, touchstone_id,
                          expectation_id, location)$expectation$outcomes
@@ -262,15 +263,19 @@ montagu_expectation_outcomes <- function(
 ##' @inheritParams montagu_expectation
 ##' @return A vector of scenario names
 ##' @export
-montagu_expectation_applicable_scenarios <- function(
-  modelling_group_id, touchstone_id, expectation_id, location = NULL) {
+montagu_expectation_applicable_scenarios <- function(modelling_group_id,
+                                                     touchstone_id,
+                                                     expectation_id,
+                                                     location = NULL) {
 
   helper_get_expectation(modelling_group_id, touchstone_id,
                          expectation_id, location)$applicable_scenarios
 }
 
-helper_burden_estimate_template <- function(
-  modelling_group_id, touchstone_id, expectation_id, type, location = NULL) {
+helper_burden_estimate_template <- function(modelling_group_id,
+                                            touchstone_id,
+                                            expectation_id,
+                                            type, location = NULL) {
 
   assert_scalar_character(modelling_group_id)
   assert_scalar_character(touchstone_id)
@@ -279,7 +284,7 @@ helper_burden_estimate_template <- function(
   path <- sprintf("/modelling-groups/%s/expectations/%s/%s/",
                   modelling_group_id, touchstone_id, expectation_id)
 
-  res <- rawToChar(montagu_api_GET(location, path, 
+  res <- rawToChar(montagu_api_GET(location, path,
                                    accept = "csv",
                                    query = list(type = type)))
 
@@ -296,7 +301,10 @@ helper_burden_estimate_template <- function(
 ##'         cases and dalys, all NA.
 ##' @export
 montagu_central_burden_estimate_template <- function(modelling_group_id,
-  touchstone_id, expectation_id, location) {
+                                                    touchstone_id,
+                                                    expectation_id,
+                                                    location) {
+
   helper_burden_estimate_template(modelling_group_id, touchstone_id,
                                   expectation_id, "central", location)
 }
@@ -311,7 +319,9 @@ montagu_central_burden_estimate_template <- function(modelling_group_id,
 ##'         cohort_size, deaths, cases and dalys, (all NA).
 ##' @export
 montagu_stochastic_burden_estimate_template <- function(modelling_group_id,
-                                  touchstone_id, expectation_id, location) {
+                                                        touchstone_id,
+                                                        expectation_id,
+                                                        location) {
 
   helper_burden_estimate_template(modelling_group_id, touchstone_id,
                                   expectation_id, "stochastic", location)
