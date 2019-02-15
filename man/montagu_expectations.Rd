@@ -17,6 +17,5 @@ montagu_expectations(modelling_group_id, touchstone_id, location = NULL)
 A data frame of information about the expectation
 }
 \description{
-This may get a name change pending splitting apart of various
-montagu components.
+Get expectations for a modelling group's touchstone
 }

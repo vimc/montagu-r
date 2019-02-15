@@ -17,8 +17,8 @@ montagu_stochastic_burden_estimate_template(modelling_group_id,
 \item{location}{The montagu server to connect to.}
 }
 \value{
-A data frame with columns disease (given) run_id (NA), year, age, 
-        country, and country_name (given), and finally 
+A data frame with columns disease (given) run_id (NA), year, age,
+        country, and country_name (given), and finally
         cohort_size, deaths, cases and dalys, (all NA).
 }
 \description{

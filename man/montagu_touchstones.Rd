@@ -15,6 +15,5 @@ montagu_touchstones(modelling_group_id, location = NULL)
 Data frame of touchstone name, description and comment.
 }
 \description{
-This may get a name change pending splitting apart of various
-montagu components.
+Retrieve touchstones a modelling group is responsible for.
 }

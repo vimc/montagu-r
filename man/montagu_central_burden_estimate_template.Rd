@@ -17,7 +17,7 @@ montagu_central_burden_estimate_template(modelling_group_id, touchstone_id,
 \item{location}{The montagu server to connect to.}
 }
 \value{
-A data frame with columns disease, year, age, country, and 
+A data frame with columns disease, year, age, country, and
         country_name with given values, then cohort_size, deaths,
         cases and dalys, all NA.
 }

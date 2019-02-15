@@ -18,6 +18,5 @@ montagu_touchstone_versions(modelling_group_id, touchstone_name,
 Data frame of touchstine id, name, version, description and status
 }
 \description{
-This may get a name change pending splitting apart of various
-montagu components.
+Retrieve list of all versions of a given touchstone.
 }
