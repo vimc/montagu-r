@@ -244,32 +244,133 @@ test_that("Create Burden Estimate - misplaced parameter set id", {
 test_that("Create Burden Estimate - General usage", {
   location <- montagu_test_server()
   
-  dat <- montagu_burden_estimate_set_create(
+  bsid <- montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", "central-averaged",
     20, "Details", location)
-  expect_is(dat, "integer")
+  expect_is(bsid, "integer")
   
   
-  # Populate it a bit
+  # Populate it a bit - data here is all wrong...
   
-  data <- data.frame(disease = "YF", 
-                   year=c(2016,2017,2016,2017), 
-                   age=c(50,50,50,50), 
-                   country=c("AGO","AGO","ZMB","ZMB"), 
-                   country_name=c("Angola","Angola","Zambia","Zambia"), 
+  data <- data_frame(disease = "Hib3", 
+                   year=c(1986,2017,2016,2017), 
+                   age=c(50,50,150,150), 
+                   country=c("AFG","AFG","ZMB","ZMB"), 
+                   country_name=c("Afghanistan","Afghanistan","Zambia","Zambia"), 
                    cohort_size = c(10000,10500,5000,6000), 
                    deaths=c(1000,900,100,1200), 
                    cases=c(2000,2000,NA,NA), 
                    dalys=c(NA,NA,5670,5870))
   
+  expect_error(montagu_burden_estimate_set_upload("IC-Garske", "201710gavi-5", 
+        "yf-no-vaccination", bsid, data, lines = Inf, location = location),
+        paste0("Error running request:\n\t ",
+               "- bad-request: We are not expecting data for country AFG"))
   
-  # Test clearing it...
+  data$country[data$country == 'AFG'] <- 'AGO'
+  data$country_name[data$country_name == 'Afghanistan'] <- "Angola"
+  
+  expect_error(montagu_burden_estimate_set_upload("IC-Garske", "201710gavi-5", 
+        "yf-no-vaccination", bsid, data, lines = Inf, location = location),
+        paste0("Error running request:\n\t ",
+          "- bad-request: We are not expecting data for age 50 and year 1986"))
+  
+  data$year[data$year==1986] <- 2016
+  
+  expect_error(montagu_burden_estimate_set_upload("IC-Garske", "201710gavi-5", 
+      "yf-no-vaccination", bsid, data, lines = Inf, location = location),
+      paste0("Error running request:\n\t ",
+	           "- inconsistent-data: Provided estimate lists disease as ",
+             "'Hib3' but scenario is for disease 'YF'"))
+  
+  data$disease <- "YF"
+  
+  expect_error(montagu_burden_estimate_set_upload("IC-Garske", "201710gavi-5", 
+      "yf-no-vaccination", bsid, data, lines = Inf, location = location),
+       paste0("Error running request:\n\t ",
+              "- bad-request: We are not expecting data for age 150"))
+  
+  data$age[data$age == 150] <- 50
+  
+  dat <- montagu_burden_estimate_set_upload("IC-Garske", "201710gavi-5", 
+        "yf-no-vaccination", bsid, data, lines = Inf, keep_open = TRUE, 
+        location = location)
+  
+  # Test clearing it... FAILS.
   
   montagu_burden_estimate_set_clear(
-    "IC-Garske", "201710gavi-5", "yf-no-vaccination", dat, location)
+    "IC-Garske", "201710gavi-5", "yf-no-vaccination", bsid, location)
   
+  # In the meantime, we'll just create a new one on UAT.
+  
+  
+}) 
+ 
+test_that("Create Burden Estimate - with keep_open=FALSE", {  
+  
+  location <- montagu_test_server()
+  
+  bsid <- montagu_burden_estimate_set_create(
+    "IC-Garske", "201710gavi-5", "yf-no-vaccination", "central-averaged",
+    20, "Details", location)
+  expect_is(bsid, "integer")
+  
+  # Convert this to use coverage.R when all is merged
+  
+  path <- "/modelling-groups/IC-Garske/expectations/201710gavi-5/30/?type=central"
+  csv <- read.csv(
+    text = rawToChar(montagu_api_GET(location, path, accept = "csv")),
+    header = TRUE,
+    stringsAsFactors = FALSE)
+  csv$cohort_size <- sample(nrow(csv))
+  csv$deaths <- sample(nrow(csv))
+  csv$cases <- sample(nrow(csv))
+  csv$dalys <- sample(nrow(csv))
+
+  dat <- montagu_burden_estimate_set_upload("IC-Garske", "201710gavi-5", 
+        "yf-no-vaccination", bsid, csv, lines = Inf, keep_open = FALSE, 
+        location = location)
+  
+  # Dat seems to be nulll.
+  expect_null(dat)
 
 })
+
+test_that("Create Burden Estimate - with keep_open=TRUE and close", {  
+  location <- montagu_test_server()
+  
+  bsid <- montagu_burden_estimate_set_create(
+    "IC-Garske", "201710gavi-5", "yf-no-vaccination", "central-averaged",
+    20, "Details", location)
+  expect_is(bsid2, "integer")
+  
+  # Convert this to use converage.R when merged
+  
+  path <- "/modelling-groups/IC-Garske/expectations/201710gavi-5/30/?type=central"
+  csv <- read.csv(
+    text = rawToChar(montagu_api_GET(location, path, accept = "csv")),
+    header = TRUE,
+    stringsAsFactors = FALSE)
+  csv$cohort_size <- sample(nrow(csv))
+  csv$deaths <- sample(nrow(csv))
+  csv$cases <- sample(nrow(csv))
+  csv$dalys <- sample(nrow(csv))
+  
+  dat <- montagu_burden_estimate_set_upload("IC-Garske", "201710gavi-5", 
+         "yf-no-vaccination", bsid, csv, lines = Inf, keep_open = TRUE, 
+          location = location)
+  
+  # dat appears to be NULL here. Not a totally convincing test, but...
+  expect_null(dat)
+  
+  dclose <- montagu_burden_estimate_set_close(
+    "IC-Garske", "201710gavi-5", "yf-no-vaccination", bsid, location)
+  expect_is(dclose, "character")
+  expect_equal(dclose, "OK")
+  
+})
+
+
 
 ###########################################################################
 ### Clear Burden Estimate Set (get)

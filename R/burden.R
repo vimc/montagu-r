@@ -243,7 +243,7 @@ montagu_burden_estimate_set_upload <- function(modelling_group_id,
 
   p <- progress::progress_bar$new("[:spin] chunk :current", total = 100000)
   message(sprintf("Uploading in %d line chunks:\n%s",
-                  lines, filename))
+                  lines, tf))
   t0 <- Sys.time()
   repeat {
     d <- reader()
