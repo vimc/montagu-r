@@ -2,26 +2,25 @@
 % Please edit documentation in R/responsibilities.R
 \name{montagu_stochastic_burden_estimate_template}
 \alias{montagu_stochastic_burden_estimate_template}
-\title{Get central burden estimate template for expectation}
+\title{Get stochastic burden estimate template for an expectation}
 \usage{
 montagu_stochastic_burden_estimate_template(modelling_group_id,
   touchstone_id, expectation_id, location)
 }
 \arguments{
-\item{modelling_group_id}{Id of the modelling group.}
+\item{modelling_group_id}{id of the modelling group.}
 
-\item{touchstone_id}{Id of the touchstone (includes version suffix)}
+\item{touchstone_id}{id of the touchstone (includes version suffix)}
 
-\item{expectation_id}{Integer ID of the expectation}
+\item{expectation_id}{id of the expectation (integer)}
 
 \item{location}{The montagu server to connect to.}
 }
 \value{
-A data frame with columns disease (given) run_id (NA), year, age,
-        country, and country_name (given), and finally
-        cohort_size, deaths, cases and dalys, (all NA).
+A data frame with columns disease (given), run_id (NA), year, age,
+        country, and country_name (all given), and finally
+        cohort_size, deaths, cases and dalys, (NA).
 }
 \description{
-This may get a name change pending splitting apart of various
-montagu components.
+Get stochastic burden estimate template for an expectation
 }

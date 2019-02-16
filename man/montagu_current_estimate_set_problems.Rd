@@ -8,11 +8,11 @@ montagu_current_estimate_set_problems(modelling_group_id, touchstone_id,
   scenario_id, location = NULL)
 }
 \arguments{
-\item{modelling_group_id}{Id of the modelling group.}
+\item{modelling_group_id}{id of the modelling group.}
 
-\item{touchstone_id}{Id of the touchstone (includes version suffix)}
+\item{touchstone_id}{id of the touchstone (includes version suffix)}
 
-\item{scenario_id}{Id of the scenario}
+\item{scenario_id}{id of the scenario}
 
 \item{location}{The montagu server to connect to.}
 }
@@ -20,6 +20,5 @@ montagu_current_estimate_set_problems(modelling_group_id, touchstone_id,
 A list of problems.
 }
 \description{
-This may get a name change pending splitting apart of various
-montagu components.
+Get information on current estimate set for a scenario.
 }

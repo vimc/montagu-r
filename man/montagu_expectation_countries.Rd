@@ -8,9 +8,9 @@ montagu_expectation_countries(modelling_group_id, touchstone_id,
   expectation_id, location = NULL)
 }
 \arguments{
-\item{modelling_group_id}{Id of the modelling group.}
+\item{modelling_group_id}{id of the modelling group.}
 
-\item{touchstone_id}{Id of the touchstone (includes version suffix)}
+\item{touchstone_id}{id of the touchstone (includes version suffix)}
 
 \item{expectation_id}{Integer ID of the expectation}
 
@@ -20,6 +20,5 @@ montagu_expectation_countries(modelling_group_id, touchstone_id,
 A data frame of country id and name
 }
 \description{
-This may get a name change pending splitting apart of various
-montagu components.
+Get country list for an expectation
 }

@@ -6,7 +6,7 @@ helper_touchstones <- function(modelling_group_id, location = NULL) {
 
 ##' @title Retrieve touchstones a modelling group is responsible for.
 ##' @param location The montagu server to connect to.
-##' @param modelling_group_id Id of the modelling group.
+##' @param modelling_group_id id of the modelling group.
 ##' @return Data frame of touchstone name, description and comment.
 ##' @export
 montagu_touchstones <- function(modelling_group_id, location = NULL) {
@@ -67,10 +67,8 @@ helper_get_responsibility <- function(modelling_group_id, touchstone_id,
   resps[[select]]
 }
 
-##' This may get a name change pending splitting apart of various
-##' montagu components.
 ##' @title Retrieve information about a scenario
-##' @param touchstone_id Id of the touchstone (includes version suffix)
+##' @param touchstone_id id of the touchstone (includes version suffix)
 ##' @inheritParams montagu_touchstone_versions
 ##' @return Data frame of scenario_id, description and disease.
 ##' @export
@@ -85,10 +83,8 @@ montagu_scenarios <- function(modelling_group_id, touchstone_id,
     disease = vcapply(resps, function(x) x$scenario$disease))
 }
 
-##' This may get a name change pending splitting apart of various
-##' montagu components.
 ##' @title Retrieve current status of a groups' scenario.
-##' @param scenario_id Id of the scenario
+##' @param scenario_id id of the scenario
 ##' @inheritParams montagu_scenarios
 ##' @return "invalid", "complete", "valid", or "empty"
 ##' @export
@@ -99,8 +95,6 @@ montagu_scenario_status <- function(modelling_group_id, touchstone_id,
                             location)$status
 }
 
-##' This may get a name change pending splitting apart of various
-##' montagu components.
 ##' @title Retrieve current status of a groups' scenario.
 ##' @inheritParams montagu_scenario_status
 ##' @return A list of problems.
@@ -112,8 +106,7 @@ montagu_scenario_problems <- function(modelling_group_id, touchstone_id,
                             scenario_id, location)$problems
 }
 
-##' This may get a name change pending splitting apart of various
-##' montagu components.
+
 ##' @title Get information on current estimate set for a scenario.
 ##' @inheritParams montagu_scenario_status
 ##' @return A list of fields about the current estimate set
@@ -133,8 +126,6 @@ montagu_current_estimate_set_info <- function(modelling_group_id,
        status = ces$status)
 }
 
-##' This may get a name change pending splitting apart of various
-##' montagu components.
 ##' @title Get information on current estimate set for a scenario.
 ##' @inheritParams montagu_scenario_status
 ##' @return A list of problems.
@@ -147,11 +138,9 @@ montagu_current_estimate_set_problems <- function(modelling_group_id,
      touchstone_id, scenario_id, location)$current_estimate_set$problems
 }
 
-##' This may get a name change pending splitting apart of various
-##' montagu components.
 ##' @title Get touchstones that include this scenario
 ##' @inheritParams montagu_scenario_status
-##' @return A vector of touchstone ids
+##' @return vector of touchstone ids
 ##' @export
 montagu_touchstones_for_scenario <- function(modelling_group_id, touchstone_id,
                                              scenario_id, location = NULL) {
@@ -201,12 +190,10 @@ helper_get_expectation <- function(modelling_group_id, touchstone_id,
   }
 }
 
-##' This may get a name change pending splitting apart of various
-##' montagu components.
 ##' @title Get information about an expectation
 ##' @inheritParams montagu_scenario_status
-##' @param expectation_id Integer ID of the expectation
-##' @return A list of data about the expectation
+##' @param expectation_id id of the expectation (integer)
+##' @return list of data about the expectation
 ##' @export
 montagu_expectation <- function(modelling_group_id, touchstone_id,
                                 expectation_id, location = NULL) {
@@ -226,8 +213,6 @@ montagu_expectation <- function(modelling_group_id, touchstone_id,
   )
 }
 
-##' This may get a name change pending splitting apart of various
-##' montagu components.
 ##' @title Get country list for an expectation
 ##' @inheritParams montagu_expectation
 ##' @param expectation_id Integer ID of the expectation
@@ -244,8 +229,6 @@ montagu_expectation_countries <- function(modelling_group_id, touchstone_id,
               name = vcapply(countries, function(x) x$name))
 }
 
-##' This may get a name change pending splitting apart of various
-##' montagu components.
 ##' @title Get expected outcomes
 ##' @inheritParams montagu_expectation
 ##' @return A vector of outcome names
@@ -257,8 +240,6 @@ montagu_expectation_outcomes <- function(modelling_group_id, touchstone_id,
                          expectation_id, location)$expectation$outcomes
 }
 
-##' This may get a name change pending splitting apart of various
-##' montagu components.
 ##' @title Get applicable scenarios for an expectation
 ##' @inheritParams montagu_expectation
 ##' @return A vector of scenario names
@@ -291,9 +272,7 @@ helper_burden_estimate_template <- function(modelling_group_id,
   read.csv(text = res, header = TRUE, stringsAsFactors = FALSE)
 }
 
-##' This may get a name change pending splitting apart of various
-##' montagu components.
-##' @title Get central burden estimate template for expectation
+##' @title Get central burden estimate template for an expectation
 ##' @inheritParams montagu_expectation
 ##' @importFrom utils read.csv
 ##' @return A data frame with columns disease, year, age, country, and
@@ -309,14 +288,12 @@ montagu_central_burden_estimate_template <- function(modelling_group_id,
                                   expectation_id, "central", location)
 }
 
-##' This may get a name change pending splitting apart of various
-##' montagu components.
-##' @title Get central burden estimate template for expectation
+##' @title Get stochastic burden estimate template for an expectation
 ##' @inheritParams montagu_expectation
 ##' @importFrom utils read.csv
-##' @return A data frame with columns disease (given) run_id (NA), year, age,
-##'         country, and country_name (given), and finally
-##'         cohort_size, deaths, cases and dalys, (all NA).
+##' @return A data frame with columns disease (given), run_id (NA), year, age,
+##'         country, and country_name (all given), and finally
+##'         cohort_size, deaths, cases and dalys, (NA).
 ##' @export
 montagu_stochastic_burden_estimate_template <- function(modelling_group_id,
                                                         touchstone_id,

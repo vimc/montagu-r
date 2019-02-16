@@ -1,9 +1,7 @@
-##' This may get a name change pending splitting apart of various
-##' montagu components.
 ##' @title Retrieve list of all disease ids and names.
-##' @param location The montagu server to connect to.
+##' @param location the montagu server to connect to.
 ##' @export
-montagu_disease_list <- function(location = NULL) {
+montagu_diseases <- function(location = NULL) {
   res <- montagu_api_GET(location, "/diseases/")
   data_frame(
     id = vcapply(res, "[[", "id"),
@@ -12,9 +10,9 @@ montagu_disease_list <- function(location = NULL) {
 
 ##' @title Retrieve disease with given id.
 ##' @param disease_id The disease id.
-##' @inheritParams montagu_disease_list
+##' @inheritParams montagu_diseases
 ##' @export
-montagu_disease_by_id <- function(disease_id, location = NULL) {
+montagu_disease <- function(disease_id, location = NULL) {
   assert_scalar_character(disease_id)
   path <- sprintf("/diseases/%s/", disease_id)
   res <- montagu_api_GET(location, path)

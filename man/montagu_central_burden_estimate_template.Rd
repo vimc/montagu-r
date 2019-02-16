@@ -2,17 +2,17 @@
 % Please edit documentation in R/responsibilities.R
 \name{montagu_central_burden_estimate_template}
 \alias{montagu_central_burden_estimate_template}
-\title{Get central burden estimate template for expectation}
+\title{Get central burden estimate template for an expectation}
 \usage{
 montagu_central_burden_estimate_template(modelling_group_id, touchstone_id,
   expectation_id, location)
 }
 \arguments{
-\item{modelling_group_id}{Id of the modelling group.}
+\item{modelling_group_id}{id of the modelling group.}
 
-\item{touchstone_id}{Id of the touchstone (includes version suffix)}
+\item{touchstone_id}{id of the touchstone (includes version suffix)}
 
-\item{expectation_id}{Integer ID of the expectation}
+\item{expectation_id}{id of the expectation (integer)}
 
 \item{location}{The montagu server to connect to.}
 }
@@ -22,6 +22,5 @@ A data frame with columns disease, year, age, country, and
         cases and dalys, all NA.
 }
 \description{
-This may get a name change pending splitting apart of various
-montagu components.
+Get central burden estimate template for an expectation
 }

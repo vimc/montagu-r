@@ -8,7 +8,7 @@ montagu_touchstone_versions(modelling_group_id, touchstone_name,
   location = NULL)
 }
 \arguments{
-\item{modelling_group_id}{Id of the modelling group.}
+\item{modelling_group_id}{id of the modelling group.}
 
 \item{touchstone_name}{Name of the touchstone (ie, no version suffix)}
 

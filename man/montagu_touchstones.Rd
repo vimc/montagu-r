@@ -7,7 +7,7 @@
 montagu_touchstones(modelling_group_id, location = NULL)
 }
 \arguments{
-\item{modelling_group_id}{Id of the modelling group.}
+\item{modelling_group_id}{id of the modelling group.}
 
 \item{location}{The montagu server to connect to.}
 }
