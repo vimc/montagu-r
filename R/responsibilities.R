@@ -18,31 +18,43 @@ montagu_touchstones <- function(modelling_group_id, location = NULL) {
 }
 
 ##' @title Retrieve list of all versions of a given touchstone.
-##' @param touchstone_name Name of the touchstone (ie, no version suffix)
+##' @param touchstone_name Optional base name of the touchstone to filter. (ie, no version suffix)
+##' @param require_open Only include open touchstones if true.
 ##' @inheritParams montagu_touchstones
 ##' @return Data frame of touchstine id, name, version, description and status
 ##' @export
-montagu_touchstone_versions <- function(modelling_group_id, touchstone_name,
-                                        location = NULL) {
+montagu_touchstone_versions <- function(modelling_group_id, 
+                                        touchstone_name = NULL,
+                                        require_open = FALSE, location = NULL) {
 
-  assert_scalar_character(touchstone_name)
-  res <- helper_touchstones(modelling_group_id, location)
+  res <- montagu_touchstones(modelling_group_id, location)
+  if (!is.null(touchstone_name)) {
+    res <- res[res$name == touchstone_name, ]
+  }
 
   if (length(res) == 0) {
     stop(sprintf("Unknown touchstone with id '%s'", touchstone_name))
-
-  } else if (sum(which(vcapply(res, "[[", "id") == touchstone_name))>0) {
-    versions <- res[[which(vcapply(res, "[[", "id") == touchstone_name)]]$versions
-    data_frame(
-      id = vcapply(versions, "[[", "id"),
-      name = vcapply(versions, "[[", "name"),
-      version = viapply(versions, "[[", "version"),
-      description = vcapply(versions, "[[", "description"),
-      status = vcapply(versions, "[[", "status"))
-
-  } else {
-    stop(sprintf("Unknown touchstone with id '%s'", touchstone_name))
   }
+  
+  collect_data <- NULL
+  
+  res2 <- helper_touchstones(modelling_group_id, location)
+  
+  for (i in seq_len(nrow(res))) {
+    
+    versions <- res2[[which(vcapply(res2, "[[", "id") == res$name[i])]]$versions
+    
+    collect_data <- rbind(collect_data, data_frame(
+        id = vcapply(versions, "[[", "id"),
+        name = vcapply(versions, "[[", "name"),
+        version = viapply(versions, "[[", "version"),
+        description = vcapply(versions, "[[", "description"),
+        status = vcapply(versions, "[[", "status")))
+  }
+  if (require_open) {
+    collect_data <- collect_data[collect_data$status == 'open', ]
+  }
+  collect_data
 }
 
 helper_get_touchstone <- function(modelling_group_id, touchstone_id,

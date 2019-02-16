@@ -15,7 +15,7 @@ test_that("download responbilities list - incorrect modelling_group_id", {
 
 test_that("download touchstone versions", {
   location <- montagu_test_server()
-  dat <- montagu_touchstone_versions("IC-Garske", "201710gavi", location)
+  dat <- montagu_touchstone_versions("IC-Garske", "201710gavi", location = location)
   expect_is(dat, "data.frame")
   expect_equal(names(dat), c("id", "name", "version", "description", "status"))
   expect_true(all(dat$name == "201710gavi"))
