@@ -4,13 +4,15 @@
 \alias{montagu_touchstone_versions}
 \title{Retrieve list of all versions of a given touchstone.}
 \usage{
-montagu_touchstone_versions(modelling_group_id, touchstone_name,
-  location = NULL)
+montagu_touchstone_versions(modelling_group_id, touchstone_name = NULL,
+  require_open = FALSE, location = NULL)
 }
 \arguments{
 \item{modelling_group_id}{id of the modelling group.}
 
-\item{touchstone_name}{Name of the touchstone (ie, no version suffix)}
+\item{touchstone_name}{Optional base name of the touchstone to filter. (ie, no version suffix)}
+
+\item{require_open}{Only include open touchstones if true.}
 
 \item{location}{The montagu server to connect to.}
 }
