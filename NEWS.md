@@ -1,8 +1,8 @@
-## 0.2.7
+## 0.4.0
 
-* Add support for diseases and models endpoints (VIMC-2545)
+* Add support for models endpoints (VIMC-2545)
 
-## 0.2.6
+## 0.3.0
 
 * Support for querying responsibilities and expectations (VIMC-2562)
 

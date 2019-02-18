@@ -13,6 +13,5 @@ montagu_models(location = NULL)
 Data frame of information about models.
 }
 \description{
-This may get a name change pending splitting apart of various
-montagu components.
+Retrieve list of all model ids, names, citations and groups.
 }
