@@ -10,7 +10,7 @@ montagu_expectation_applicable_scenarios(modelling_group_id, touchstone_id,
 \arguments{
 \item{modelling_group_id}{id of the modelling group.}
 
-\item{touchstone_id}{id of the touchstone (includes version suffix)}
+\item{touchstone_id}{id of the touchstone (including version)}
 
 \item{expectation_id}{id of the expectation (integer)}
 
@@ -20,5 +20,10 @@ montagu_expectation_applicable_scenarios(modelling_group_id, touchstone_id,
 A vector of scenario names
 }
 \description{
-Get applicable scenarios for an expectation
+Different scenarios may have different expectations. For example, for
+Hepatitis B, different countries are required for different scenarios,
+since the different HepB vaccination initiatives have been carried out in
+different sets of countries. For other diseases, the same expectation might
+be equally valid in different scenarios. Here, we can query which scenarios a
+particular expectation applies to.
 }

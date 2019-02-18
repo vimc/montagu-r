@@ -10,7 +10,7 @@ montagu_touchstones_for_scenario(modelling_group_id, touchstone_id,
 \arguments{
 \item{modelling_group_id}{id of the modelling group.}
 
-\item{touchstone_id}{id of the touchstone (includes version suffix)}
+\item{touchstone_id}{id of the touchstone (including version)}
 
 \item{scenario_id}{id of the scenario}
 
@@ -20,5 +20,6 @@ montagu_touchstones_for_scenario(modelling_group_id, touchstone_id,
 vector of touchstone ids
 }
 \description{
-Get touchstones that include this scenario
+Given a particular touchstone and scenario, we can loookup all the other
+touchstones that also contain this scenario.
 }

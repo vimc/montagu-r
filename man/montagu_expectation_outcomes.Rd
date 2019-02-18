@@ -10,7 +10,7 @@ montagu_expectation_outcomes(modelling_group_id, touchstone_id,
 \arguments{
 \item{modelling_group_id}{id of the modelling group.}
 
-\item{touchstone_id}{id of the touchstone (includes version suffix)}
+\item{touchstone_id}{id of the touchstone (including version)}
 
 \item{expectation_id}{id of the expectation (integer)}
 
@@ -20,5 +20,7 @@ montagu_expectation_outcomes(modelling_group_id, touchstone_id,
 A vector of outcome names
 }
 \description{
-Get expected outcomes
+The expectations, for a modelling group for a particular touchstone, indicate the
+range of chronological years, ages and countries for which burden estimates
+are expected, and which burden outcomes are required.
 }

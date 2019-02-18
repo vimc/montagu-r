@@ -2,7 +2,7 @@
 % Please edit documentation in R/responsibilities.R
 \name{montagu_current_estimate_set_problems}
 \alias{montagu_current_estimate_set_problems}
-\title{Get information on current estimate set for a scenario.}
+\title{Retrieve list of any problems in current estimate set for a scenario.}
 \usage{
 montagu_current_estimate_set_problems(modelling_group_id, touchstone_id,
   scenario_id, location = NULL)
@@ -10,15 +10,17 @@ montagu_current_estimate_set_problems(modelling_group_id, touchstone_id,
 \arguments{
 \item{modelling_group_id}{id of the modelling group.}
 
-\item{touchstone_id}{id of the touchstone (includes version suffix)}
+\item{touchstone_id}{id of the touchstone (including version)}
 
 \item{scenario_id}{id of the scenario}
 
 \item{location}{The montagu server to connect to.}
 }
 \value{
-A list of problems.
+A list of problem text.
 }
 \description{
-Get information on current estimate set for a scenario.
+Groups upload estimate sets to Montagu. The most recent set of results 
+uploaded by a group for a given scenario can be queried for its status,
+or retrieved.
 }

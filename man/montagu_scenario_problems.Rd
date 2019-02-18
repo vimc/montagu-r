@@ -2,7 +2,7 @@
 % Please edit documentation in R/responsibilities.R
 \name{montagu_scenario_problems}
 \alias{montagu_scenario_problems}
-\title{Retrieve current status of a groups' scenario.}
+\title{Retrieve a list of any problems with a scenario.}
 \usage{
 montagu_scenario_problems(modelling_group_id, touchstone_id, scenario_id,
   location = NULL)
@@ -10,15 +10,20 @@ montagu_scenario_problems(modelling_group_id, touchstone_id, scenario_id,
 \arguments{
 \item{modelling_group_id}{id of the modelling group.}
 
-\item{touchstone_id}{id of the touchstone (includes version suffix)}
+\item{touchstone_id}{id of the touchstone (including version)}
 
 \item{scenario_id}{id of the scenario}
 
 \item{location}{The montagu server to connect to.}
 }
 \value{
-A list of problems.
+A list of problem text.
 }
 \description{
-Retrieve current status of a groups' scenario.
+A scenario describes the vaccination conditions for a particular run of a
+model. Typical examples include a scenario where there is no vaccination,
+a scenario where there is routine (background) vaccination, or a scenario
+in which there are targetted campaigns to vaccinate particularly ages. 
+Depending on disease, modelling groups may be asked to model various
+scenarios, for a particular touchstone.
 }

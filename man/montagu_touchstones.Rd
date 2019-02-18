@@ -15,5 +15,8 @@ montagu_touchstones(modelling_group_id, location = NULL)
 Data frame of touchstone name, description and comment.
 }
 \description{
-Retrieve touchstones a modelling group is responsible for.
+Touchstones are created by the VIMC management. The touchstone id associates
+a particular call for burden estimates, with the input data (coverage and
+demography) required to produce those estimates, and with the estimates that
+the modelling groups provide. Usually,
 }

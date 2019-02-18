@@ -2,14 +2,14 @@
 % Please edit documentation in R/responsibilities.R
 \name{montagu_expectations}
 \alias{montagu_expectations}
-\title{Get expectations for a modelling group's touchstone}
+\title{Get expectations for a modelling group and touchstone}
 \usage{
 montagu_expectations(modelling_group_id, touchstone_id, location = NULL)
 }
 \arguments{
 \item{modelling_group_id}{id of the modelling group.}
 
-\item{touchstone_id}{id of the touchstone (includes version suffix)}
+\item{touchstone_id}{id of the touchstone (including version)}
 
 \item{location}{The montagu server to connect to.}
 }
@@ -17,5 +17,8 @@ montagu_expectations(modelling_group_id, touchstone_id, location = NULL)
 A data frame of information about the expectation
 }
 \description{
-Get expectations for a modelling group's touchstone
+The expectations, for a modelling group for a particular touchstone, indicate the
+range of chronological years, ages and countries for which burden estimates
+are expected. These are also per-disease, so groups that model multiple 
+diseases will see multiple rows of expectations.
 }

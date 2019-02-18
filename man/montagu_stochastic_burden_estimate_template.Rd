@@ -10,7 +10,7 @@ montagu_stochastic_burden_estimate_template(modelling_group_id,
 \arguments{
 \item{modelling_group_id}{id of the modelling group.}
 
-\item{touchstone_id}{id of the touchstone (includes version suffix)}
+\item{touchstone_id}{id of the touchstone (including version)}
 
 \item{expectation_id}{id of the expectation (integer)}
 
@@ -22,5 +22,6 @@ A data frame with columns disease (given), run_id (NA), year, age,
         cohort_size, deaths, cases and dalys, (NA).
 }
 \description{
-Get stochastic burden estimate template for an expectation
+Montagu provides the stochastic burden estimate set, which along with the
+columns of the central-estimate set, also includes a run_id column.
 }

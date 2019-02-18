@@ -12,13 +12,15 @@ montagu_touchstone_versions(modelling_group_id, touchstone_name = NULL,
 
 \item{touchstone_name}{Optional base name of the touchstone to filter. (ie, no version suffix)}
 
-\item{require_open}{Only include open touchstones if true.}
+\item{require_open}{Only include open touchstones if set to true.}
 
 \item{location}{The montagu server to connect to.}
 }
 \value{
-Data frame of touchstine id, name, version, description and status
+Data frame of touchstone id, name, version, description and status
 }
 \description{
-Retrieve list of all versions of a given touchstone.
+Touchstones are versioned; errata in the input or coverage data may be 
+addressed with a new version of the existing touchstone. When interacting
+with Montagu, a touchstone_id will consist of a basename, and a version.
 }

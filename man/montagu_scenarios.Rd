@@ -9,7 +9,7 @@ montagu_scenarios(modelling_group_id, touchstone_id, location = NULL)
 \arguments{
 \item{modelling_group_id}{id of the modelling group.}
 
-\item{touchstone_id}{id of the touchstone (includes version suffix)}
+\item{touchstone_id}{id of the touchstone (including version)}
 
 \item{location}{The montagu server to connect to.}
 }
@@ -17,5 +17,10 @@ montagu_scenarios(modelling_group_id, touchstone_id, location = NULL)
 Data frame of scenario_id, description and disease.
 }
 \description{
-Retrieve information about a scenario
+A scenario describes the vaccination conditions for a particular run of a
+model. Typical examples include a scenario where there is no vaccination,
+a scenario where there is routine (background) vaccination, or a scenario
+in which there are targetted campaigns to vaccinate particularly ages. 
+Depending on disease, modelling groups may be asked to model various
+scenarios, for a particular touchstone.
 }

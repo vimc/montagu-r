@@ -10,15 +10,17 @@ montagu_expectation(modelling_group_id, touchstone_id, expectation_id,
 \arguments{
 \item{modelling_group_id}{id of the modelling group.}
 
-\item{touchstone_id}{id of the touchstone (includes version suffix)}
+\item{touchstone_id}{id of the touchstone (including version)}
 
 \item{expectation_id}{id of the expectation (integer)}
 
 \item{location}{The montagu server to connect to.}
 }
 \value{
-list of data about the expectation
+list of information about the expectation, including a description and ranges of age and time required.
 }
 \description{
-Get information about an expectation
+The expectations, for a modelling group for a particular touchstone, indicate the
+range of chronological years, ages and countries for which burden estimates
+are expected, and what burden outcomes are required.
 }

@@ -10,15 +10,17 @@ montagu_expectation_countries(modelling_group_id, touchstone_id,
 \arguments{
 \item{modelling_group_id}{id of the modelling group.}
 
-\item{touchstone_id}{id of the touchstone (includes version suffix)}
+\item{touchstone_id}{id of the touchstone (including version)}
 
-\item{expectation_id}{Integer ID of the expectation}
+\item{expectation_id}{Integer id of the expectation}
 
 \item{location}{The montagu server to connect to.}
 }
 \value{
-A data frame of country id and name
+A data frame of country id and name, for all expected countries.
 }
 \description{
-Get country list for an expectation
+The expectations, for a modelling group for a particular touchstone, indicate the
+range of chronological years, ages and countries for which burden estimates
+are expected, and which burden outcomes are required.
 }
