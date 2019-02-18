@@ -3,7 +3,10 @@ helper_touchstones <- function(modelling_group_id, location = NULL) {
   path <- sprintf("/modelling-groups/%s/responsibilities/", modelling_group_id)
   montagu_api_GET(location, path)
 }
-
+##' Touchstones are created by the VIMC management. The touchstone id associates
+##' a particular call for burden estimates, with the input data (coverage and
+##' demography) required to produce those estimates, and with the estimates that
+##' the modelling groups provide. Usually, 
 ##' @title Retrieve touchstones a modelling group is responsible for.
 ##' @param location The montagu server to connect to.
 ##' @param modelling_group_id id of the modelling group.
@@ -17,11 +20,14 @@ montagu_touchstones <- function(modelling_group_id, location = NULL) {
     comment = vcapply(res, "[[", "comment"))
 }
 
+##' Touchstones are versioned; errata in the input or coverage data may be 
+##' addressed with a new version of the existing touchstone. When interacting
+##' with Montagu, a touchstone_id will consist of a basename, and a version.
 ##' @title Retrieve list of all versions of a given touchstone.
 ##' @param touchstone_name Optional base name of the touchstone to filter. (ie, no version suffix)
-##' @param require_open Only include open touchstones if true.
+##' @param require_open Only include open touchstones if set to true.
 ##' @inheritParams montagu_touchstones
-##' @return Data frame of touchstine id, name, version, description and status
+##' @return Data frame of touchstone id, name, version, description and status
 ##' @export
 montagu_touchstone_versions <- function(modelling_group_id, 
                                         touchstone_name = NULL,
@@ -79,8 +85,14 @@ helper_get_responsibility <- function(modelling_group_id, touchstone_id,
   resps[[select]]
 }
 
+##' A scenario describes the vaccination conditions for a particular run of a
+##' model. Typical examples include a scenario where there is no vaccination,
+##' a scenario where there is routine (background) vaccination, or a scenario
+##' in which there are targetted campaigns to vaccinate particularly ages. 
+##' Depending on disease, modelling groups may be asked to model various
+##' scenarios, for a particular touchstone.
 ##' @title Retrieve information about a scenario
-##' @param touchstone_id id of the touchstone (includes version suffix)
+##' @param touchstone_id id of the touchstone (including version)
 ##' @inheritParams montagu_touchstone_versions
 ##' @return Data frame of scenario_id, description and disease.
 ##' @export
@@ -95,6 +107,12 @@ montagu_scenarios <- function(modelling_group_id, touchstone_id,
     disease = vcapply(resps, function(x) x$scenario$disease))
 }
 
+##' A scenario describes the vaccination conditions for a particular run of a
+##' model. Typical examples include a scenario where there is no vaccination,
+##' a scenario where there is routine (background) vaccination, or a scenario
+##' in which there are targetted campaigns to vaccinate particularly ages. 
+##' Depending on disease, modelling groups may be asked to model various
+##' scenarios, for a particular touchstone.
 ##' @title Retrieve current status of a groups' scenario.
 ##' @param scenario_id id of the scenario
 ##' @inheritParams montagu_scenarios
@@ -107,9 +125,15 @@ montagu_scenario_status <- function(modelling_group_id, touchstone_id,
                             location)$status
 }
 
-##' @title Retrieve current status of a groups' scenario.
+##' A scenario describes the vaccination conditions for a particular run of a
+##' model. Typical examples include a scenario where there is no vaccination,
+##' a scenario where there is routine (background) vaccination, or a scenario
+##' in which there are targetted campaigns to vaccinate particularly ages. 
+##' Depending on disease, modelling groups may be asked to model various
+##' scenarios, for a particular touchstone.
+##' @title Retrieve a list of any problems with a scenario.
 ##' @inheritParams montagu_scenario_status
-##' @return A list of problems.
+##' @return A list of problem text.
 ##' @export
 montagu_scenario_problems <- function(modelling_group_id, touchstone_id,
                                       scenario_id, location = NULL) {
@@ -118,7 +142,9 @@ montagu_scenario_problems <- function(modelling_group_id, touchstone_id,
                             scenario_id, location)$problems
 }
 
-
+##' Groups upload estimate sets to Montagu. The most recent set of results 
+##' uploaded by a group for a given scenario can be queried for its status,
+##' or retrieved.
 ##' @title Get information on current estimate set for a scenario.
 ##' @inheritParams montagu_scenario_status
 ##' @return A list of fields about the current estimate set
@@ -138,9 +164,12 @@ montagu_current_estimate_set_info <- function(modelling_group_id,
        status = ces$status)
 }
 
-##' @title Get information on current estimate set for a scenario.
+##' Groups upload estimate sets to Montagu. The most recent set of results 
+##' uploaded by a group for a given scenario can be queried for its status,
+##' or retrieved.
+##' @title Retrieve list of any problems in current estimate set for a scenario.
 ##' @inheritParams montagu_scenario_status
-##' @return A list of problems.
+##' @return A list of problem text.
 ##' @export
 montagu_current_estimate_set_problems <- function(modelling_group_id,
                                                   touchstone_id, scenario_id,
@@ -150,6 +179,8 @@ montagu_current_estimate_set_problems <- function(modelling_group_id,
      touchstone_id, scenario_id, location)$current_estimate_set$problems
 }
 
+##' Given a particular touchstone and scenario, we can loookup all the other
+##' touchstones that also contain this scenario.
 ##' @title Get touchstones that include this scenario
 ##' @inheritParams montagu_scenario_status
 ##' @return vector of touchstone ids
@@ -161,8 +192,11 @@ montagu_touchstones_for_scenario <- function(modelling_group_id, touchstone_id,
             touchstone_id, scenario_id, location)$scenario$touchstones
 }
 
-
-##' @title Get expectations for a modelling group's touchstone
+##' The expectations, for a modelling group for a particular touchstone, indicate the
+##' range of chronological years, ages and countries for which burden estimates
+##' are expected. These are also per-disease, so groups that model multiple 
+##' diseases will see multiple rows of expectations.
+##' @title Get expectations for a modelling group and touchstone
 ##' @inheritParams montagu_scenario_status
 ##' @return A data frame of information about the expectation
 ##' @export
@@ -202,10 +236,13 @@ helper_get_expectation <- function(modelling_group_id, touchstone_id,
   }
 }
 
+##' The expectations, for a modelling group for a particular touchstone, indicate the
+##' range of chronological years, ages and countries for which burden estimates
+##' are expected, and what burden outcomes are required. 
 ##' @title Get information about an expectation
 ##' @inheritParams montagu_scenario_status
 ##' @param expectation_id id of the expectation (integer)
-##' @return list of data about the expectation
+##' @return list of information about the expectation, including a description and ranges of age and time required.
 ##' @export
 montagu_expectation <- function(modelling_group_id, touchstone_id,
                                 expectation_id, location = NULL) {
@@ -225,10 +262,13 @@ montagu_expectation <- function(modelling_group_id, touchstone_id,
   )
 }
 
+##' The expectations, for a modelling group for a particular touchstone, indicate the
+##' range of chronological years, ages and countries for which burden estimates
+##' are expected, and which burden outcomes are required.
 ##' @title Get country list for an expectation
 ##' @inheritParams montagu_expectation
-##' @param expectation_id Integer ID of the expectation
-##' @return A data frame of country id and name
+##' @param expectation_id Integer id of the expectation
+##' @return A data frame of country id and name, for all expected countries.
 ##' @export
 montagu_expectation_countries <- function(modelling_group_id, touchstone_id,
                                           expectation_id, location = NULL) {
@@ -241,6 +281,9 @@ montagu_expectation_countries <- function(modelling_group_id, touchstone_id,
               name = vcapply(countries, function(x) x$name))
 }
 
+##' The expectations, for a modelling group for a particular touchstone, indicate the
+##' range of chronological years, ages and countries for which burden estimates
+##' are expected, and which burden outcomes are required.
 ##' @title Get expected outcomes
 ##' @inheritParams montagu_expectation
 ##' @return A vector of outcome names
@@ -252,6 +295,12 @@ montagu_expectation_outcomes <- function(modelling_group_id, touchstone_id,
                          expectation_id, location)$expectation$outcomes
 }
 
+##' Different scenarios may have different expectations. For example, for
+##' Hepatitis B, different countries are required for different scenarios,
+##' since the different HepB vaccination initiatives have been carried out in
+##' different sets of countries. For other diseases, the same expectation might
+##' be equally valid in different scenarios. Here, we can query which scenarios a
+##' particular expectation applies to.
 ##' @title Get applicable scenarios for an expectation
 ##' @inheritParams montagu_expectation
 ##' @return A vector of scenario names
@@ -284,6 +333,11 @@ helper_burden_estimate_template <- function(modelling_group_id,
   read.csv(text = res, header = TRUE, stringsAsFactors = FALSE)
 }
 
+##' The burden estimate set is the list of burden estimates for a particular
+##' scenario for a touchstone. Montagu provides csv templates including rows for
+##' all the countries, years and ages, and columns for all the burden outcomes
+##' expected. These templates can then be filled in by the modelling groups, 
+##' and uploaded to Montagu as their results submission.
 ##' @title Get central burden estimate template for an expectation
 ##' @inheritParams montagu_expectation
 ##' @importFrom utils read.csv
@@ -294,12 +348,14 @@ helper_burden_estimate_template <- function(modelling_group_id,
 montagu_central_burden_estimate_template <- function(modelling_group_id,
                                                     touchstone_id,
                                                     expectation_id,
-                                                    location) {
+                                                    location = NULL) {
 
   helper_burden_estimate_template(modelling_group_id, touchstone_id,
                                   expectation_id, "central", location)
 }
 
+##' Montagu provides the stochastic burden estimate set, which along with the
+##' columns of the central-estimate set, also includes a run_id column.
 ##' @title Get stochastic burden estimate template for an expectation
 ##' @inheritParams montagu_expectation
 ##' @importFrom utils read.csv
@@ -310,7 +366,7 @@ montagu_central_burden_estimate_template <- function(modelling_group_id,
 montagu_stochastic_burden_estimate_template <- function(modelling_group_id,
                                                         touchstone_id,
                                                         expectation_id,
-                                                        location) {
+                                                        location = NULL) {
 
   helper_burden_estimate_template(modelling_group_id, touchstone_id,
                                   expectation_id, "stochastic", location)
