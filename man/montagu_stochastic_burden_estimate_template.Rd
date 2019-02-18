@@ -5,7 +5,7 @@
 \title{Get stochastic burden estimate template for an expectation}
 \usage{
 montagu_stochastic_burden_estimate_template(modelling_group_id,
-  touchstone_id, expectation_id, location)
+  touchstone_id, expectation_id, location = NULL)
 }
 \arguments{
 \item{modelling_group_id}{id of the modelling group.}

@@ -11,6 +11,11 @@ montagu_disease(disease_id, location = NULL)
 
 \item{location}{the montagu server to connect to.}
 }
+\value{
+a list of an id and a disease name
+}
 \description{
-Retrieve disease with given id.
+Diseases have an internal id and a name in Montagu, which are generally,
+but not always the same. Occasionally, it is necessary to provide the
+disease id to Montagu functions.
 }

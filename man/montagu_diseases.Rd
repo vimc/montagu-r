@@ -9,6 +9,11 @@ montagu_diseases(location = NULL)
 \arguments{
 \item{location}{the montagu server to connect to.}
 }
+\value{
+data frame containing ids and names of diseases
+}
 \description{
-Retrieve list of all disease ids and names.
+Diseases have an internal id and a name in Montagu, which are generally,
+but not always the same. Occasionally, it is necessary to provide the
+disease id to Montagu functions.
 }
