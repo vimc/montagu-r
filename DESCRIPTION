@@ -9,6 +9,8 @@ Encoding: UTF-8
 Authors@R: c(person("Rich", "FitzJohn", role = c("aut", "cre"),
     email = "rich.fitzjohn@gmail.com"),
     person("Wes", "Hinsley", role = "aut"))
+URL: https://github.com/vimc/montagu-r
+BugReports: https://github.com/vimc/montagu-r/issues
 Imports:
     R6,
     getPass,
