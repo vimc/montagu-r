@@ -55,7 +55,7 @@ montagu_reports_data(hash, csv = FALSE, dest = NULL, progress = TRUE,
   location = NULL)
 
 montagu_reports_run(name, parameters = NULL, ref = NULL,
-  update = TRUE, timeout = NULL, wait = 3600, poll = 0.5,
+  update = TRUE, timeout = NULL, wait = Inf, poll = 0.5,
   open = FALSE, stop_on_error = FALSE, stop_on_timeout = TRUE,
   progress = TRUE, location = NULL, output = TRUE)
 
@@ -101,7 +101,9 @@ this is often not desired.}
 
 \item{update}{I can't remember?}
 
-\item{timeout}{Time to give up on running report}
+\item{timeout}{Time to give up on running report; this is set on
+the \emph{server}.  After \code{timeout} seconds, the server
+will kill the running report.}
 
 \item{wait}{Integer value indicating time to wait on the client
 side for the report to run.  If \code{0} (or less) we do not
