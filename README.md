@@ -35,8 +35,8 @@ Note that the package name is `montagu` but this repo is [`vimc/montagu-r`](http
 - [ ] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/estimate-sets/:estimate-set-id/actions/clear` (POST)
 - [ ] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/estimate-sets/:estimate-set-id/actions/close` (POST)
 - [ ] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/estimate-sets/:estimate-set-id/estimates/:outcome-code` (GET)
-- [ ] `/v1/models/` (GET)
-- [ ] `/v1/models/:id/` (GET)
+- [x] `/v1/models/` (GET)
+- [x] `/v1/models/:id/` (GET)
 - [ ] `/v1/onetime_link/:token/`
 - [ ] `/v1/password/request/link/?email=:email/` (POST)
 - [ ] `/v1/password/set/` (POST)

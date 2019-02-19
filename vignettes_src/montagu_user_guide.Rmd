@@ -28,6 +28,7 @@ montagu::montagu_server_global_default_set(
 ```
 
 ```{r, include = FALSE}
+knitr::opts_chunk$set(error = FALSE)
 options(montagu.username = "test.user@imperial.ac.uk",
         montagu.password = "password")
 montagu::montagu_server_global_default_set(
@@ -157,3 +158,26 @@ burden estimate templates with the years, countries and ages already populated:-
 df <- montagu::montagu_central_burden_estimate_template("IC-Garske", "201710gavi-5", 30)
 head(df)
 ```
+
+## Appendix
+
+### Models
+
+Montagu allows querying of basic information about all models, past and present
+used in VIMC. These can be listed as follows:-
+
+```{r}
+models <- montagu::montagu_models()
+head(models)
+```
+
+and a list of information about a particular model by its id can be retrieved
+like this:-
+
+```{r}
+montagu::montagu_model("YFIC")
+```
+
+Note that the model_id is different from the modelling_group_id, and in most
+circumstance, the modelling_group_id is the significant identifier required
+for other Montagu functions.

@@ -1,6 +1,10 @@
+## 0.3.1
+
+* Add support for models endpoints (VIMC-2545)
+
 ## 0.3.0
 
-* Support for querying responsibilities and expectations
+* Support for querying responsibilities and expectations (VIMC-2562)
 
 ## 0.2.5
 
