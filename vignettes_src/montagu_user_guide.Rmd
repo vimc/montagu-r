@@ -1,5 +1,5 @@
 ---
-title: "Montagu API from R"
+title: "Montagu API"
 author: "VIMC Technical Team"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -28,6 +28,7 @@ montagu::montagu_server_global_default_set(
 ```
 
 ```{r, include = FALSE}
+knitr::opts_chunk$set(error = FALSE)
 options(montagu.username = "test.user@imperial.ac.uk",
         montagu.password = "password")
 montagu::montagu_server_global_default_set(
@@ -174,8 +175,7 @@ and a list of information about a particular model by its id can be retrieved
 like this:-
 
 ```{r}
-models <- montagu::montagu_model("YFIC")
-head(models)
+montagu::montagu_model("YFIC")
 ```
 
 Note that the model_id is different from the modelling_group_id, and in most
