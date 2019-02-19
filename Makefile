@@ -35,4 +35,11 @@ vignettes_install: vignettes/montagu.Rmd vignettes/montagu_user_guide.Rmd
 vignettes:
 	make vignettes_install
 
+pkgdown:
+	${RSCRIPT} -e "library(methods); pkgdown::build_site(lazy = TRUE)"
+
+website: pkgdown
+	./scripts/update_web.sh
+
+
 .PHONY: test roxygen install build check check_all vignettes
