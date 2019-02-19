@@ -5,7 +5,9 @@ test_that("download coverage info", {
   dat <- montagu_coverage_info("IC-Garske", "201710gavi-5", "yf-no-vaccination",
                                location)
   expect_is(dat, "data.frame")
-  expect_equal(length(dat), 6)
+  expect_equal(sort(names(dat)), 
+               c("activity_type", "gavi_support", "id", "name", 
+                 "touchstone_version", "vaccine"))
 })
 
 test_that("download coverage info, wrong modelling group", {
@@ -57,7 +59,11 @@ test_that("download coverage data, long or wide format", {
                       "yf-routine-gavi", format = "long", location = location)
   dat_wide <- montagu_coverage_data("IC-Garske", "201710gavi-5",
                       "yf-routine-gavi", format = "wide", location = location)
+  expect_error(montagu_coverage_data("IC-Garske", "201710gavi-5",
+                      "yf-routine-gavi", format = "pink", location = location),
+               "Unrecognised format 'pink'")
   
+    
   expect_is(dat_long, "data.frame")
   expect_is(dat_wide, "data.frame")
   expect_equal(length(dat_long), 13)

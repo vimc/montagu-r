@@ -2,19 +2,22 @@
 % Please edit documentation in R/coverage.R
 \name{montagu_coverage_data}
 \alias{montagu_coverage_data}
-\title{Retrieve coverage data}
+\title{Retrieve coverage data for a scenario, touchstone and modelling group.}
 \usage{
 montagu_coverage_data(modelling_group, touchstone_id, scenario_id,
   format = "long", all_countries = FALSE, location = NULL)
 }
 \arguments{
-\item{modelling_group}{Id of modelling group}
+\item{modelling_group}{id of modelling group}
 
-\item{touchstone_id}{Id of touchstone}
+\item{touchstone_id}{id of touchstone (including version)}
 
-\item{scenario_id}{Id of scenario within touchstone}
+\item{scenario_id}{id of scenario within touchstone}
 
-\item{format}{"wide" or "long" csv format.}
+\item{format}{"wide" or "long" csv format. Long format contains a row per 
+year per country; wide format contains a row per country, 
+with year-specific columns for target population
+and coverage.}
 
 \item{all_countries}{Include all countries, instead of just those
 for which burden estimates are required.}
@@ -22,8 +25,11 @@ for which burden estimates are required.}
 \item{location}{The montagu server to connect to.}
 }
 \value{
-A data frame of metadata about all associated coverage sets
+A data frame of the coverage data.
 }
 \description{
-Retrieve coverage data
+The coverage data describes for each country, over time and age, the
+efforts to vaccinate people against each disease. Routine activities involve
+the regular vaccination that is in place, whereas campaigns are specifically
+targeted towards a certain disease or people group for a certain time period.
 }

@@ -2,17 +2,17 @@
 % Please edit documentation in R/coverage.R
 \name{montagu_coverage_info}
 \alias{montagu_coverage_info}
-\title{Retrieve metadata for coverage sets associated with a responsibility}
+\title{Retrieve metadata for coverage sets for a particularly group, touchstone and scenario.}
 \usage{
 montagu_coverage_info(modelling_group, touchstone_id, scenario_id,
   location = NULL)
 }
 \arguments{
-\item{modelling_group}{Id of modelling group}
+\item{modelling_group}{id of modelling group}
 
-\item{touchstone_id}{Id of touchstone}
+\item{touchstone_id}{id of touchstone (including version)}
 
-\item{scenario_id}{Id of scenario within touchstone}
+\item{scenario_id}{id of scenario within touchstone}
 
 \item{location}{The montagu server to connect to.}
 }
@@ -20,6 +20,8 @@ montagu_coverage_info(modelling_group, touchstone_id, scenario_id,
 A data frame of metadata about all associated coverage sets
 }
 \description{
-This may get a name change pending splitting apart of various
-montagu components.
+The coverage data describes for each country, over time and age, the
+efforts to vaccinate people against each disease. Routine activities involve
+the regular vaccination that is in place, whereas campaigns are specifically
+targeted towards a certain disease or people group for a certain time period.
 }
