@@ -492,6 +492,6 @@ montagu::montagu_model("YFIC")
 ## [1] "IC-Garske"
 ```
 
-Note that the model_id is different from the modelling_group_id, and in most
-circumstance, the modelling_group_id is the significant identifier required
+Note that the model_id (id column above) is different from the modelling_group_id,
+and generally the modelling_group_id is the significant identifier required
 for other Montagu functions.
