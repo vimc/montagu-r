@@ -22,13 +22,14 @@ have an account on this server; typically this will be our live
 production server, and you will have received login information
 on joining VIMC. Identify the server as follows:-
 
-
 ```r
 montagu::montagu_server_global_default_set(
   montagu::montagu_server("production", "montagu.vaccineimpact.org"))
 ```
 
-The next time you query the server, you will be asked to
+
+
+The next time you query the server, you may be asked to
 login with a username and password.
 
 ### Basic Information
@@ -40,10 +41,6 @@ joining VIMC, but can be looked up with simple function calls like this:-
 
 ```r
 montagu::montagu_diseases()
-```
-
-```
-## Authorising with server 'production' (https://montagu.vaccineimpact.org)
 ```
 
 ```
