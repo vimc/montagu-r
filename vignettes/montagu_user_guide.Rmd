@@ -44,18 +44,7 @@ montagu::montagu_diseases()
 ```
 
 ```
-##         id                         name
-## 1     HepB                         HepB
-## 2      Hib                          Hib
-## 3      HPV                          HPV
-## 4       JE                           JE
-## 5  Measles                      Measles
-## 6     MenA                         MenA
-## 7      PCV                          PCV
-## 8     Rota                    Rotavirus
-## 9  Rubella                      Rubella
-## 10      YF                 Yellow fever
-## 11     DTP Diphtheria Tetanus Pertussis
+## Error: 'montagu_diseases' is not an exported object from 'namespace:montagu'
 ```
 
 TO-DO - i2557
@@ -83,12 +72,7 @@ montagu::montagu_touchstone_versions("IC-Garske", require_open = TRUE)
 ```
 
 ```
-##                  id            name version                 description
-## 6      201710gavi-5      201710gavi       5      201710gavi (version 5)
-## 7 201810synthetic-2 201810synthetic       2 201810synthetic (version 2)
-##   status
-## 6   open
-## 7   open
+## Error: 'montagu_touchstone_versions' is not an exported object from 'namespace:montagu'
 ```
 
 If we knew the basic touchstone name (without version) that we were interested in,
@@ -99,8 +83,7 @@ montagu::montagu_touchstone_versions("IC-Garske", "201710gavi", require_open = T
 ```
 
 ```
-##             id       name version            description status
-## 1 201710gavi-5 201710gavi       5 201710gavi (version 5)   open
+## Error: 'montagu_touchstone_versions' is not an exported object from 'namespace:montagu'
 ```
 
 ### Scenarios
@@ -116,10 +99,7 @@ montagu::montagu_scenarios("IC-Garske", "201710gavi-5")
 ```
 
 ```
-##          scenario_id                  description disease
-## 1  yf-no-vaccination               No vaccination      YF
-## 2    yf-routine-gavi               Routine, total      YF
-## 3 yf-preventive-gavi Campaign (preventive), total      YF
+## Error: 'montagu_scenarios' is not an exported object from 'namespace:montagu'
 ```
 
 We can then look up the status a particular scenario within this touchstone:
@@ -130,7 +110,7 @@ montagu::montagu_scenario_status("IC-Garske", "201710gavi-5", "yf-routine-gavi")
 ```
 
 ```
-## [1] "valid"
+## Error: 'montagu_scenario_status' is not an exported object from 'namespace:montagu'
 ```
 
 and if that status were not valid, then we can query any problems with:
@@ -140,7 +120,7 @@ montagu::montagu_scenario_problems("IC-Garske", "201710gavi-5", "yf-routine-gavi
 ```
 
 ```
-## list()
+## Error: 'montagu_scenario_problems' is not an exported object from 'namespace:montagu'
 ```
 
 ### Expectations - years, ages, countries and outcomes
@@ -155,10 +135,7 @@ montagu::montagu_expectations("IC-Garske", "201710gavi-5")
 ```
 
 ```
-##   id           description min_year max_year min_age max_age
-## 1 30 YF:IC-Garske:standard     2000     2100       0     100
-##   min_birth_cohort max_birth_cohort disease
-## 1             1900             2100      YF
+## Error: 'montagu_expectations' is not an exported object from 'namespace:montagu'
 ```
 
 Some modelling groups model more than one disease, in which case a row appears
@@ -172,18 +149,7 @@ montagu::montagu_expectations("CDA-Razavi", "201710gavi-5")
 ```
 
 ```
-##   id                                            description min_year
-## 1  2                   HepB:CDA-Razavi:hepb-bd-routine-with     2000
-## 2  4 HepB:CDA-Razavi:hepb-bd-routine-with-hepb-routine-with     2000
-## 3  3                 HepB:CDA-Razavi:hepb-hepb-routine-with     2000
-## 4  1                    HepB:CDA-Razavi:hepb-no-vaccination     2000
-## 5  5 HepB:CDA-Razavi:hepb-bd-routine-best-hepb-routine-with     2000
-##   max_year min_age max_age min_birth_cohort max_birth_cohort disease
-## 1     2100       0      85             1915             2100    HepB
-## 2     2100       0      85             1915             2100    HepB
-## 3     2100       0      85             1915             2100    HepB
-## 4     2100       0      85             1915             2100    HepB
-## 5     2100       0      85             1915             2100    HepB
+## Error: 'montagu_expectations' is not an exported object from 'namespace:montagu'
 ```
 
 If we already knew the expectation id, we could look up
@@ -195,32 +161,7 @@ montagu::montagu_expectation("IC-Garske", "201710gavi-5", 30)
 ```
 
 ```
-## $id
-## [1] 30
-##
-## $description
-## [1] "YF:IC-Garske:standard"
-##
-## $min_year
-## [1] 2000
-##
-## $max_year
-## [1] 2100
-##
-## $min_age
-## [1] 0
-##
-## $max_age
-## [1] 100
-##
-## $min_birth_cohort
-## [1] 1900
-##
-## $max_birth_cohort
-## [1] 2100
-##
-## $disease
-## NULL
+## Error: 'montagu_expectation' is not an exported object from 'namespace:montagu'
 ```
 
 The countries for which estimates are required can vary between disease, and
@@ -230,17 +171,18 @@ particular expectation:-
 
 ```r
 countries <- montagu::montagu_expectation_countries("IC-Garske", "201710gavi-5", 30)
+```
+
+```
+## Error: 'montagu_expectation_countries' is not an exported object from 'namespace:montagu'
+```
+
+```r
 head(countries)
 ```
 
 ```
-##    id                     name
-## 1 AGO                   Angola
-## 2 BDI                  Burundi
-## 3 BEN                    Benin
-## 4 BFA             Burkina Faso
-## 5 CAF Central African Republic
-## 6 CIV            Cote d'Ivoire
+## Error in head(countries): object 'countries' not found
 ```
 
 To see which outcomes are required for an expectation:
@@ -250,7 +192,7 @@ montagu::montagu_expectation_outcomes("IC-Garske", "201710gavi-5", 30)
 ```
 
 ```
-## [1] "deaths" "cases"  "dalys"
+## Error: 'montagu_expectation_outcomes' is not an exported object from 'namespace:montagu'
 ```
 
 And to confirm which scnearios an expectation applies to (which should align
@@ -261,7 +203,7 @@ montagu::montagu_expectation_applicable_scenarios("IC-Garske", "201710gavi-5", 3
 ```
 
 ```
-## [1] "yf-no-vaccination"  "yf-preventive-gavi" "yf-routine-gavi"
+## Error: 'montagu_expectation_applicable_scenarios' is not an exported object from 'namespace:montagu'
 ```
 
 ```r
@@ -269,7 +211,7 @@ montagu::montagu_expectation_applicable_scenarios("CDA-Razavi", "201710gavi-5", 
 ```
 
 ```
-## [1] "hepb-bd-routine-with"
+## Error: 'montagu_expectation_applicable_scenarios' is not an exported object from 'namespace:montagu'
 ```
 
 ### Templates
@@ -281,15 +223,70 @@ burden estimate templates with the years, countries and ages already populated:-
 
 ```r
 df <- montagu::montagu_central_burden_estimate_template("IC-Garske", "201710gavi-5", 30)
+```
+
+```
+## Error: 'montagu_central_burden_estimate_template' is not an exported object from 'namespace:montagu'
+```
+
+```r
 head(df)
 ```
 
 ```
-##   disease year age country country_name cohort_size deaths cases dalys
-## 1      YF 2000   0     AGO       Angola          NA     NA    NA    NA
-## 2      YF 2001   0     AGO       Angola          NA     NA    NA    NA
-## 3      YF 2002   0     AGO       Angola          NA     NA    NA    NA
-## 4      YF 2003   0     AGO       Angola          NA     NA    NA    NA
-## 5      YF 2004   0     AGO       Angola          NA     NA    NA    NA
-## 6      YF 2005   0     AGO       Angola          NA     NA    NA    NA
+##
+## 1 function (x, df1, df2, ncp, log = FALSE)
+## 2 {
+## 3     if (missing(ncp))
+## 4         .Call(C_df, x, df1, df2, log)
+## 5     else .Call(C_dnf, x, df1, df2, ncp, log)
+## 6 }
 ```
+
+## Appendix
+
+### Models
+
+Montagu allows querying of basic information about all models, past and present
+used in VIMC. These can be listed as follows:-
+
+
+```r
+models <- montagu::montagu_models()
+```
+
+```
+## Error: 'montagu_models' is not an exported object from 'namespace:montagu'
+```
+
+```r
+head(models)
+```
+
+```
+## Error in head(models): object 'models' not found
+```
+
+and a list of information about a particular model by its id can be retrieved
+like this:-
+
+
+```r
+models <- montagu::montagu_model("YFIC")
+```
+
+```
+## Error: 'montagu_model' is not an exported object from 'namespace:montagu'
+```
+
+```r
+head(models)
+```
+
+```
+## Error in head(models): object 'models' not found
+```
+
+Note that the model_id is different from the modelling_group_id, and in most
+circumstance, the modelling_group_id is the significant identifier required
+for other Montagu functions.

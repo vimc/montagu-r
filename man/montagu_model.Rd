@@ -12,8 +12,10 @@ montagu_model(model_id, location = NULL)
 \item{location}{The montagu server to connect to.}
 }
 \value{
-List of information about one model
+List containing information about one model
 }
 \description{
-Retrieve model with given id.
+Models and modelling groups have text ids in Montagu. Here we can look up
+the relationships between groups and models, with description and citation
+information.
 }

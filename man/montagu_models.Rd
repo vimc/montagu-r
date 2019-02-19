@@ -10,8 +10,10 @@ montagu_models(location = NULL)
 \item{location}{The montagu server to connect to.}
 }
 \value{
-Data frame of information about models.
+Data frame containing information about models.
 }
 \description{
-Retrieve list of all model ids, names, citations and groups.
+Models and modelling groups have text ids in Montagu. Here we can look up
+the relationships between groups and models, with description and citation
+information.
 }
