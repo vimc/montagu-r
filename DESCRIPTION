@@ -6,8 +6,11 @@ Description: Client for interacting with the montagu APIs; both the
   are covered.  This package is part of montagu.
 License: MIT + file LICENSE
 Encoding: UTF-8
-Author: Rich FitzJohn
-Maintainer: Rich FitzJohn <rich.fitzjohn@gmail.com>
+Authors@R: c(person("Rich", "FitzJohn", role = c("aut", "cre"),
+    email = "rich.fitzjohn@gmail.com"),
+    person("Wes", "Hinsley", role = "aut"))
+URL: https://github.com/vimc/montagu-r
+BugReports: https://github.com/vimc/montagu-r/issues
 Imports:
     R6,
     getPass,

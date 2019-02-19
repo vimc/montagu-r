@@ -1,0 +1,159 @@
+---
+title: "Montagu API from R"
+author: "VIMC Technical Team"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Montagu API}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+In this vignette, we describe a typical example of building
+a model in R, which uses the demography and templates available
+through the Montagu API, and submited burden estimates to it. We
+will proceed very naively and cover all of the important
+functionality on the way.
+
+### Identify the Montagu Server
+
+Begin by identifying the Montagu server to connect to. You must
+have an account on this server; typically this will be our live
+production server, and you will have received login information
+on joining VIMC. Identify the server as follows:-
+
+```r
+montagu::montagu_server_global_default_set(
+  montagu::montagu_server("production", "montagu.vaccineimpact.org"))
+```
+
+```{r, include = FALSE}
+options(montagu.username = "test.user@imperial.ac.uk",
+        montagu.password = "password")
+montagu::montagu_server_global_default_set(
+  montagu::montagu_server("uat", "support.montagu.dide.ic.ac.uk", 10443))
+montagu::montagu_touchstones_list()
+```
+
+The next time you query the server, you may be asked to
+login with a username and password.
+
+### Basic Information
+
+For many of the montagu api functions, you will need to provide your
+modelling group id, and your disease id. These will have been communicated on
+joining VIMC, but can be looked up with simple function calls like this:-
+
+```{r}
+montagu::montagu_diseases()
+```
+
+TO-DO - i2557
+
+```r
+montagu::montagu_modelling_groups()
+```
+
+### Touchstones
+
+A touchstone is an identifier that links:
+
+* A request from VIMC to the modelling groups to provide burden estimates
+* The input data (coverage and demography) provided to calculate those estimates
+* The estimates submitted by the groups using the input data.
+
+Touchstone ids are referred to as a basename and a version together. Errata
+to the input data may be addressed with a new touchstone version. Generally,
+modelling groups will know which touchstone they are required to run models
+against. To lookup all the currently open touchstones for a group:-
+
+```{r}
+montagu::montagu_touchstone_versions("IC-Garske", require_open = TRUE)
+```
+
+If we knew the basic touchstone name (without version) that we were interested in,
+then we could also have asked:
+```{r}
+montagu::montagu_touchstone_versions("IC-Garske", "201710gavi", require_open = TRUE)
+```
+
+### Scenarios
+
+Within a touchstone, we may have various scenarios, describing different
+vaccination conditions. These vary across diseases due to the different types
+of vaccination approaches that have been employed. We look our the scenarios
+we are required to model for a touchstone with:
+
+```{r}
+montagu::montagu_scenarios("IC-Garske", "201710gavi-5")
+```
+
+We can then look up the status a particular scenario within this touchstone:
+
+```{r}
+montagu::montagu_scenario_status("IC-Garske", "201710gavi-5", "yf-routine-gavi")
+```
+
+and if that status were not valid, then we can query any problems with:
+```{r}
+montagu::montagu_scenario_problems("IC-Garske", "201710gavi-5", "yf-routine-gavi")
+
+```
+
+### Expectations - years, ages, countries and outcomes
+
+For a given touchstone, modelling groups are required to produce burden estimates
+stratified by calendar year, and by age. The expectations about time and age
+will be consistent across scenarios. We can look up these expectations like so:
+
+```{r}
+montagu::montagu_expectations("IC-Garske", "201710gavi-5")
+```
+
+Some modelling groups model more than one disease, in which case a row appears
+for each disease. And additionally, if there is some reason to have different
+expectations for different scenarios, then multiple lines for the same disease
+may appear, with a difference in the description column indicating the scenario.
+For example:
+```{r}
+montagu::montagu_expectations("CDA-Razavi", "201710gavi-5")
+```
+
+If we already knew the expectation id, we could look up
+a single expectation with
+
+```{r}
+montagu::montagu_expectation("IC-Garske", "201710gavi-5", 30)
+```
+
+The countries for which estimates are required can vary between disease, and
+between scenarios. To retrieve the list of countries that are required for a
+particular expectation:-
+
+```{r}
+countries <- montagu::montagu_expectation_countries("IC-Garske", "201710gavi-5", 30)
+head(countries)
+```
+
+To see which outcomes are required for an expectation:
+```{r}
+montagu::montagu_expectation_outcomes("IC-Garske", "201710gavi-5", 30)
+```
+
+And to confirm which scnearios an expectation applies to (which should align
+with the description text for the expectation):
+```{r}
+montagu::montagu_expectation_applicable_scenarios("IC-Garske", "201710gavi-5", 30)
+montagu::montagu_expectation_applicable_scenarios("CDA-Razavi", "201710gavi-5", 2)
+```
+
+### Templates
+
+The above will give all the information required to build your own data frame
+for submitting the expected results. Alternatively, you can download
+burden estimate templates with the years, countries and ages already populated:-
+
+```{r}
+df <- montagu::montagu_central_burden_estimate_template("IC-Garske", "201710gavi-5", 30)
+head(df)
+```
