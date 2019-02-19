@@ -3,3 +3,4 @@
 ^Makefile$
 ^\.travis\.yml$
 ^montagu_.*\.tar\.gz$
+^vignettes_src$

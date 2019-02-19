@@ -20,12 +20,19 @@ check:
 check_all:
 	${RSCRIPT} -e "rcmdcheck::rcmdcheck(args = c('--as-cran', '--no-manual'))"
 
-## This will eventually swap out for devtools::build_vignettes(), but
-## in current version it's not working when offline.  For now I'll
-## just do the copy manually.
-vignettes: vignettes/montagu.Rmd
+
+## We can't build vignettes on CRAN and systems without docker (and
+## even when they do, it's not a great idea because we build and
+## remove a bunch of containers etc.
+vignettes/%.Rmd: vignettes_src/%.Rmd
+	cd vignettes_src && ${RSCRIPT} -e 'knitr::knit("$(<F)", output = "../$@")'
+	sed -i.bak 's/[[:space:]]*$$//' $@
+	rm -f $@.bak
+
+vignettes_install: vignettes/montagu.Rmd vignettes/montagu_user_guide.Rmd
 	${RSCRIPT} -e 'tools::buildVignettes(dir = ".")'
-	mkdir -p inst/doc
-	cp vignettes/*.html vignettes/*.Rmd inst/doc
+
+vignettes:
+	make vignettes_install
 
 .PHONY: test roxygen install build check check_all vignettes
