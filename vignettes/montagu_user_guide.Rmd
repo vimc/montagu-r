@@ -12,7 +12,7 @@ vignette: >
 In this vignette, we describe a typical example of building
 a model in R, which uses the demography and templates available
 through the Montagu API, and submited burden estimates to it. We
-will proceed very naively and cover all of the important 
+will proceed very naively and cover all of the important
 functionality on the way.
 
 ### Identify the Montagu Server
@@ -27,12 +27,12 @@ montagu::montagu_server_global_default_set(
   montagu::montagu_server("production", "montagu.vaccineimpact.org"))
 ```
 
-The next time you query the server, you will be asked to 
+The next time you query the server, you will be asked to
 login with a username and password.
 
 ### Basic Information
 
-For many of the montagu api functions, you will need to provide your 
+For many of the montagu api functions, you will need to provide your
 modelling group id, and your disease id. These will have been communicated on
 joining VIMC, but can be looked up with simple function calls like this:-
 
@@ -119,7 +119,7 @@ montagu::montagu_expectation("IC-Garske", "201710gavi-5", 30)
 ```
 
 The countries for which estimates are required can vary between disease, and
-between scenarios. To retrieve the list of countries that are required for a 
+between scenarios. To retrieve the list of countries that are required for a
 particular expectation:-
 
 ```{r}
@@ -135,17 +135,17 @@ montagu::montagu_expectation_outcomes("IC-Garske", "201710gavi-5", 30)
 And to confirm which scnearios an expectation applies to (which should align
 with the description text for the expectation):
 ```{r}
-montagu_expectation_applicable_scenarios("IC-Garske", "201710gavi-5", 30)
+montagu::montagu_expectation_applicable_scenarios("IC-Garske", "201710gavi-5", 30)
 montagu::montagu_expectation_applicable_scenarios("CDA-Razavi", "201710gavi-5", 2)
 ```
 
 ### Templates
 
 The above will give all the information required to build your own data frame
-for submitting the expected results. Alternatively, you can download 
+for submitting the expected results. Alternatively, you can download
 burden estimate templates with the years, countries and ages already populated:-
 
-```{r} 
-df <- montagu_central_burden_estimate_template("IC-Garske", "201710gavi-5", 30)
+```{r}
+df <- montagu::montagu_central_burden_estimate_template("IC-Garske", "201710gavi-5", 30)
 head(df)
 ```
