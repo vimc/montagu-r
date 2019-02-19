@@ -1,4 +1,4 @@
-## 0.4.0
+## 0.3.1
 
 * Add support for models endpoints (VIMC-2545)
 
