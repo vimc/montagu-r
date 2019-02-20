@@ -1,6 +1,6 @@
 Package: montagu
 Title: Interface with 'montagu'
-Version: 0.3.1
+Version: 0.3.2
 Description: Client for interacting with the montagu APIs; both the
   reporing API (for remote access to orderly) and the contribution API
   are covered.  This package is part of montagu.
@@ -21,8 +21,8 @@ Imports:
     storr
 Suggests:
     knitr,
-    orderly (>= 0.5.14),
-    orderly.server (>= 0.1.1),
+    orderly (>= 0.5.17),
+    orderly.server (>= 0.1.2),
     rmarkdown,
     sys,
     testthat,

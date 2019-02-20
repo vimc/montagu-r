@@ -193,27 +193,35 @@ montagu_reports_data <- function(hash, csv = FALSE, dest = NULL,
 ##' @param parameters List of parameters to run report with
 ##' @param ref Git reference
 ##' @param update I can't remember?
-##' @param timeout Time to give up on running report
+##'
+##' @param timeout Time to give up on running report; this is set on
+##'   the \emph{server}.  After \code{timeout} seconds, the server
+##'   will kill the running report.
+##'
 ##' @param poll Time to poll for update
+##'
 ##' @param open Open the report in a browser on completion?
+##'
 ##' @param stop_on_error Throw an error if the report fails?
+##'
 ##' @param stop_on_timeout Throw an error if report is not completed in time?
 ##'
 ##' @param output Show output from running the report.  This is a work
 ##'   in progress.  This has an effect only when \code{progress} is
 ##'   \code{TRUE}.
 ##'
-##' @param wait Logical, indicating if we should wait for the report
-##'   to complete
+##' @param wait Integer value indicating time to wait on the client
+##'   side for the report to run.  If \code{0} (or less) we do not
+##'   wait.  If you provide a timeout you should make wait at least
+##'   the timeout value.
 montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
                                 update = TRUE,
-                                timeout = 3600, poll = 0.5,
+                                timeout = NULL, wait = Inf, poll = 0.5,
                                 open = FALSE,
                                 stop_on_error = FALSE,
                                 stop_on_timeout = TRUE,
                                 progress = TRUE,
-                                location = NULL, output = TRUE,
-                                wait = TRUE) {
+                                location = NULL, output = TRUE) {
   location <- montagu_location(location)
   if (!is.null(parameters)) {
     stop("parameters not yet supported")
@@ -226,6 +234,10 @@ montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
   if (!update) {
     query$update <- "false"
   }
+  if (!is.null(timeout)) {
+    assert_scalar_integer(timeout)
+    query$timeout <- as.character(timeout)
+  }
   if (length(query) == 0L) {
     query <- NULL
   }
@@ -235,8 +247,8 @@ montagu_reports_run <- function(name, parameters = NULL, ref = NULL,
   res$location <- location
   class(res) <- "montagu_report_instance"
 
-  if (wait) {
-    montagu_reports_wait(res, timeout = timeout, poll = poll,
+  if (wait > 0) {
+    montagu_reports_wait(res, timeout = wait, poll = poll,
                          open = open,
                          stop_on_error = stop_on_error,
                          stop_on_timeout = stop_on_timeout,
@@ -264,7 +276,8 @@ montagu_reports_wait <- function(obj, timeout = 3600, poll = 0.5,
   key <- obj$key
   location <- obj$location
 
-  t_stop <- Sys.time() + timeout
+  t_start <- Sys.time()
+  t_stop <- t_start + timeout
   message(sprintf("running report '%s' as '%s'", name, key))
   fmt <- sprintf("[:spin] (%s) :elapsed :status", key)
   prev_output <- list(stderr = NULL, stdout = NULL)
@@ -334,7 +347,7 @@ montagu_reports_wait <- function(obj, timeout = 3600, poll = 0.5,
     message()
   }
 
-  if (stop_on_error && state == "error") {
+  if (stop_on_error && state %in% c("error", "killed")) {
     ## TODO: It would be super nice to get the full stack trace back
     ## here from orderly on error.  That should not be hard to do.
     if (!progress || !output) {
@@ -342,14 +355,23 @@ montagu_reports_wait <- function(obj, timeout = 3600, poll = 0.5,
                                  query = list(output = TRUE))
       cat(format_output(ans$output))
     }
-    stop("Report has failed: see above for details")
+    if (state == "error") {
+      stop("Report has failed: see above for details")
+    } else {
+      stop(sprintf("job killed by remote server after %d secs",
+                   round(as.numeric(Sys.time() - t_start, "secs"))))
+    }
   }
 
   ans <- montagu_reports_GET(location, path, query = list(output = TRUE))
-  url <- sprintf("%s/reports/%s/%s", location$url_www, name, ans$version)
-  if (open) {
-    message("Opening report in browser (you may need to log in)")
-    utils::browseURL(url)
+  if (state == "success") {
+    url <- sprintf("%s/reports/%s/%s", location$url_www, name, ans$version)
+    if (open) {
+      message("Opening report in browser (you may need to log in)")
+      utils::browseURL(url)
+    }
+  } else {
+    url <- NULL
   }
   list(name = name,
        id = ans$version,
