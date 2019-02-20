@@ -10,30 +10,59 @@ Note that the package name is `montagu` but this repo is [`vimc/montagu-r`](http
 
 ### Core api
 
-- [ ] `/v1/authenticate/`
-- [ ] `/v1/diseases/`
-- [ ] `/v1/diseases/:id/`
-- [ ] `/v1/touchstones/`
-- [ ] `/v1/touchstones/:touchstone-id/scenarios/`
-- [ ] `/v1/touchstones/:touchstone-id/scenarios/:scenario-id/`
-- [ ] `/v1/touchstones/:touchstone-id/demographics/`
-- [ ] `/v1/modelling-groups/`
-- [ ] `/v1/modelling-groups/:group-id/`
-- [ ] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/`
-- [ ] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/`
-- [ ] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/coverage_sets/`
-- [ ] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/coverage/`
-- [ ] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/coverage/`
+- [ ] `/v1/authenticate/` (POST)
+- [x] `/v1/diseases/` (GET)
+- [x] `/v1/diseases/:id/` (GET)
+- [ ] `/v1/logout/` (GET)
+- [x] `/v1/modelling-groups/` (GET)
+- [ ] `/v1/modelling-groups/` (POST)
+- [x] `/v1/modelling-groups/:group-id/` (GET)
+- [ ] `/v1/modelling-groups/:group-id/actions/associate-memeber/` (POST)
+- [x] `/v1/modelling-groups/:group-id/expectations/:touchstone-id/:expectation-id/` (GET)
+- [ ] `/v1/modelling-groups/:group-id/model-run-parameters/:touchstone-id/` (GET)
+- [ ] `/v1/modelling-groups/:group-id/model-run-parameters/:touchstone-id/` (POST)
+- [ ] `/v1/modelling-groups/:group-id/model-run-parameters/:touchstone-id/model-run-parameter-set-id/` (GET)
+- [x] `/v1/modelling-groups/:group-id/responsibilities/` (GET)
+- [x] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/` (GET)
+- [ ] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/` (GET)
+- [x] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/coverage/` (GET)
 - [ ] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/coverage/get_onetime_link/`
-- [ ] `/v1/users/:username/`
-- [ ] `/v1/users/`
-- [ ] `/v1/users/`
-- [ ] `/v1/models/`
-- [ ] `/v1/models/:id/`
+- [x] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/coverage_sets/` (GET)
+- [ ] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/estimate-sets/` (GET)
+- [ ] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/estimate-sets/` (POST)
+- [ ] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/estimate-sets/:estimate-set-id` (GET)
+- [ ] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/estimate-sets/:estimate-set-id` (POST)
+- [ ] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/estimate-sets/:estimate-set-id/actions/clear` (POST)
+- [ ] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/estimate-sets/:estimate-set-id/actions/close` (POST)
+- [ ] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/estimate-sets/:estimate-set-id/estimates/:outcome-code` (GET)
+- [x] `/v1/models/` (GET)
+- [x] `/v1/models/:id/` (GET)
 - [ ] `/v1/onetime_link/:token/`
+- [ ] `/v1/password/request/link/?email=:email/` (POST)
+- [ ] `/v1/password/set/` (POST)
+- [ ] `/v1/set-cookies/` (GET)
+- [ ] `/v1/touchstones/` (GET)
+- [ ] `/v1/touchstones/:touchstone-id/demographics/` (GET)
+- [ ] `/v1/touchstones/:touchstone-id/demographics/:source_code/:demographic-type-code` (GET)
+- [ ] `/v1/touchstones/:touchstone-id/demographics/:source_code/:demographic-type-code/csv/` (GET)
+- [ ] `/v1/touchstones/:touchstone-id/responsibilities/` (GET)
+- [ ] `/v1/touchstones/:touchstone-id/scenario-id/coverage/` (GET)
+- [ ] `/v1/touchstones/:touchstone-id/scenarios/` (GET)
+- [ ] `/v1/touchstones/:touchstone-id/scenarios/:scenario-id/` (GET)
+- [ ] `/v1/users/` (GET)
+- [ ] `/v1/users/` (POST)
+- [ ] `/v1/users/:username/` (GET)
+- [ ] `/v1/users/:username/actions/associate-role/` (POST)
+- [ ] `/v1/users/report-headers/:reportname/` (GET)
+- [ ] `/v1/users/rfp/agree-confidentiality/` (GET)
+- [ ] `/v1/users/rfp/agree-confidentiality/` (POST)
 
 ### Reporting API
 
+- [ ] `/v1/`
+- [x] `/v1/data/csv/:id/`
+- [x] `/v1/data/rds/:id/`
+- [ ] `/v1/onetime_token/`
 - [x] `/v1/reports/`
 - [x] `/v1/reports/:name/`
 - [x] `/v1/reports/:name/:version/`
@@ -44,10 +73,6 @@ Note that the package name is `montagu` but this repo is [`vimc/montagu-r`](http
 - [ ] `/v1/reports/:name/:version/resources/:resource/`
 - [x] `/v1/reports/:name/:version/data/`
 - [x] `/v1/reports/:name/:version/data/:data/`
-- [x] `/v1/data/csv/:id/`
-- [x] `/v1/data/rds/:id/`
-- [ ] `/v1/onetime_token/`
-- [ ] `/v1/`
 
 ## Installation
 

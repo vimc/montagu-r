@@ -1,13 +1,16 @@
 Package: montagu
 Title: Interface with 'montagu'
-Version: 0.2.5
+Version: 0.3.4
 Description: Client for interacting with the montagu APIs; both the
   reporing API (for remote access to orderly) and the contribution API
   are covered.  This package is part of montagu.
 License: MIT + file LICENSE
 Encoding: UTF-8
-Author: Rich FitzJohn
-Maintainer: Rich FitzJohn <rich.fitzjohn@gmail.com>
+Authors@R: c(person("Rich", "FitzJohn", role = c("aut", "cre"),
+    email = "rich.fitzjohn@gmail.com"),
+    person("Wes", "Hinsley", role = "aut"))
+URL: https://github.com/vimc/montagu-r
+BugReports: https://github.com/vimc/montagu-r/issues
 Imports:
     R6,
     getPass,
@@ -18,7 +21,7 @@ Imports:
     storr
 Suggests:
     knitr,
-    orderly (>= 0.5.11),
+    orderly (>= 0.5.14),
     orderly.server (>= 0.1.1),
     rmarkdown,
     sys,

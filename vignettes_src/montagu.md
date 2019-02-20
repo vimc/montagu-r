@@ -1,7 +1,7 @@
 ---
 title: "Montagu API"
 author: "VIMC Technical Team"
-date: "2019-02-20"
+date: "2019-02-19"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Montagu API}
@@ -23,18 +23,21 @@ externally there is only one.
 
 ### Authentication
 
+
 ```r
 montagu::montagu_server_global_default_set(
   montagu::montagu_server("production", "montagu.vaccineimpact.org"))
 ```
 
-
-
-On the first request you may be prompted for a password
+On the first request you will be prompted for a password
 
 
 ```r
 montagu::montagu_touchstones_list()
+```
+
+```
+## Authorising with server 'production' (https://montagu.vaccineimpact.org)
 ```
 
 ```
