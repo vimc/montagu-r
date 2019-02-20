@@ -51,7 +51,7 @@ R6_montagu_orderly_remote <- R6::R6Class(
     },
 
     run = function(name, parameters = NULL, ref = NULL,
-                   timeout = 3600, poll = 1, progress = TRUE,
+                   timeout = NULL, wait = 1000, poll = 1, progress = TRUE,
                    stop_on_error = TRUE, open = FALSE) {
       montagu_reports_run(name, parameters = parameters, ref = ref,
                           timeout = timeout, poll = poll, progress = progress,
