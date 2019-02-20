@@ -22,7 +22,7 @@ Imports:
 Suggests:
     knitr,
     orderly (>= 0.5.17),
-    orderly.server (>= 0.1.1),
+    orderly.server (>= 0.1.2),
     rmarkdown,
     sys,
     testthat,
