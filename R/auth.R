@@ -278,13 +278,15 @@ montagu_server_request <- function(server, verb, path, ...,
   }
   r <- do_request()
 
-  if (httr::status_code(r) == 401L && retry_on_auth_error) {
+  if (httr::status_code(r) %in% 401L && retry_on_auth_error) {
     errors <- from_json(httr::content(r, "text", encoding = "UTF-8"))$errors
     if (any(vcapply(errors, function(x) x$code) == "bearer-token-invalid")) {
       server$reauthorise()
       r <- do_request()
     }
   }
+  
+ 
 
   montagu_response(r, accept, dest)
 }
@@ -292,7 +294,7 @@ montagu_server_request <- function(server, verb, path, ...,
 
 montagu_response <- function(r, accept, dest) {
   code <- httr::status_code(r)
-  if (code == 404) {
+  if ((code == 404) || (code == 403)) {
     ## Not sure about 403
     if (is_json_response(r)) {
       res <- response_to_json(r)
