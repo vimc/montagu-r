@@ -349,7 +349,7 @@ montagu_dest <- function(dest, accept, progress) {
 
 
 montagu_api_error <- function(msg, code, errors) {
-  err <- list(message = msg, errors = errors)
+  err <- list(message = msg, errors = errors, code = code)
   class(err) <- c("montagu_api_error", "error", "condition")
   err
 }

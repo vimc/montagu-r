@@ -23,12 +23,20 @@ externally there is only one.
 
 ### Authentication
 
-```{r}
+```r
 montagu::montagu_server_global_default_set(
   montagu::montagu_server("production", "montagu.vaccineimpact.org"))
 ```
 
-On the first request you will be prompted for a password
+```{r, include = FALSE}
+options(montagu.username = "test.user@imperial.ac.uk",
+        montagu.password = "password")
+montagu::montagu_server_global_default_set(
+  montagu::montagu_server("uat", "support.montagu.dide.ic.ac.uk", 10443))
+montagu::montagu_touchstones_list()
+```
+
+On the first request you may be prompted for a password
 
 ```{r}
 montagu::montagu_touchstones_list()

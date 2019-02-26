@@ -1,0 +1,99 @@
+---
+title: "Montagu API from R"
+author: "VIMC Technical Team"
+date: "2019-02-26"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Montagu API}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+In this vignette, we describe a typical example of building
+a model in R, which uses the demography and templates available
+through the Montagu API, and submited burden estimates to it. We
+will proceed very naively and cover all of the important
+functionality on the way.
+
+### Identify the Montagu Server
+
+Begin by identifying the Montagu server to connect to. You must
+have an account on this server; typically this will be our live
+production server, and you will have received login information
+on joining VIMC. Identify the server as follows:-
+
+```r
+montagu::montagu_server_global_default_set(
+  montagu::montagu_server("production", "montagu.vaccineimpact.org"))
+```
+
+
+
+The next time you query the server, you may be asked to
+login with a username and password.
+
+### Basic Information
+
+For many of the montagu api functions, you will need to provide your
+modelling group id, and your disease id. These will have been communicated on
+joining VIMC, but can be looked up with simple function calls like this:-
+
+
+```r
+montagu::montagu_diseases()
+```
+
+```
+##         id                         name
+## 1     HepB                         HepB
+## 2      Hib                          Hib
+## 3      HPV                          HPV
+## 4       JE                           JE
+## 5  Measles                      Measles
+## 6     MenA                         MenA
+## 7      PCV                          PCV
+## 8     Rota                    Rotavirus
+## 9  Rubella                      Rubella
+## 10      YF                 Yellow fever
+## 11     DTP Diphtheria Tetanus Pertussis
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
