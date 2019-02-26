@@ -12,15 +12,9 @@ test_that("download coverage info", {
 
 test_that("download coverage info, wrong modelling group", {
   location <- montagu_test_server()
-  
-  # Below is not the best error message - see
-  # https://vimc.myjetbrains.com/youtrack/issue/VIMC-2583
-  
   expect_error(montagu_coverage_info("ZZZIC-Garske", "201710gavi-5", 
                                      "yf-no-vaccination", location),
-    paste0("Error running request:\n\t - forbidden: You do not have sufficient",
-           " permissions to access this resource. Missing these permissions:",
-           " modelling-group:ZZZIC-Garske/coverage.read"))
+    "Unknown modelling-group with id 'ZZZIC-Garske'")
 })
 
 test_that("download coverage info, wrong touchstone", {
@@ -72,18 +66,9 @@ test_that("download coverage data, long or wide format", {
 
 test_that("download coverage info, wrong modelling group", {
   location <- montagu_test_server()
-  
-  # This fails at the moment, because the API does not throw an error.
-  # https://vimc.myjetbrains.com/youtrack/issue/VIMC-2584
-  
-  dat <- montagu_coverage_data("ZZZIC-Garske", "201710gavi-5", 
-                               "yf-no-vaccination", location = location)
-  
   expect_error(montagu_coverage_data("ZZZIC-Garske", "201710gavi-5", 
                             "yf-no-vaccination", location = location),
-               paste0("Error running request:\n\t - forbidden: You do not have sufficient",
-                      " permissions to access this resource. Missing these permissions:",
-                      " modelling-group:ZZZIC-Garske/coverage.read"))
+               "Unknown modelling-group with id 'ZZZIC-Garske'")
 })
 
 test_that("download coverage data, wrong touchstone", {
@@ -99,4 +84,3 @@ test_that("download coverage data, wrong scenario", {
                         "zzzyf-no-vaccination", location = location),
                "Unknown responsibility with id 'zzzyf-no-vaccination'")
 })
-
