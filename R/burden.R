@@ -36,32 +36,14 @@ montagu_burden_estimate_set_info <- function(modelling_group_id, touchstone_id,
               scenario_id, burden_estimate_set_id, location = NULL) {
   
   
-  # path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/%s/",
-  #      modelling_group_id, touchstone_id, scenario_id, burden_estimate_set_id)
-  # res <- montagu_api_GET(location, path)
-  
-  # The endpoint for the above is currently not working 
-  # see https://vimc.myjetbrains.com/youtrack/issue/VIMC-2600
-  # So below code does the selection in R from the full list and mimics a
-  # likely error message for invalid ids.
-  
-  path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/",
-                  modelling_group_id, touchstone_id, scenario_id)
+  path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/%s/",
+        modelling_group_id, touchstone_id, scenario_id, burden_estimate_set_id)
   res <- montagu_api_GET(location, path)
+  typeinfo <- res$type
+  c(res[c("id", "uploaded_on", "uploaded_by")],
+    typeinfo[c("type", "details")],
+    res["status"])
   
-  df <- data_frame(id = viapply(res, "[[", "id"),
-             uploaded_on = vcapply(res, "[[", "uploaded_on"),
-             uploaded_by = vcapply(res, "[[", "uploaded_by"),
-             type = vcapply(res, function(x) x$type$type),
-             details = vcapply(res, function(x) x$type$details),
-             status = vcapply(res, "[[", "status"))
-  
-  if (!burden_estimate_set_id %in% df$id) {
-    stop(sprintf("Unknown burden estimate set with id '%d'",
-                  burden_estimate_set_id))
-  }
-  
-  as.list(df[df$id == burden_estimate_set_id, ])
 }
 
 ##' @export
@@ -73,13 +55,11 @@ montagu_burden_estimate_set_data <- function(modelling_group_id, touchstone_id,
                       scenario_id, burden_estimate_set_id, location = NULL) {
   
   
-  path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/%s/",
+  path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/%s/estimates",
         modelling_group_id, touchstone_id, scenario_id, burden_estimate_set_id)
   res <- rawToChar(montagu_api_GET(location, path, accept="csv"))
   read.csv(text = res, header = TRUE, stringsAsFactors = FALSE)
   
-  # The endpoint for the above is currently not working 
-  # see https://vimc.myjetbrains.com/youtrack/issue/VIMC-2632
 }
 
 ##' @export
@@ -94,19 +74,11 @@ montagu_burden_estimate_set_data <- function(modelling_group_id, touchstone_id,
 montagu_burden_estimate_set_problems <- function(modelling_group_id, 
     touchstone_id, scenario_id, burden_estimate_set_id, location = NULL) {
   
-  # Could simplify this when 
-  # see https://vimc.myjetbrains.com/youtrack/issue/VIMC-2600 is done
-  
-  path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/",
-                  modelling_group_id, touchstone_id, scenario_id)
+  path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/%s/",
+                  modelling_group_id, touchstone_id, scenario_id, 
+                  burden_estimate_set_id)
   res <- montagu_api_GET(location, path)
-  ids <- viapply(res, "[[", "id")
-  if (! burden_estimate_set_id %in% ids) {
-    stop(sprintf("Unknown burden estimate set with id '%d'",
-                  burden_estimate_set_id))
-  }
-  probs <- lapply(res, "[[", "problems")
-  probs[[which(burden_estimate_set_id == ids)]]
+  res$problems
 }
 
 ##' @export
