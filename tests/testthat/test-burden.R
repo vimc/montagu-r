@@ -40,6 +40,7 @@ test_that("Burden estimate sets - incorrect scenario", {
   
   # This test fails - the API currently returns a valid empty list.
   # See https://vimc.myjetbrains.com/youtrack/issue/VIMC-2628
+  # Fixed in v1.13.3 ...
   
   location <- montagu_test_server()
   expect_error(montagu_burden_estimate_sets(
@@ -72,7 +73,7 @@ test_that("Burden estimate set info - incorrect scenario", {
   # (1) https://vimc.myjetbrains.com/youtrack/issue/VIMC-2628 is the issue
   #     currently causing the problem
   # (2) https://vimc.myjetbrains.com/youtrack/issue/VIMC-2600 would enable
-  #     filtering at the server side - at presept, 
+  #     filtering at the server side - at present, 
   #     montagu_burden_estimate_set_info is working around i2600, and 
   #     then running into i2628 as a result.
   
@@ -86,7 +87,7 @@ test_that("Burden estimate set info - incorrect estimate set id", {
   location <- montagu_test_server()
   expect_error(montagu_burden_estimate_set_info(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
-    "Unknown burden estimate set with id '10'")
+    "Unknown burden-estimate-set with id '10'")
 })
 
 ### BURDEN ESTIMATE SET - GET DATA
@@ -95,6 +96,7 @@ test_that("Burden estimate set info - incorrect group", {
   
   # This test fails, befure it gets to the incorrect group.
   # See https://vimc.myjetbrains.com/youtrack/issue/VIMC-2632
+  # 1.13.3 ?
   
   location <- montagu_test_server()
   expect_error(montagu_burden_estimate_set_data(
@@ -106,10 +108,6 @@ test_that("Burden estimate set info - incorrect group", {
 })
 
 test_that("Burden estimate set info - incorrect touchstone", {
-  
-  # This test fails, befure it gets to the incorrect touchstone.
-  # See https://vimc.myjetbrains.com/youtrack/issue/VIMC-2632
-  
   location <- montagu_test_server()
   expect_error(montagu_burden_estimate_set_data(
     "IC-Garske", "ZZZ201710gavi-5", "yf-no-vaccination", 10, location),
@@ -119,7 +117,7 @@ test_that("Burden estimate set info - incorrect touchstone", {
 test_that("Burden estimate set info - incorrect scenario", {
   # This test fails, befure it gets to the incorrect scenario.
   # See https://vimc.myjetbrains.com/youtrack/issue/VIMC-2632
-  
+  # 1.13.3?  
   location <- montagu_test_server()
   expect_error(montagu_burden_estimate_set_data(
     "IC-Garske", "201710gavi-5", "ZZZyf-no-vaccination", 10, location),
@@ -127,12 +125,10 @@ test_that("Burden estimate set info - incorrect scenario", {
 })
 
 test_that("Burden estimate set info - incorrect estimate set id", {
-  # This test fails, befure it gets to the incorrect id.
-  # See https://vimc.myjetbrains.com/youtrack/issue/VIMC-2632
   location <- montagu_test_server()
   expect_error(montagu_burden_estimate_set_data(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
-    "Unknown burden estimate set with id '10'")
+    "Unknown burden-estimate-set with id '10'")
 })
 ### BURDEN ESTIMATE SET PROBLEMS
 
@@ -221,12 +217,10 @@ test_that("Create Burden Estimate - incorrect type", {
 test_that("Create Burden Estimate - absurd parameter set id", {
   location <- montagu_test_server()
  
-   # Note the typo below...!
-  
   expect_error(montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", "stochastic",
     -123, "Details", location),
-    "Unknown model run paramater set with id '-123'")
+    "Unknown model run parameter set with id '-123'")
 })
 
 test_that("Create Burden Estimate - misplaced parameter set id", {
@@ -250,7 +244,7 @@ test_that("Create Burden Estimate - General usage", {
   expect_is(bsid, "integer")
   
   
-  # Populate it a bit - data here is all wrong...
+  # Populate it a bit - data here is all nonsense...
   
   data <- data_frame(disease = "Hib3", 
                    year=c(1986,2017,2016,2017), 
@@ -342,7 +336,7 @@ test_that("Create Burden Estimate - with keep_open=TRUE and close", {
   bsid <- montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", "central-averaged",
     20, "Details", location)
-  expect_is(bsid2, "integer")
+  expect_is(bsid, "integer")
   
   # Convert this to use converage.R when merged
   
