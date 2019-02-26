@@ -23,10 +23,7 @@ test_that("Burden estimate sets info - incorrect group", {
   
   expect_error(montagu_burden_estimate_sets(
     "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", location),
-    paste0("Error running request:\n",
-           "\t - forbidden: You do not have sufficient permissions ",
-           "to access this resource. Missing these permissions: ",
-           "modelling-group:ZZZIC-Garske/estimates.read"))
+    "Unknown modelling-group with id 'ZZZIC-Garske'")
 })
 
 test_that("Burden estimate sets - incorrect touchstone", {
@@ -55,8 +52,7 @@ test_that("Burden estimate set info - incorrect group", {
   location <- montagu_test_server()
   expect_error(montagu_burden_estimate_set_info(
     "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
-    paste0("Error running request:\n",
-           "\t - forbidden: You do not have sufficient permissions ",
+    paste0("You do not have sufficient permissions ",
            "to access this resource. Missing these permissions: ",
            "modelling-group:ZZZIC-Garske/estimates.read"))
 })
@@ -93,16 +89,10 @@ test_that("Burden estimate set info - incorrect estimate set id", {
 ### BURDEN ESTIMATE SET - GET DATA
 
 test_that("Burden estimate set info - incorrect group", {
-  
-  # This test fails, befure it gets to the incorrect group.
-  # See https://vimc.myjetbrains.com/youtrack/issue/VIMC-2632
-  # 1.13.3 ?
-  
   location <- montagu_test_server()
   expect_error(montagu_burden_estimate_set_data(
     "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
-    paste0("Error running request:\n",
-           "\t - forbidden: You do not have sufficient permissions ",
+    paste0("You do not have sufficient permissions ",
            "to access this resource. Missing these permissions: ",
            "modelling-group:ZZZIC-Garske/estimates.read"))
 })
@@ -145,8 +135,7 @@ test_that("Burden estimate set problems - incorrect group", {
   
   expect_error(montagu_burden_estimate_set_problems(
     "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
-    paste0("Error running request:\n",
-           "\t - forbidden: You do not have sufficient permissions ",
+    paste0("You do not have sufficient permissions ",
            "to access this resource. Missing these permissions: ",
            "modelling-group:ZZZIC-Garske/estimates.read"))
 })
@@ -180,8 +169,7 @@ test_that("Create Burden Estimate - incorrect group", {
   expect_error(montagu_burden_estimate_set_create(
     "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", "stochastic",
     10, "Details", location),
-    paste0("Error running request:\n",
-           "\t - forbidden: You do not have sufficient permissions ",
+    paste0("You do not have sufficient permissions ",
            "to access this resource. Missing these permissions: ",
            "modelling-group:ZZZIC-Garske/estimates.write"))
 })
@@ -216,7 +204,7 @@ test_that("Create Burden Estimate - incorrect type", {
 
 test_that("Create Burden Estimate - absurd parameter set id", {
   location <- montagu_test_server()
- 
+
   expect_error(montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", "stochastic",
     -123, "Details", location),
@@ -374,8 +362,7 @@ test_that("Clear non-open set - incorrect group", {
   
   expect_error(montagu_burden_estimate_set_clear(
     "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
-    paste0("Error running request:\n",
-           "\t - forbidden: You do not have sufficient permissions ",
+    paste0("You do not have sufficient permissions ",
            "to access this resource. Missing these permissions: ",
           "modelling-group:ZZZIC-Garske/estimates.write"))
 })
@@ -406,8 +393,7 @@ test_that("Close burden estimate set - incorrect group", {
   
   expect_error(montagu_burden_estimate_set_close(
     "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
-    paste0("Error running request:\n",
-           "\t - forbidden: You do not have sufficient permissions ",
+    paste0("You do not have sufficient permissions ",
            "to access this resource. Missing these permissions: ",
            "modelling-group:ZZZIC-Garske/estimates.write"))
 })
