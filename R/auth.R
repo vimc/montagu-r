@@ -292,7 +292,7 @@ montagu_server_request <- function(server, verb, path, ...,
 
 montagu_response <- function(r, accept, dest) {
   code <- httr::status_code(r)
-  if (code == 404) {
+  if ((code == 404) || (code == 403)) {
     ## Not sure about 403
     if (is_json_response(r)) {
       res <- response_to_json(r)
