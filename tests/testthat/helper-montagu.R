@@ -32,10 +32,8 @@ montagu_test_server <- function(username = NULL, password = NULL) {
 }
 
 
-orderly_test_server <- function() {
+orderly_test_server <- function(name = "interactive", port = 8321) {
   testthat::skip_on_travis()
-  name <- "interactive"
-  port <- 8321
   path <- orderly:::prepare_orderly_example(name)
   server <- orderly.server::orderly_server_background(path, port)
   server$start()

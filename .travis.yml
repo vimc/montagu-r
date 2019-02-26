@@ -5,13 +5,10 @@ sudo: false
 cache: packages
 
 r_github_packages:
-  - vimc/orderly
-  - vimc/orderly.server
+  - vimc/orderly@2517
+  - vimc/orderly.server@2517
 
 addons:
   apt:
     packages:
       - libapparmor-dev
-
-r_check_args: --no-vignettes
-r_build_args: --no-build-vignettes
