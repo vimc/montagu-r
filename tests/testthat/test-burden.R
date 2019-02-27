@@ -65,15 +65,7 @@ test_that("Burden estimate set info - incorrect touchstone", {
 })
 
 test_that("Burden estimate set info - incorrect scenario", {
-  # This test fails - 
-  # (1) https://vimc.myjetbrains.com/youtrack/issue/VIMC-2628 is the issue
-  #     currently causing the problem
-  # (2) https://vimc.myjetbrains.com/youtrack/issue/VIMC-2600 would enable
-  #     filtering at the server side - at present, 
-  #     montagu_burden_estimate_set_info is working around i2600, and 
-  #     then running into i2628 as a result.
-  
-  location <- montagu_test_server()
+ location <- montagu_test_server()
   expect_error(montagu_burden_estimate_set_info(
     "IC-Garske", "201710gavi-5", "ZZZyf-no-vaccination", 687, location),
     "Unknown scenario-description with id 'ZZZyf-no-vaccination")
@@ -88,7 +80,7 @@ test_that("Burden estimate set info - incorrect estimate set id", {
 
 ### BURDEN ESTIMATE SET - GET DATA
 
-test_that("Burden estimate set info - incorrect group", {
+test_that("Burden estimate set data - incorrect group", {
   location <- montagu_test_server()
   expect_error(montagu_burden_estimate_set_data(
     "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
@@ -97,14 +89,14 @@ test_that("Burden estimate set info - incorrect group", {
            "modelling-group:ZZZIC-Garske/estimates.read"))
 })
 
-test_that("Burden estimate set info - incorrect touchstone", {
+test_that("Burden estimate set data - incorrect touchstone", {
   location <- montagu_test_server()
   expect_error(montagu_burden_estimate_set_data(
     "IC-Garske", "ZZZ201710gavi-5", "yf-no-vaccination", 10, location),
     "Unknown touchstone-version with id 'ZZZ201710gavi-5'")
 })
 
-test_that("Burden estimate set info - incorrect scenario", {
+test_that("Burden estimate set data - incorrect scenario", {
   # This test fails, befure it gets to the incorrect scenario.
   # See https://vimc.myjetbrains.com/youtrack/issue/VIMC-2632
   # 1.13.3?  
@@ -148,12 +140,6 @@ test_that("Burden estimate set problems - incorrect touchstone", {
 })
 
 test_that("Burden estimate set problems - incorrect scenario", {
-  # This test is failing...
-  # API reports incorrect burden estimate set id, but not the
-  # nonsense scenario.
-  # I think https://vimc.myjetbrains.com/youtrack/issue/VIMC-2628
-  # will resolve it.
-  
   location <- montagu_test_server()
   expect_error(montagu_burden_estimate_set_problems(
     "IC-Garske", "201710gavi-5", "ZZZyf-no-vaccination", 10, location),
@@ -202,6 +188,24 @@ test_that("Create Burden Estimate - incorrect type", {
            "central-averaged, or central-unknown"))
 })
 
+test_that("Create Burden Estimate - incorrect param set for stochastic", {
+  location <- montagu_test_server()
+  
+  expect_error(montagu_burden_estimate_set_create(
+    "IC-Garske", "201710gavi-5", "yf-no-vaccination", "stochastic",
+    NULL, "Details", location),
+    "model_run_parameter_set must be specified for stochastic runs")
+})
+
+test_that("Create Burden Estimate - incorrect param set for non-stochastic", {
+  location <- montagu_test_server()
+  
+  expect_error(montagu_burden_estimate_set_create(
+    "IC-Garske", "201710gavi-5", "yf-no-vaccination", "central-single-run",
+    123, "Details", location),
+    "model_run_parameter_set should only be specified for stochastic runs")
+})
+
 test_that("Create Burden Estimate - absurd parameter set id", {
   location <- montagu_test_server()
 
@@ -223,12 +227,12 @@ test_that("Create Burden Estimate - misplaced parameter set id", {
     "Unknown model run paramater set with id '1'")
 })
 
-test_that("Create Burden Estimate - General usage", {
+test_that("Create Burden Estimate - General usage - central", {
   location <- montagu_test_server()
   
   bsid <- montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", "central-averaged",
-    20, "Details", location)
+    NULL, "Details", location)
   expect_is(bsid, "integer")
   
   
@@ -280,8 +284,15 @@ test_that("Create Burden Estimate - General usage", {
   
   # Test clearing it... FAILS.
   
-  montagu_burden_estimate_set_clear(
+  res <- montagu_burden_estimate_set_clear(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", bsid, location)
+  expect_equal(res, "OK")
+  
+  # Clear a second time - expect failure
+  # This fails - see i2656
+  res <- montagu_burden_estimate_set_clear(
+    "IC-Garske", "201710gavi-5", "yf-no-vaccination", bsid, location)
+  expect_equal(res, "NOT OK")
   
   # In the meantime, we'll just create a new one on UAT.
   
@@ -294,7 +305,7 @@ test_that("Create Burden Estimate - with keep_open=FALSE", {
   
   bsid <- montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", "central-averaged",
-    20, "Details", location)
+    NULL, "Details", location)
   expect_is(bsid, "integer")
   
   # Convert this to use coverage.R when all is merged
@@ -323,7 +334,7 @@ test_that("Create Burden Estimate - with keep_open=TRUE and close", {
   
   bsid <- montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", "central-averaged",
-    20, "Details", location)
+    NULL, "Details", location)
   expect_is(bsid, "integer")
   
   # Convert this to use converage.R when merged

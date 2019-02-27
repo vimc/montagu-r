@@ -1,13 +1,16 @@
-##' This may get a name change pending splitting apart of various
-##' montagu components.
-##' @title The Montagu API
+##' Burden estimate sets define a set of results for a modelling group. They
+##' are specific to a touchstone and scenario. Usually, they will be the 
+##' populated version of the burden estimate set template, which a modelling
+##' group can download, and defines the columns and rows for all the 
+##' countries, ages and years that are expected from that group, for that
+##' scenario. The modelling group then overwrites the missing values with
+##' results from their model, and submits the results to Montagu. 
+##' @title Burden Estimate Sets
 ##' @param location A montagu location
-##' @rdname montagu_api
-##' @name montagu_api
+##' @name Burden Estimate Sets
 NULL
 
 ##' @export
-##' @rdname montagu_api
 ##' @title Retrieves list of estimate sets for a group, touchstone and scenario.
 ##' @param modelling_group_id Modelling group identifier
 ##' @param touchstone_id Touchstone identifier
@@ -16,25 +19,33 @@ NULL
 ##' @return A data frame of information about all relevant estimate sets.
 montagu_burden_estimate_sets <- function(modelling_group_id, touchstone_id,
                                      scenario_id, location = NULL) {
+  assert_character(modelling_group_id)
+  assert_character(touchstone_id)
+  assert_character(scenario_id)
+  
   path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/",
                   modelling_group_id, touchstone_id, scenario_id)
   res <- montagu_api_GET(location, path)
-  data_frame(id = viapply(res, "[[", "id"),
+  df <- data_frame(id = viapply(res, "[[", "id"),
              uploaded_on = vcapply(res, "[[", "uploaded_on"),
              uploaded_by = vcapply(res, "[[", "uploaded_by"),
              type = vcapply(res, function(x) x$type$type),
              details = vcapply(res, function(x) x$type$details),
              status = vcapply(res, "[[", "status"))
+  df[order(df$id),]
 }
 
 ##' @export
-##' @rdname montagu_api
 ##' @title Retrieves information about a specific burden estimate set.
-##' @inheritParams montagu_burden_estimate_sets
+##' @inherit montagu_burden_estimate_sets
 ##' @return A list of information about a specific estimate set.
 montagu_burden_estimate_set_info <- function(modelling_group_id, touchstone_id,
               scenario_id, burden_estimate_set_id, location = NULL) {
   
+  assert_character(modelling_group_id)
+  assert_character(touchstone_id)
+  assert_character(scenario_id)
+  assert_integer_like(burden_estimate_set_id)
   
   path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/%s/",
         modelling_group_id, touchstone_id, scenario_id, burden_estimate_set_id)
@@ -49,13 +60,17 @@ montagu_burden_estimate_set_info <- function(modelling_group_id, touchstone_id,
 ##' @export
 ##' @rdname montagu_api
 ##' @title Retrieves the data for a specific burden estimate set.
-##' @inheritParams montagu_burden_estimate_sets
+##' @inherit montagu_burden_estimate_sets
 ##' @return A list of information about a specific estimate set.
 montagu_burden_estimate_set_data <- function(modelling_group_id, touchstone_id,
                       scenario_id, burden_estimate_set_id, location = NULL) {
   
+  assert_character(modelling_group_id)
+  assert_character(touchstone_id)
+  assert_character(scenario_id)
+  assert_integer_like(burden_estimate_set_id)
   
-  path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/%s/estimates",
+  path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/%s/estimates/",
         modelling_group_id, touchstone_id, scenario_id, burden_estimate_set_id)
   res <- rawToChar(montagu_api_GET(location, path, accept="csv"))
   read.csv(text = res, header = TRUE, stringsAsFactors = FALSE)
@@ -63,8 +78,7 @@ montagu_burden_estimate_set_data <- function(modelling_group_id, touchstone_id,
 }
 
 ##' @export
-##' @rdname montagu_api
-##' @inheritParams montagu_burden_estimates
+##' @inherit montagu_burden_estimate_sets
 ##' @param burden_estimate_set_id Burden estimate set identifier
 ##' @param modelling_group_id Modelling group identifier
 ##' @param touchstone_id Touchstone identifier
@@ -73,6 +87,11 @@ montagu_burden_estimate_set_data <- function(modelling_group_id, touchstone_id,
 ##' @return A list of any problems with this burden estimate set
 montagu_burden_estimate_set_problems <- function(modelling_group_id, 
     touchstone_id, scenario_id, burden_estimate_set_id, location = NULL) {
+  
+  assert_character(modelling_group_id)
+  assert_character(touchstone_id)
+  assert_character(scenario_id)
+  assert_integer_like(burden_estimate_set_id)
   
   path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/%s/",
                   modelling_group_id, touchstone_id, scenario_id, 
@@ -83,33 +102,45 @@ montagu_burden_estimate_set_problems <- function(modelling_group_id,
 
 ##' @export
 ##' @title Create a new burden estimate set
-##' @rdname montagu_api
-##' @inheritParams montagu_burden_estimates
-##' @param type Can be `central-single-run`, `central-averaged`, `central-unknown` or `stochastic`
+##' @inherit montagu_burden_estimate_sets
+##' @param type Can be `central-single-run`, `central-averaged`, `central-unknown` 
+##' or `stochastic`
 ##' @param model_run_parameter_set Identifier for the parameter set
 ##' @param details Optional details string
 ##' @return The id of the burden estimate set
 montagu_burden_estimate_set_create <- function(modelling_group_id,
                                                touchstone_id, scenario_id,
                                                type,
-                                               model_run_parameter_set,
+                                               model_run_parameter_set = NULL,
                                                details = NULL,
                                                location = NULL) {
   assert_character(modelling_group_id)
   assert_character(touchstone_id)
   assert_character(scenario_id)
   assert_character(type)
-  assert_integer_like(model_run_parameter_set)
+  if (!is.null(model_run_parameter_set)) {
+    assert_integer_like(model_run_parameter_set)
+  }
   
-  # I am not sure if e should allow the r-client to upload 
-  # with type "central-unknown" - or how far we want to go down the 
-  # stochastic route here, since I guess we are not going to allow full
-  # unprocessed stochastic uploads through the API?
+  # I am not sure if I should allow the r-client to upload 
+  # with type "central-unknown" 
   
   if (!type %in% c("central-single-run", "stochastic", 
                    "central-averaged", "central-unknown")) {
     stop(paste0("Invalid type - must be one of central-single-run, stochastic,",
                " central-averaged, or central-unknown")) 
+  }
+  
+  if (type != "stochastic") {
+    if (!is.null(model_run_parameter_set)) {
+      stop("model_run_parameter_set should only be specified for stochastic runs")
+    }
+  }
+  
+  if (type == "stochastic") {
+    if (is.null(model_run_parameter_set)) {
+      stop("model_run_parameter_set must be specified for stochastic runs")
+    }
   }
 
   path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/",
@@ -144,10 +175,9 @@ montagu_burden_estimate_set_clear <- function(modelling_group_id,
 
 ##' @export
 ##' @title Closes a burden estimate set, marking it as complete.
-##' @rdname montagu_api
-##' @inheritParams montagu_burden_estimate_set_clear
+##' @inherit montagu_burden_estimate_set_clear
 ##' @param burden_estimate_set_id Burden estimate set created by
-##'   \code{montagu_burden_estimate_set_crete}
+##'   \code{montagu_burden_estimate_set_create}
 montagu_burden_estimate_set_close <- function(modelling_group_id,
                                               touchstone_id,
                                               scenario_id,
@@ -162,7 +192,7 @@ montagu_burden_estimate_set_close <- function(modelling_group_id,
 
 ##' @export
 ##' @rdname montagu_api
-##' @inheritParams montagu_burden_estimate_clear
+##' @inheritParams montagu_burden_estimate_set_clear
 ##' @param data Data frame containing burden estimates.
 ##' @param lines Number of lines to chunk the files into
 ##'
@@ -231,7 +261,6 @@ montagu_burden_estimate_set_upload <- function(modelling_group_id,
 }
 
 ##' @export
-##' @rdname montagu_api
 montagu_touchstones_list <- function(location = NULL) {
   res <- montagu_api_GET(location, "/")
   v <- lapply(res, "[[", "versions")

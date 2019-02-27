@@ -49,10 +49,11 @@ joining VIMC, but can be looked up with simple function calls like this:-
 montagu::montagu_diseases()
 ```
 
-TO-DO - i2557
 
+#TODO - enable below after i2557
 ```r
-montagu::montagu_modelling_groups()
+groups <- montagu::montagu_modelling_groups()
+head(groups)
 ```
 
 ### Touchstones
@@ -159,6 +160,161 @@ df <- montagu::montagu_central_burden_estimate_template("IC-Garske", "201710gavi
 head(df)
 ```
 
+### Coverage
+
+We now need to obtain the coverage data relevant for our disease and touchstone,
+for each of the scenarios we're going to model. Let's look at the `yf-routine-gavi` 
+coverage metadata.
+
+#TODO: Enable below after i2567
+```r
+montagu::montagu_coverage_info("IC-Garske", "201710gavi-5", "yf-routine-gavi")
+```
+
+And now let's retrieve the coverage data itself, and summarise it.
+
+#TODO: Enable below after i2567
+```r
+cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi")
+head(cov[cov$coverage > 0, ])
+range(cov$year)
+length(unique(cov$country_code))
+nrow(cov)
+ncol(cov)
+
+```
+More information on the coverage is available in the Montagu Web Portal, but briefly:
+
+* _Coverage_ is measured as a proportion of the original target population. It is possible
+for this to exceed 1, if more people were vaccinated than originally targeted.
+* _Target_ is the number of individuals targeted for vaccination. If this is `NA`, then
+assume the target population matches the demographic data, and the whole population is targeted.
+
+#### Long or Wide format
+
+The data above is formatted in what we call `long format`, in which one year is reported per row. 
+Alternatively, you can specify:
+#TODO: Enable below after i2567
+```r
+cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi", format="wide")
+names(cov)[1:20]
+nrow(cov)
+ncol(cov)
+```
+Here, we have one row per country, and separate columns for `coverage_year` and `target_year`.
+
+#### Returning the full range of countries
+
+By default, the coverage data returned is limited to those countries for which burden
+estimate data is required for the given scenario. HepB is a particular example, where different
+sets of countries are relevant in different scenarios, because the birth-dose vaccination
+is not applied in all countries where there is HepB vaccination. However, some groups prefer
+to model all of these scenarios similarly, with the same numbers of countries, hence they require 
+the full coverage data for all countries. And for some diseases, the historic effects of vaccination 
+in a country that is not required for estimates as present, may have relevance in their model to 
+countries that are required. 
+
+For those cases, where all countries are required, the following optional argument can be used:
+
+#TODO: Enable below after i2567
+```r
+cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi", all_countries = TRUE)
+```
+
+## Burden Estimate Sets
+
+The burden estimate set defines the results of the models, which modelling groups submit back to Montagu.
+To view the burden estimate sets already uploaded, for a group, touchstone and scenario:-
+
+```{r}
+head(montagu_burden_estimate_sets("IC-Garske", "201710gavi-5", "yf-no-vaccination", location))
+```
+
+If we know the burden estimate set id, we can also get a list of information about a burden estimate set with:
+
+```{r}
+montagu_burden_estimate_set_info("IC-Garske", "201710gavi-5", "yf-no-vaccination", 687, location)
+```
+
+If there are any reported problems with a burden estimate set, we can examine those with
+
+```{r}
+montagu_burden_estimate_set_problems("IC-Garske", "201710gavi-5", "yf-no-vaccination", 687, location)
+```
+
+and we can retrieve the data for the burden estimate set with:
+
+```{r}
+data <- montagu_burden_estimate_set_data("IC-Garske", "201710gavi-5", "yf-no-vaccination", 687, location)
+head(data)
+```
+
+### Creating a new burden estimate set
+
+
+
+## Stochastic Runs
+
+In order to establish confidence intervals, modelling groups are sometimes asked to run a stochastic 
+ensemble of models. This may be, for instance, 200 instances of a model, with different parameters
+for each instance. We would call the instance number, between 1 and 200, the `run_id`, and there
+would be a unique set of parameters for each. 
+
+It is important that for a given `run_id`, all the
+relevant scenarios are run with the matching set of parameters for that `run_id`, so that we can 
+compare scenarios and calculate impacts. 
+
+It is also important that the spread of parameters chosen across the 200 runs significantly captures
+the range of sensible behaviour of the model, and that the central estimates submitted are somewhere
+near the centre of the spread of parameters.  
+
+Lastly, it is desirable to vary as few parameters as possible, so that with 200 runs, we can see
+how the parameter changes affect the model outcomes. If there are too many parameters, it may be
+difficult to ascertain which parameters are causing the changes, or whether the spread of 
+parameters really does capture the significant behaviour of the model.
+
+### Model Run Parameter Sets
+
+The model run parameter set has a column for `run_id`, and another column for each parameter
+being varied. For example:
+
+```{r}
+params <- data.frame(run_id = 1:5, param_1 = sample(5), param_2 = sample(5))
+params
+```
+
+This can then be uploaded as follows:-
+
+```r
+id <- montagu_model_run_parameter_set_upload(
+    "IC-Garske", "201710gavi-5", "YF", params)
+```
+
+and the id of the newly created parameter set will be returned. For stochastic data, we will
+need to supply this id when creating the associated burden estimate set.
+
+#TODO - add burden estimate set example here in i2625
+
+We can also list the existing model run parameter sets with:-
+
+```{r}
+head(montagu_model_run_parameter_sets("IC-Garske", "201710gavi-5"))
+```
+
+or for a list of information about a single parameter set:
+
+```{r}
+montagu_model_run_parameter_set_info("IC-Garske", "201710gavi-5", 20)
+```
+
+Finally, if we want to retrieve the parameter values for a previous set:-
+
+```{r}
+data <- montagu_model_run_parameter_set_data("IC-Garske", "201710gavi-5", 20)
+data[1:5,1:5]
+```
+
+
 ## Appendix
 
 ### Models
@@ -178,6 +334,6 @@ like this:-
 montagu::montagu_model("YFIC")
 ```
 
-Note that the model_id is different from the modelling_group_id, and in most
-circumstance, the modelling_group_id is the significant identifier required
+Note that the model_id (id column above) is different from the modelling_group_id, 
+and generally the modelling_group_id is the significant identifier required
 for other Montagu functions.

@@ -38,7 +38,7 @@ montagu_touchstone_versions <- function(modelling_group_id,
     res <- res[res$name == touchstone_name, ]
   }
 
-  if (length(res) == 0) {
+  if (nrow(res) == 0) {
     stop(sprintf("Unknown touchstone with id '%s'", touchstone_name))
   }
   
@@ -301,6 +301,7 @@ montagu_expectation_outcomes <- function(modelling_group_id, touchstone_id,
 ##' different sets of countries. For other diseases, the same expectation might
 ##' be equally valid in different scenarios. Here, we can query which scenarios a
 ##' particular expectation applies to.
+##' @importFrom utils read.csv
 ##' @title Get applicable scenarios for an expectation
 ##' @inheritParams montagu_expectation
 ##' @return A vector of scenario names
@@ -340,7 +341,6 @@ helper_burden_estimate_template <- function(modelling_group_id,
 ##' and uploaded to Montagu as their results submission.
 ##' @title Get central burden estimate template for an expectation
 ##' @inheritParams montagu_expectation
-##' @importFrom utils read.csv
 ##' @return A data frame with columns disease, year, age, country, and
 ##'         country_name with given values, then cohort_size, deaths,
 ##'         cases and dalys, all NA.
@@ -358,7 +358,6 @@ montagu_central_burden_estimate_template <- function(modelling_group_id,
 ##' columns of the central-estimate set, also includes a run_id column.
 ##' @title Get stochastic burden estimate template for an expectation
 ##' @inheritParams montagu_expectation
-##' @importFrom utils read.csv
 ##' @return A data frame with columns disease (given), run_id (NA), year, age,
 ##'         country, and country_name (all given), and finally
 ##'         cohort_size, deaths, cases and dalys, (NA).
