@@ -33,7 +33,7 @@ options(montagu.username = "test.user@imperial.ac.uk",
         montagu.password = "password")
 montagu::montagu_server_global_default_set(
   montagu::montagu_server("uat", "support.montagu.dide.ic.ac.uk", 10443))
-montagu::montagu_touchstones_list()
+montagu::montagu_diseases()
 ```
 
 The next time you query the server, you may be asked to
@@ -254,7 +254,7 @@ params
 This can then be uploaded as follows:-
 
 ```r
-id <- montagu_model_run_parameter_set_upload(
+id <- montagu::montagu_model_run_parameter_set_upload(
     "IC-Garske", "201710gavi-5", "YF", params)
 ```
 
@@ -266,19 +266,19 @@ need to supply this id when creating the associated burden estimate set.
 We can also list the existing model run parameter sets with:-
 
 ```{r}
-head(montagu_model_run_parameter_sets("IC-Garske", "201710gavi-5"))
+head(montagu::montagu_model_run_parameter_sets("IC-Garske", "201710gavi-5"))
 ```
 
 or for a list of information about a single parameter set:
 
 ```{r}
-montagu_model_run_parameter_set_info("IC-Garske", "201710gavi-5", 20)
+montagu::montagu_model_run_parameter_set_info("IC-Garske", "201710gavi-5", 20)
 ```
 
 Finally, if we want to retrieve the parameter values for a previous set:-
 
 ```{r}
-data <- montagu_model_run_parameter_set_data("IC-Garske", "201710gavi-5", 20)
+data <- montagu::montagu_model_run_parameter_set_data("IC-Garske", "201710gavi-5", 20)
 data[1:5,1:5]
 ```
 

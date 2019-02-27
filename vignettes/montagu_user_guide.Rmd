@@ -198,28 +198,28 @@ montagu::montagu_expectation("IC-Garske", "201710gavi-5", 30)
 ```
 ## $id
 ## [1] 30
-## 
+##
 ## $description
 ## [1] "YF:IC-Garske:standard"
-## 
+##
 ## $min_year
 ## [1] 2000
-## 
+##
 ## $max_year
 ## [1] 2100
-## 
+##
 ## $min_age
 ## [1] 0
-## 
+##
 ## $max_age
 ## [1] 100
-## 
+##
 ## $min_birth_cohort
 ## [1] 1900
-## 
+##
 ## $max_birth_cohort
 ## [1] 2100
-## 
+##
 ## $disease
 ## NULL
 ```
@@ -298,7 +298,7 @@ head(df)
 ### Coverage
 
 We now need to obtain the coverage data relevant for our disease and touchstone,
-for each of the scenarios we're going to model. Let's look at the `yf-routine-gavi` 
+for each of the scenarios we're going to model. Let's look at the `yf-routine-gavi`
 coverage metadata.
 
 #TODO: Enable below after i2567
@@ -327,7 +327,7 @@ assume the target population matches the demographic data, and the whole populat
 
 #### Long or Wide format
 
-The data above is formatted in what we call `long format`, in which one year is reported per row. 
+The data above is formatted in what we call `long format`, in which one year is reported per row.
 Alternatively, you can specify:
 #TODO: Enable below after i2567
 ```r
@@ -344,10 +344,10 @@ By default, the coverage data returned is limited to those countries for which b
 estimate data is required for the given scenario. HepB is a particular example, where different
 sets of countries are relevant in different scenarios, because the birth-dose vaccination
 is not applied in all countries where there is HepB vaccination. However, some groups prefer
-to model all of these scenarios similarly, with the same numbers of countries, hence they require 
-the full coverage data for all countries. And for some diseases, the historic effects of vaccination 
-in a country that is not required for estimates as present, may have relevance in their model to 
-countries that are required. 
+to model all of these scenarios similarly, with the same numbers of countries, hence they require
+the full coverage data for all countries. And for some diseases, the historic effects of vaccination
+in a country that is not required for estimates as present, may have relevance in their model to
+countries that are required.
 
 For those cases, where all countries are required, the following optional argument can be used:
 
@@ -358,22 +358,22 @@ cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-g
 
 ## Stochastic Runs
 
-In order to establish confidence intervals, modelling groups are sometimes asked to run a stochastic 
+In order to establish confidence intervals, modelling groups are sometimes asked to run a stochastic
 ensemble of models. This may be, for instance, 200 instances of a model, with different parameters
 for each instance. We would call the instance number, between 1 and 200, the `run_id`, and there
-would be a unique set of parameters for each. 
+would be a unique set of parameters for each.
 
 It is important that for a given `run_id`, all the
-relevant scenarios are run with the matching set of parameters for that `run_id`, so that we can 
-compare scenarios and calculate impacts. 
+relevant scenarios are run with the matching set of parameters for that `run_id`, so that we can
+compare scenarios and calculate impacts.
 
 It is also important that the spread of parameters chosen across the 200 runs significantly captures
 the range of sensible behaviour of the model, and that the central estimates submitted are somewhere
-near the centre of the spread of parameters.  
+near the centre of the spread of parameters.
 
 Lastly, it is desirable to vary as few parameters as possible, so that with 200 runs, we can see
 how the parameter changes affect the model outcomes. If there are too many parameters, it may be
-difficult to ascertain which parameters are causing the changes, or whether the spread of 
+difficult to ascertain which parameters are causing the changes, or whether the spread of
 parameters really does capture the significant behaviour of the model.
 
 ### Model Run Parameter Sets
@@ -389,17 +389,17 @@ params
 
 ```
 ##   run_id param_1 param_2
-## 1      1       4       2
-## 2      2       5       3
-## 3      3       1       1
-## 4      4       3       5
-## 5      5       2       4
+## 1      1       4       4
+## 2      2       1       1
+## 3      3       5       3
+## 4      4       3       2
+## 5      5       2       5
 ```
 
 This can then be uploaded as follows:-
 
 ```r
-id <- montagu_model_run_parameter_set_upload(
+id <- montagu::montagu_model_run_parameter_set_upload(
     "IC-Garske", "201710gavi-5", "YF", params)
 ```
 
@@ -411,12 +411,121 @@ need to supply this id when creating the associated burden estimate set.
 We can also list the existing model run parameter sets with:-
 
 
+```r
+head(montagu::montagu_model_run_parameter_sets("IC-Garske", "201710gavi-5"))
+```
+
+```
+##   id model uploaded_by              uploaded_on disease
+## 1 90  YFIC   test.user 2019-02-27T11:18:17.036Z      YF
+## 2 89  YFIC   test.user 2019-02-27T10:32:37.668Z      YF
+## 3 88  YFIC   test.user 2019-02-27T10:30:12.324Z      YF
+## 4 87  YFIC   test.user 2019-02-27T10:29:16.083Z      YF
+## 5 86  YFIC   test.user 2019-02-27T10:23:26.691Z      YF
+## 6 85  YFIC   test.user 2019-02-27T10:21:16.087Z      YF
+```
+
+or for a list of information about a single parameter set:
 
 
+```r
+montagu::montagu_model_run_parameter_set_info("IC-Garske", "201710gavi-5", 20)
+```
+
+```
+## $id
+## [1] 20
+##
+## $model
+## [1] "YFIC"
+##
+## $uploaded_by
+## [1] "katy.gaythorpe"
+##
+## $uploaded_on
+## [1] "2018-04-06T13:10:35.645Z"
+##
+## $disease
+## [1] "YF"
+```
+
+Finally, if we want to retrieve the parameter values for a previous set:-
 
 
+```r
+data <- montagu::montagu_model_run_parameter_set_data("IC-Garske", "201710gavi-5", 20)
+data[1:5,1:5]
+```
+
+```
+##   run_id     FOI_AGO     FOI_BEN    FOI_BFA      FOI_BDI
+## 1      1 0.004549685 0.015696021 0.02084831 3.071269e-05
+## 2      3 0.003717290 0.011943511 0.01713641 4.950013e-05
+## 3      5 0.003522454 0.009811987 0.01321275 1.058319e-04
+## 4      6 0.003485912 0.012657722 0.01655512 7.327719e-05
+## 5      8 0.002722810 0.007266782 0.00851512 4.569112e-05
+```
 
 
+## Appendix
+
+### Models
+
+Montagu allows querying of basic information about all models, past and present
+used in VIMC. These can be listed as follows:-
 
 
+```r
+models <- montagu::montagu_models()
+head(models)
+```
 
+```
+##                 id
+## 1         Yakob-YF
+## 2   Winter-Rubella
+## 3        UnknownYF
+## 4   HPVGoldie-flat
+## 5 HPVGoldie-linear
+## 6        PATH-MenA
+##                                                                                                                                                                                                                                                                                                                                                                              description
+## 1                                                                                                                                                                                                                                                                                                                                generic 201810rfp model - to be updated if joining VIMC
+## 2                                                                                                                                                                                                                                                                                                                                generic 201810rfp model - to be updated if joining VIMC
+## 3                                                                                                                                                                                                                                                                                                                                          Yellow fever data imported from the shiny app
+## 4 Used in SDF8 input as flat ages. The model is constructed as a static cohort simulation model based on a structure similar to a simple decision tree, and is programmed using Microsoft Excel and Visual Basic for Applications. The model tracks a cohort of girls at a target age for their lifetimes, comparing health and cost outcomes with and without HPV vaccination programs.
+## 5    Used in SDF8 as linear ages.  The model is constructed as a static cohort simulation model based on a structure similar to a simple decision tree, and is programmed using Microsoft Excel and Visual Basic for Applications. The model tracks a cohort of girls at a target age for their lifetimes, comparing health and cost outcomes with and without HPV vaccination programs.
+## 6                                                                                                                                              MenA model used in SDF8 and SDF12. A static population-based cohort model developed to support the 2008 WHO and UNICEF investment case 'Eliminating serogroup A meningococcal meningitis epidemics as a public health problem in Africa.'
+##                                  citation modelling_group
+## 1                <citation for the model>     LSHTM-Yakob
+## 2                <citation for the model>       PU-Winter
+## 3 https://github.com/royburst/Gavi-Impact         unknown
+## 4                <citation for the model>   Harvard-Sweet
+## 5                <citation for the model>   Harvard-Sweet
+## 6                <citation for the model>    Suraratdecha
+```
+
+and a list of information about a particular model by its id can be retrieved
+like this:-
+
+
+```r
+montagu::montagu_model("YFIC")
+```
+
+```
+## $id
+## [1] "YFIC"
+##
+## $description
+## [1] "YF model developed at Imperial College London, used in SDF8 and SDF12. This is a generalised linear regression model fitted to locations of reported yellow fever outbreaks or cases with anthropogenic and environmental covariates generating a risk map for yellow fever across Africa. It was then compared to the available serological data, primarily from central and eastern Africa, to assess the country-specific scale of under-reporting and obtain absolute estimates of transmission intensity in terms of a static force of infection or a basic reproduction number in a dynamical model, taking into account the population-level vaccination coverage through time. Burden and vaccine impact estimates were then generated by combining the transmission intensity with demographic information (population size and age distribution) and observed and hypothetical vaccination coverages in any given location and year."
+##
+## $citation
+## [1] "10.1371/journal.pmed.1001638"
+##
+## $modelling_group
+## [1] "IC-Garske"
+```
+
+Note that the model_id (id column above) is different from the modelling_group_id,
+and generally the modelling_group_id is the significant identifier required
+for other Montagu functions.
