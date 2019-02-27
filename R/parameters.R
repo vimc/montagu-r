@@ -69,7 +69,7 @@ montagu_model_run_parameter_set_data <- function(modelling_group_id,
   read.csv(text = res, header = TRUE, stringsAsFactors = FALSE)
 }
 
-
+##' @importFrom utils write.csv
 ##' @title Upload a model_run_parameter_set to Montagu.
 ##' @inherit montagu_model_run_parameter_set_info
 ##' @param data a data frame with a column `run_id`, and other columns for each 
@@ -78,27 +78,27 @@ montagu_model_run_parameter_set_data <- function(modelling_group_id,
 ##' @return the id of the newly created model_run_parameter_set
 ##' @export
 montagu_model_run_parameter_set_upload <- function(modelling_group_id,
-                touchstone_id, disease_id, params, location = NULL) {
+                touchstone_id, disease_id, data, location = NULL) {
 
-  if (!"run_id" %in% names(params)) {
+  if (!"run_id" %in% names(data)) {
     stop("run_id not found in data frame")
   }
 
-  if (length(names(params))==1) {
+  if (length(names(data))==1) {
     stop("No actual parameters in data frame")
   }
 
   # Move run_id to left-most column, so we can quote it, as per the spec.
 
-  if (names(params)[1] != "run_id") {
-    the_names <- c("run_id",names(params)[names(params)!="run_id"])
-    params <- params[the_names]
+  if (names(data)[1] != "run_id") {
+    the_names <- c("run_id",names(data)[names(data)!="run_id"])
+    data <- params[the_names]
   }
 
-  params$run_id <- as.character(params$run_id)
+  data$run_id <- as.character(data$run_id)
 
   tf <- tempfile()
-  write.csv(x = params, quote = 1, file = tf, row.names = FALSE)
+  write.csv(x = data, quote = 1, file = tf, row.names = FALSE)
 
   # Create text of the csv with commas and \n
 

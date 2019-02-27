@@ -5,7 +5,7 @@
 \title{Upload a model_run_parameter_set to Montagu.}
 \usage{
 montagu_model_run_parameter_set_upload(modelling_group_id, touchstone_id,
-  disease_id, params, location = NULL)
+  disease_id, data, location = NULL)
 }
 \arguments{
 \item{modelling_group_id}{The id of the modelling group}
@@ -14,10 +14,10 @@ montagu_model_run_parameter_set_upload(modelling_group_id, touchstone_id,
 
 \item{disease_id}{The id of the disease associated with this model}
 
-\item{location}{The montagu server to connect to.}
-
 \item{data}{a data frame with a column `run_id`, and other columns for each 
 parameter that will be varied for each run.}
+
+\item{location}{The montagu server to connect to.}
 }
 \value{
 the id of the newly created model_run_parameter_set
