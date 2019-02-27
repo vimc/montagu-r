@@ -55,9 +55,9 @@ montagu_reports_data(hash, csv = FALSE, dest = NULL, progress = TRUE,
   location = NULL)
 
 montagu_reports_run(name, parameters = NULL, ref = NULL,
-  update = TRUE, timeout = 3600, poll = 0.5, open = FALSE,
-  stop_on_error = FALSE, stop_on_timeout = TRUE, progress = TRUE,
-  location = NULL, output = TRUE, wait = TRUE)
+  update = TRUE, timeout = NULL, wait = Inf, poll = 0.5,
+  open = FALSE, stop_on_error = FALSE, stop_on_timeout = TRUE,
+  progress = TRUE, location = NULL, output = TRUE)
 
 montagu_reports_wait(obj, timeout = 3600, poll = 0.5, open = FALSE,
   stop_on_error = FALSE, stop_on_timeout = TRUE, progress = TRUE,
@@ -101,7 +101,14 @@ this is often not desired.}
 
 \item{update}{I can't remember?}
 
-\item{timeout}{Time to give up on running report}
+\item{timeout}{Time to give up on running report; this is set on
+the \emph{server}.  After \code{timeout} seconds, the server
+will kill the running report.}
+
+\item{wait}{Integer value indicating time to wait on the client
+side for the report to run.  If \code{0} (or less) we do not
+wait.  If you provide a timeout you should make wait at least
+the timeout value.}
 
 \item{poll}{Time to poll for update}
 
@@ -114,9 +121,6 @@ this is often not desired.}
 \item{output}{Show output from running the report.  This is a work
 in progress.  This has an effect only when \code{progress} is
 \code{TRUE}.}
-
-\item{wait}{Logical, indicating if we should wait for the report
-to complete}
 
 \item{obj}{A \code{montagu_reports_instance} object, as created by
 \code{montagu_reports_run}.}

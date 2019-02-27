@@ -47,3 +47,23 @@ test_that("run: error", {
   ## And check that it turns up _somewhere_
   expect_match(ans$output$stderr, cmp$message, fixed = TRUE, all = FALSE)
 })
+
+
+test_that("set timeout", {
+  server <- orderly_test_server("interactive")
+  remote <- montagu_server("testing", "localhost", server$port, orderly = TRUE)
+
+  p <- file.path(server$path, "src", "count", "parameters.json")
+  writeLines(jsonlite::toJSON(list(time = 2, poll = 0.1), auto_unbox = TRUE),
+             p)
+
+  ans <- montagu_reports_run("count", location = remote, timeout = 1,
+                             progress = FALSE)
+  expect_equal(ans$status, "killed")
+  expect_null(ans$url)
+
+  expect_error(
+    montagu_reports_run("count", location = remote, timeout = 1,
+                        progress = FALSE, stop_on_error = TRUE),
+    "job killed by remote server after")
+})
