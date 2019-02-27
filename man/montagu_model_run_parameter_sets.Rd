@@ -2,7 +2,7 @@
 % Please edit documentation in R/parameters.R
 \name{montagu_model_run_parameter_sets}
 \alias{montagu_model_run_parameter_sets}
-\title{Retrieve list of model run parameter sets for a group and touchstone}
+\title{Retrieve a list of model run parameter sets for a group and touchstone}
 \usage{
 montagu_model_run_parameter_sets(modelling_group_id, touchstone_id,
   location = NULL)
@@ -18,6 +18,18 @@ montagu_model_run_parameter_sets(modelling_group_id, touchstone_id,
 a data frame of info about the model run parameter sets.
 }
 \description{
-This may get a name change pending splitting apart of various
-montagu components.
+A model run parameter set is a list of parameters that is required
+for a set of stochastic model runs. In a stochastic ensemble, modelling
+groups are requested to perform a number of model runs. Each model run
+executes with a unique set of parameters, and for a given run, all scenarios
+are run with the same parameters, so that we can calculate impact between
+them. The spread of parameters across the different runs should capture
+the range of sensible behaviour of the model. The model run parameter set then
+contains as many rows as there are model runs. Each row must contain a run_id,
+and the value for each parameter that is varied.
+}
+\details{
+Adding, and querying existing model_run_parameter_sets is supported, and
+when creating a stochastic burden estimate set, the id of the associated
+model_run_parameter_set is required as a parameter.
 }

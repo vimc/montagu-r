@@ -1,7 +1,7 @@
 ---
 title: "Montagu API from R"
 author: "VIMC Technical Team"
-date: "2019-02-26"
+date: "2019-02-27"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Montagu API}
@@ -59,33 +59,356 @@ montagu::montagu_diseases()
 ```
 
 
+#TODO - enable below after i2557
+```r
+groups <- montagu::montagu_modelling_groups()
+head(groups)
+```
+
+### Touchstones
+
+A touchstone is an identifier that links:
+
+* A request from VIMC to the modelling groups to provide burden estimates
+* The input data (coverage and demography) provided to calculate those estimates
+* The estimates submitted by the groups using the input data.
+
+Touchstone ids are referred to as a basename and a version together. Errata
+to the input data may be addressed with a new touchstone version. Generally,
+modelling groups will know which touchstone they are required to run models
+against. To lookup all the currently open touchstones for a group:-
 
 
+```r
+montagu::montagu_touchstone_versions("IC-Garske", require_open = TRUE)
+```
+
+```
+##                  id            name version                 description
+## 6      201710gavi-5      201710gavi       5      201710gavi (version 5)
+## 7 201810synthetic-2 201810synthetic       2 201810synthetic (version 2)
+##   status
+## 6   open
+## 7   open
+```
+
+If we knew the basic touchstone name (without version) that we were interested in,
+then we could also have asked:
+
+```r
+montagu::montagu_touchstone_versions("IC-Garske", "201710gavi", require_open = TRUE)
+```
+
+```
+##             id       name version            description status
+## 1 201710gavi-5 201710gavi       5 201710gavi (version 5)   open
+```
+
+### Scenarios
+
+Within a touchstone, we may have various scenarios, describing different
+vaccination conditions. These vary across diseases due to the different types
+of vaccination approaches that have been employed. We look our the scenarios
+we are required to model for a touchstone with:
 
 
+```r
+montagu::montagu_scenarios("IC-Garske", "201710gavi-5")
+```
+
+```
+##          scenario_id                  description disease
+## 1  yf-no-vaccination               No vaccination      YF
+## 2    yf-routine-gavi               Routine, total      YF
+## 3 yf-preventive-gavi Campaign (preventive), total      YF
+```
+
+We can then look up the status a particular scenario within this touchstone:
 
 
+```r
+montagu::montagu_scenario_status("IC-Garske", "201710gavi-5", "yf-routine-gavi")
+```
+
+```
+## [1] "valid"
+```
+
+and if that status were not valid, then we can query any problems with:
+
+```r
+montagu::montagu_scenario_problems("IC-Garske", "201710gavi-5", "yf-routine-gavi")
+```
+
+```
+## list()
+```
+
+### Expectations - years, ages, countries and outcomes
+
+For a given touchstone, modelling groups are required to produce burden estimates
+stratified by calendar year, and by age. The expectations about time and age
+will be consistent across scenarios. We can look up these expectations like so:
 
 
+```r
+montagu::montagu_expectations("IC-Garske", "201710gavi-5")
+```
+
+```
+##   id           description min_year max_year min_age max_age
+## 1 30 YF:IC-Garske:standard     2000     2100       0     100
+##   min_birth_cohort max_birth_cohort disease
+## 1             1900             2100      YF
+```
+
+Some modelling groups model more than one disease, in which case a row appears
+for each disease. And additionally, if there is some reason to have different
+expectations for different scenarios, then multiple lines for the same disease
+may appear, with a difference in the description column indicating the scenario.
+For example:
+
+```r
+montagu::montagu_expectations("CDA-Razavi", "201710gavi-5")
+```
+
+```
+##   id                                            description min_year
+## 1  2                   HepB:CDA-Razavi:hepb-bd-routine-with     2000
+## 2  4 HepB:CDA-Razavi:hepb-bd-routine-with-hepb-routine-with     2000
+## 3  3                 HepB:CDA-Razavi:hepb-hepb-routine-with     2000
+## 4  1                    HepB:CDA-Razavi:hepb-no-vaccination     2000
+## 5  5 HepB:CDA-Razavi:hepb-bd-routine-best-hepb-routine-with     2000
+##   max_year min_age max_age min_birth_cohort max_birth_cohort disease
+## 1     2100       0      85             1915             2100    HepB
+## 2     2100       0      85             1915             2100    HepB
+## 3     2100       0      85             1915             2100    HepB
+## 4     2100       0      85             1915             2100    HepB
+## 5     2100       0      85             1915             2100    HepB
+```
+
+If we already knew the expectation id, we could look up
+a single expectation with
 
 
+```r
+montagu::montagu_expectation("IC-Garske", "201710gavi-5", 30)
+```
+
+```
+## $id
+## [1] 30
+## 
+## $description
+## [1] "YF:IC-Garske:standard"
+## 
+## $min_year
+## [1] 2000
+## 
+## $max_year
+## [1] 2100
+## 
+## $min_age
+## [1] 0
+## 
+## $max_age
+## [1] 100
+## 
+## $min_birth_cohort
+## [1] 1900
+## 
+## $max_birth_cohort
+## [1] 2100
+## 
+## $disease
+## NULL
+```
+
+The countries for which estimates are required can vary between disease, and
+between scenarios. To retrieve the list of countries that are required for a
+particular expectation:-
 
 
+```r
+countries <- montagu::montagu_expectation_countries("IC-Garske", "201710gavi-5", 30)
+head(countries)
+```
+
+```
+##    id                     name
+## 1 AGO                   Angola
+## 2 BDI                  Burundi
+## 3 BEN                    Benin
+## 4 BFA             Burkina Faso
+## 5 CAF Central African Republic
+## 6 CIV            Cote d'Ivoire
+```
+
+To see which outcomes are required for an expectation:
+
+```r
+montagu::montagu_expectation_outcomes("IC-Garske", "201710gavi-5", 30)
+```
+
+```
+## [1] "deaths" "cases"  "dalys"
+```
+
+And to confirm which scnearios an expectation applies to (which should align
+with the description text for the expectation):
+
+```r
+montagu::montagu_expectation_applicable_scenarios("IC-Garske", "201710gavi-5", 30)
+```
+
+```
+## [1] "yf-no-vaccination"  "yf-preventive-gavi" "yf-routine-gavi"
+```
+
+```r
+montagu::montagu_expectation_applicable_scenarios("CDA-Razavi", "201710gavi-5", 2)
+```
+
+```
+## [1] "hepb-bd-routine-with"
+```
+
+### Templates
+
+The above will give all the information required to build your own data frame
+for submitting the expected results. Alternatively, you can download
+burden estimate templates with the years, countries and ages already populated:-
 
 
+```r
+df <- montagu::montagu_central_burden_estimate_template("IC-Garske", "201710gavi-5", 30)
+head(df)
+```
+
+```
+##   disease year age country country_name cohort_size deaths cases dalys
+## 1      YF 2000   0     AGO       Angola          NA     NA    NA    NA
+## 2      YF 2001   0     AGO       Angola          NA     NA    NA    NA
+## 3      YF 2002   0     AGO       Angola          NA     NA    NA    NA
+## 4      YF 2003   0     AGO       Angola          NA     NA    NA    NA
+## 5      YF 2004   0     AGO       Angola          NA     NA    NA    NA
+## 6      YF 2005   0     AGO       Angola          NA     NA    NA    NA
+```
+
+### Coverage
+
+We now need to obtain the coverage data relevant for our disease and touchstone,
+for each of the scenarios we're going to model. Let's look at the `yf-routine-gavi` 
+coverage metadata.
+
+#TODO: Enable below after i2567
+```r
+montagu::montagu_coverage_info("IC-Garske", "201710gavi-5", "yf-routine-gavi")
+```
+
+And now let's retrieve the coverage data itself, and summarise it.
+
+#TODO: Enable below after i2567
+```r
+cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi")
+head(cov[cov$coverage > 0, ])
+range(cov$year)
+length(unique(cov$country_code))
+nrow(cov)
+ncol(cov)
+
+```
+More information on the coverage is available in the Montagu Web Portal, but briefly:
+
+* _Coverage_ is measured as a proportion of the original target population. It is possible
+for this to exceed 1, if more people were vaccinated than originally targeted.
+* _Target_ is the number of individuals targeted for vaccination. If this is `NA`, then
+assume the target population matches the demographic data, and the whole population is targeted.
+
+#### Long or Wide format
+
+The data above is formatted in what we call `long format`, in which one year is reported per row. 
+Alternatively, you can specify:
+#TODO: Enable below after i2567
+```r
+cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi", format="wide")
+names(cov)[1:20]
+nrow(cov)
+ncol(cov)
+```
+Here, we have one row per country, and separate columns for `coverage_year` and `target_year`.
+
+#### Returning the full range of countries
+
+By default, the coverage data returned is limited to those countries for which burden
+estimate data is required for the given scenario. HepB is a particular example, where different
+sets of countries are relevant in different scenarios, because the birth-dose vaccination
+is not applied in all countries where there is HepB vaccination. However, some groups prefer
+to model all of these scenarios similarly, with the same numbers of countries, hence they require 
+the full coverage data for all countries. And for some diseases, the historic effects of vaccination 
+in a country that is not required for estimates as present, may have relevance in their model to 
+countries that are required. 
+
+For those cases, where all countries are required, the following optional argument can be used:
+
+#TODO: Enable below after i2567
+```r
+cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi", all_countries = TRUE)
+```
+
+## Stochastic Runs
+
+In order to establish confidence intervals, modelling groups are sometimes asked to run a stochastic 
+ensemble of models. This may be, for instance, 200 instances of a model, with different parameters
+for each instance. We would call the instance number, between 1 and 200, the `run_id`, and there
+would be a unique set of parameters for each. 
+
+It is important that for a given `run_id`, all the
+relevant scenarios are run with the matching set of parameters for that `run_id`, so that we can 
+compare scenarios and calculate impacts. 
+
+It is also important that the spread of parameters chosen across the 200 runs significantly captures
+the range of sensible behaviour of the model, and that the central estimates submitted are somewhere
+near the centre of the spread of parameters.  
+
+Lastly, it is desirable to vary as few parameters as possible, so that with 200 runs, we can see
+how the parameter changes affect the model outcomes. If there are too many parameters, it may be
+difficult to ascertain which parameters are causing the changes, or whether the spread of 
+parameters really does capture the significant behaviour of the model.
+
+### Model Run Parameter Sets
+
+The model run parameter set has a column for `run_id`, and another column for each parameter
+being varied. For example:
 
 
+```r
+params <- data.frame(run_id = 1:5, param_1 = sample(5), param_2 = sample(5))
+params
+```
 
+```
+##   run_id param_1 param_2
+## 1      1       4       2
+## 2      2       5       3
+## 3      3       1       1
+## 4      4       3       5
+## 5      5       2       4
+```
 
+This can then be uploaded as follows:-
 
+```r
+id <- montagu_model_run_parameter_set_upload(
+    "IC-Garske", "201710gavi-5", "YF", params)
+```
 
+and the id of the newly created parameter set will be returned. For stochastic data, we will
+need to supply this id when creating the associated burden estimate set.
 
+#TODO - add burden estimate set example here in i2625
 
-
-
-
-
-
+We can also list the existing model run parameter sets with:-
 
 
 

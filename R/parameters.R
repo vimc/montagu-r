@@ -1,6 +1,18 @@
-##' This may get a name change pending splitting apart of various
-##' montagu components.
-##' @title Retrieve list of model run parameter sets for a group and touchstone
+##' A model run parameter set is a list of parameters that is required
+##' for a set of stochastic model runs. In a stochastic ensemble, modelling
+##' groups are requested to perform a number of model runs. Each model run
+##' executes with a unique set of parameters, and for a given run, all scenarios
+##' are run with the same parameters, so that we can calculate impact between
+##' them. The spread of parameters across the different runs should capture
+##' the range of sensible behaviour of the model. The model run parameter set then
+##' contains as many rows as there are model runs. Each row must contain a run_id,
+##' and the value for each parameter that is varied.
+##' 
+##' Adding, and querying existing model_run_parameter_sets is supported, and
+##' when creating a stochastic burden estimate set, the id of the associated
+##' model_run_parameter_set is required as a parameter.
+##' 
+##' @title Retrieve a list of model run parameter sets for a group and touchstone
 ##' @param modelling_group_id The id of the modelling group
 ##' @param touchstone_id The id of the touchstone
 ##' @param location The montagu server to connect to.
@@ -19,10 +31,8 @@ montagu_model_run_parameter_sets <- function(modelling_group_id, touchstone_id,
     disease = vcapply(res, "[[", "disease"))
 }
 
-##' This may get a name change pending splitting apart of various
-##' montagu components.
 ##' @title Retrieve info about one model run parameter sets for a group and touchstone
-##' @inheritParams montagu_model_run_parameter_sets
+##' @inherit montagu_model_run_parameter_sets
 ##' @param model_run_parameter_set_id The id of the model_run_parameter_set.
 ##' @return a list of info about one  model run parameter set.
 ##' @export
@@ -46,10 +56,8 @@ montagu_model_run_parameter_set_info <- function(modelling_group_id, touchstone_
   as.list(df[df$id == model_run_parameter_set_id,])
 }
 
-##' This may get a name change pending splitting apart of various
-##' montagu components.
 ##' @title Retrieve info about one model run parameter sets for a group and touchstone
-##' @inheritParams montagu_model_run_parameter_set_info
+##' @inherit montagu_model_run_parameter_set_info
 ##' @return a csv of parameter values for each run_id.
 ##' @export
 montagu_model_run_parameter_set_data <- function(modelling_group_id,
@@ -61,11 +69,11 @@ montagu_model_run_parameter_set_data <- function(modelling_group_id,
   read.csv(text = res, header = TRUE, stringsAsFactors = FALSE)
 }
 
-##' This may get a name change pending splitting apart of various
-##' montagu components.
-##' @title Upload a mode_run_parameter_set to Montagu.
-##' @inheritParams montagu_model_run_parameter_set_info
-##' @param data a data frame with a column `run_id`, and other columns for each parameter that varies by run.
+
+##' @title Upload a model_run_parameter_set to Montagu.
+##' @inherit montagu_model_run_parameter_set_info
+##' @param data a data frame with a column `run_id`, and other columns for each 
+##' parameter that will be varied for each run.
 ##' @param disease_id The id of the disease associated with this model
 ##' @return the id of the newly created model_run_parameter_set
 ##' @export
@@ -99,17 +107,7 @@ montagu_model_run_parameter_set_upload <- function(modelling_group_id,
 
   res <- montagu_api_POST(location, path,
     body = list(disease = disease_id, file = httr::upload_file(tf, type="text/csv"),
-    encode = c("multipart", "form", "text", "csv")))
-
-  # This appears to work - I am seeing one warning:
-  # Warning message:
-  # In charToRaw(enc2utf8(val)) :
-  #  argument should be a character vector of length 1
-  #  all but the first element will be ignored
-
-  # res contains the URL of the new parameter set endpoint, eg.
-  # "https://server/api/v1/modelling-groups/groupid/model-run-parameters/id/
-  # We want to return the last id.
+    encode = c("multipart")))
 
   bits <- unlist(strsplit(res, "/"))
   bits <- bits[length(bits)]

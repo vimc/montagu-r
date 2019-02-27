@@ -93,19 +93,17 @@ test_that("download single model_run_parameter_set data - unknown touchstone", {
 })
 
 test_that("download single model_run_parameter_set data - id in other group/touchstone", {
-  # This test fails - see https://vimc.myjetbrains.com/youtrack/issue/VIMC-2635
   location <- montagu_test_server()
   expect_error(montagu_model_run_parameter_set_data("IC-Garske", "201710gavi-5",
                                                     1, location),
-               "Unknown model_run_parameter_set_id '1'")
+               "Unknown model run parameter set with id '1'")
 })
 
 test_that("download single model_run_parameter_set data - stupid id", {
-  # This test fails - see https://vimc.myjetbrains.com/youtrack/issue/VIMC-2635
   location <- montagu_test_server()
   expect_error(montagu_model_run_parameter_set_data("IC-Garske", "201710gavi-5",
                                                     -1234, location),
-               "Unknown model_run_parameter_set_id '-1234'")
+               "Unknown model run parameter set with id '-1234'")
 })
 
 ################################################################################

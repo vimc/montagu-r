@@ -2,7 +2,7 @@
 % Please edit documentation in R/parameters.R
 \name{montagu_model_run_parameter_set_upload}
 \alias{montagu_model_run_parameter_set_upload}
-\title{Upload a mode_run_parameter_set to Montagu.}
+\title{Upload a model_run_parameter_set to Montagu.}
 \usage{
 montagu_model_run_parameter_set_upload(modelling_group_id, touchstone_id,
   disease_id, params, location = NULL)
@@ -16,12 +16,25 @@ montagu_model_run_parameter_set_upload(modelling_group_id, touchstone_id,
 
 \item{location}{The montagu server to connect to.}
 
-\item{data}{a data frame with a column `run_id`, and other columns for each parameter that varies by run.}
+\item{data}{a data frame with a column `run_id`, and other columns for each 
+parameter that will be varied for each run.}
 }
 \value{
 the id of the newly created model_run_parameter_set
 }
 \description{
-This may get a name change pending splitting apart of various
-montagu components.
+A model run parameter set is a list of parameters that is required
+for a set of stochastic model runs. In a stochastic ensemble, modelling
+groups are requested to perform a number of model runs. Each model run
+executes with a unique set of parameters, and for a given run, all scenarios
+are run with the same parameters, so that we can calculate impact between
+them. The spread of parameters across the different runs should capture
+the range of sensible behaviour of the model. The model run parameter set then
+contains as many rows as there are model runs. Each row must contain a run_id,
+and the value for each parameter that is varied.
+}
+\details{
+Adding, and querying existing model_run_parameter_sets is supported, and
+when creating a stochastic burden estimate set, the id of the associated
+model_run_parameter_set is required as a parameter.
 }
