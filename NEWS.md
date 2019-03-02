@@ -1,6 +1,10 @@
-## 0.3.6
+## 0.3.7
 
 * Add support for touchstone endpoints (VIMC-2722)
+
+## 0.3.6
+
+* Add support for burden estimate set endpoints (VIMC-2625)
 
 ## 0.3.5
 
