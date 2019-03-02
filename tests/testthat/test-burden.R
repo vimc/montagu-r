@@ -112,6 +112,78 @@ test_that("Burden estimate set info - incorrect estimate set id", {
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
     "Unknown burden-estimate-set with id '10'")
 })
+
+### BURDEN ESTIMATE SET - OUTCOME ENDPOINT
+
+test_that("Burden outcome estimate set data - incorrect group", {
+  location <- montagu_test_server()
+  expect_error(montagu::montagu_burden_estimate_set_outcome_data(
+    "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 687, 
+    "cases", group_by = "age", location),
+      "Unknown modelling-group with id 'ZZZIC-Garske'")
+})
+
+test_that("Burden outcome estimate set data - incorrect touchstone", {
+  location <- montagu_test_server()
+  expect_error(montagu::montagu_burden_estimate_set_outcome_data(
+    "IC-Garske", "ZZZ201710gavi-5", "yf-no-vaccination", 687, 
+    "cases", group_by = "age", location),
+    "Unknown touchstone-version with id 'ZZZ201710gavi-5'")
+})
+
+test_that("Burden outcome estimate set data - incorrect scenario", {
+  location <- montagu_test_server()
+  expect_error(montagu::montagu_burden_estimate_set_outcome_data(
+    "IC-Garske", "201710gavi-5", "ZZZyf-no-vaccination", 687, 
+    "cases", group_by = "age", location),
+    "Unknown scenario-description with id 'ZZZyf-no-vaccination'")
+})
+
+test_that("Burden outcome estimate set data - incorrect estimate set id", {
+  location <- montagu_test_server()
+  expect_error(montagu::montagu_burden_estimate_set_outcome_data(
+    "IC-Garske", "201710gavi-5", "yf-no-vaccination", 1, 
+    "cases", group_by = "age", location),
+    "Unknown burden-estimate-set with id '1'")
+})
+
+test_that("Burden outcome estimate set data - incorrect outcome code", {
+  # API doesn't throw an error with this; the error below is from R.
+  # See i2724
+  location <- montagu_test_server()
+  expect_error(montagu::montagu_burden_estimate_set_outcome_data(
+    "IC-Garske", "201710gavi-5", "yf-no-vaccination", 687, 
+    "asparagus", group_by = "age", location),
+    "subscript out of bounds")
+})
+
+test_that("Burden outcome estimate set data - incorrect group_by", {
+  location <- montagu_test_server()
+  expect_error(montagu::montagu_burden_estimate_set_outcome_data(
+    "IC-Garske", "201710gavi-5", "yf-no-vaccination", 687, 
+    "cases", group_by = "gender", location),
+    "group_by must be set to 'age' or 'year'")
+})
+
+test_that("Burden outcome estimate set data - correct test", {
+  location <- montagu_test_server()
+  dat <- montagu::montagu_burden_estimate_set_outcome_data(
+    "IC-Garske", "201710gavi-5", "yf-no-vaccination", 687, 
+    "cases", group_by = "age", location)
+  expect_is(dat, "data.frame")
+  expect_equal(sort(names(dat)), c("age", "x", "y"))
+  
+  dat <- montagu::montagu_burden_estimate_set_outcome_data(
+    "IC-Garske", "201710gavi-5", "yf-no-vaccination", 687, 
+    "cases", group_by = "year", location)
+  expect_is(dat, "data.frame")
+  expect_equal(sort(names(dat)), c("x", "y", "year"))
+  
+  
+})
+
+
+
 ### BURDEN ESTIMATE SET PROBLEMS
 
 test_that("Burden estimate set problems", {

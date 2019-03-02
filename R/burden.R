@@ -110,6 +110,7 @@ montagu_burden_estimate_set_outcome_data <- function(modelling_group_id,
   if (group_by!='age') query <- list(groupBy = group_by)
   
   res <- montagu_api_GET(location, path, query = query)
+  
   df <- data_frame(index = rep(as.integer(names(res)), each = length(res[[1]])),
         x = unlist(lapply(res, function(x) { viapply(x, function(z) { z$x })})),
         y = unlist(lapply(res, function(x) { vnapply(x, function(z) { z$y })})))
