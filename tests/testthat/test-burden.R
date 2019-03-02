@@ -174,7 +174,7 @@ test_that("Create Burden Estimate - incorrect scenario", {
   
   expect_error(montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "ZZZyf-no-vaccination", "stochastic",
-    10, "Details", location),
+    15, "Details", location),
     "Unknown scenario-description with id 'ZZZyf-no-vaccination'")
 })
 
@@ -212,19 +212,16 @@ test_that("Create Burden Estimate - absurd parameter set id", {
   expect_error(montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", "stochastic",
     -123, "Details", location),
-    "Unknown model run parameter set with id '-123'")
+    "Unknown model-run-parameter-set with id '-123'")
 })
 
-test_that("Create Burden Estimate - misplaced parameter set id", {
+test_that("Create Burden Estimate - misplaced parameter set id (stochastic)", {
   location <- montagu_test_server()
-  
-  # This test does not throw an error - unclear whether it should,
-  # see https://vimc.myjetbrains.com/youtrack/issue/VIMC-2650
   
   expect_error(montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", "stochastic",
     1, "Details", location),
-    "Unknown model run paramater set with id '1'")
+    "Unknown model-run-parameter-set with id '1'")
 })
 
 test_that("Create Burden Estimate - General usage - central", {
