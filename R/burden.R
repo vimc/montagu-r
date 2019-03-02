@@ -58,7 +58,6 @@ montagu_burden_estimate_set_info <- function(modelling_group_id, touchstone_id,
 }
 
 ##' @export
-##' @rdname montagu_api
 ##' @title Retrieves the data for a specific burden estimate set.
 ##' @inherit montagu_burden_estimate_sets
 ##' @return A list of information about a specific estimate set.
@@ -75,6 +74,51 @@ montagu_burden_estimate_set_data <- function(modelling_group_id, touchstone_id,
   res <- rawToChar(montagu_api_GET(location, path, accept="csv"))
   read.csv(text = res, header = TRUE, stringsAsFactors = FALSE)
   
+}
+
+##' @export
+##' @title Retrieve data for a particular outcoe of a burden estimate set,
+##' aggregated across country and disaggregated by either age or year.
+##' @inherit montagu_burden_estimate_sets
+##' @param outcome_code The name of an outcome, such as 'cases' or 'deaths'.
+##' @param group_by Set to 'age' (the default) or 'year', to set the
+##' @return A data frame with columns age or year (depending on group_by), 
+montagu_burden_estimate_set_outcome_data <- function(modelling_group_id,
+                                                     touchstone_id,
+                                                     scenario_id,
+                                                     burden_estimate_set_id,
+                                                     outcome_code,
+                                                     group_by = 'age',
+                                                     location = NULL) {
+  
+  assert_character(modelling_group_id)
+  assert_character(touchstone_id)
+  assert_character(scenario_id)
+  assert_integer_like(burden_estimate_set_id)
+  assert_character(outcome_code)
+  
+  if (!group_by %in% c("age", "year")) {
+    stop("group_by must be set to 'age' or 'year'")
+  }
+  
+  path <- sprintf(
+    "/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/%s/estimates/%s/",
+    modelling_group_id, touchstone_id, scenario_id, burden_estimate_set_id,
+    outcome_code)
+  
+  query <- list()
+  if (group_by!='age') query <- list(groupBy = group_by)
+  
+  res <- montagu_api_GET(location, path, query = query)
+  df <- data_frame(index = rep(as.integer(names(res)), each = length(res[[1]])),
+        x = unlist(lapply(res, function(x) { viapply(x, function(z) { z$x })})),
+        y = unlist(lapply(res, function(x) { vnapply(x, function(z) { z$y })})))
+  if (group_by == 'age') {
+    names(df)[names(df)=='index'] <- 'age'
+  } else {
+    names(df)[names(df)=='index'] <- 'year'
+  }
+  df
 }
 
 ##' @export
@@ -158,8 +202,7 @@ montagu_burden_estimate_set_create <- function(modelling_group_id,
 
 ##' @export
 ##' @title Deletes all uploaded rows from an incomplete burden estimate set
-##' @rdname montagu_api
-##' @inheritParams montagu_burden_estimate_set_create
+##' @inherit montagu_burden_estimate_set_create
 ##' @param burden_estimate_set_id Burden estimate set created by
 ##'   \code{montagu_burden_estimate_set_crete}
 montagu_burden_estimate_set_clear <- function(modelling_group_id,
@@ -191,11 +234,9 @@ montagu_burden_estimate_set_close <- function(modelling_group_id,
 
 
 ##' @export
-##' @rdname montagu_api
-##' @inheritParams montagu_burden_estimate_set_clear
+##' @inherit montagu_burden_estimate_set_clear
 ##' @param data Data frame containing burden estimates.
 ##' @param lines Number of lines to chunk the files into
-##'
 ##' @param keep_open Keep the burden estimate set open after upload?
 montagu_burden_estimate_set_upload <- function(modelling_group_id,
                                                touchstone_id,

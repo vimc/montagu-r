@@ -17,6 +17,10 @@ vcapply <- function(X, FUN, ...) {
   vapply(X, FUN, character(1), ...)
 }
 
+vnapply <- function(X, FUN, ...) {
+  vapply(X, FUN, numeric(1), ...)
+}
+
 
 get_pass <- function(prompt) {
   getPass::getPass(prompt, TRUE) # nocov
