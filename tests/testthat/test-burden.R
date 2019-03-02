@@ -178,11 +178,7 @@ test_that("Burden outcome estimate set data - correct test", {
     "cases", group_by = "year", location)
   expect_is(dat, "data.frame")
   expect_equal(sort(names(dat)), c("x", "y", "year"))
-  
-  
 })
-
-
 
 ### BURDEN ESTIMATE SET PROBLEMS
 
