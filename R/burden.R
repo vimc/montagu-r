@@ -30,7 +30,11 @@ montagu_burden_estimate_sets <- function(modelling_group_id, touchstone_id,
              uploaded_on = vcapply(res, "[[", "uploaded_on"),
              uploaded_by = vcapply(res, "[[", "uploaded_by"),
              type = vcapply(res, function(x) x$type$type),
-             details = vcapply(res, function(x) x$type$details),
+             details = vcapply(res, function(x) {
+                 z <- x$type$details
+                 if (is.null(z)) z <- ""
+                 z
+               }),
              status = vcapply(res, "[[", "status"))
   df[order(df$id),]
 }
@@ -231,6 +235,25 @@ montagu_burden_estimate_set_close <- function(modelling_group_id,
     "/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/%s/actions/close/",
     modelling_group_id, touchstone_id, scenario_id, burden_estimate_set_id)
   montagu_api_POST(location, path)
+}
+
+
+##' @export
+##' @title Requests a signed upload token, that can be used to upload
+##' a file in chunks, and then populate a burden estimate set with the
+##' uploaded file. This can only be done on a central estimate set, not a
+##' stochastic set.
+##' @inherit montagu_burden_estimate_set_clear
+##' @return a token string.
+montagu_burden_estimate_set_request_upload <- function(modelling_group_id,
+                                                       touchstone_id,
+                                                       scenario_id,
+                                                       burden_estimate_set_id,
+                                                       location = NULL) {
+  path <- sprintf(
+    "/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/%s/actions/request-upload/",
+    modelling_group_id, touchstone_id, scenario_id, burden_estimate_set_id) 
+  res <- montagu_api_GET(location, path)
 }
 
 

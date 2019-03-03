@@ -491,3 +491,35 @@ test_that("Clear non-open set - incorrect id", {
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
     "Unknown burden-estimate-set with id '10'")
 })
+
+#############################################################
+
+test_that("Request upload token - incorrect modelling group", {
+  #Failing - see i2725
+  location <- montagu_test_server()
+  montagu_burden_estimate_set_request_upload(
+    "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 687, location)
+})
+
+test_that("Request upload token - incorrect touchstone", {
+  location <- montagu_test_server()
+  expect_error(montagu_burden_estimate_set_request_upload(
+    "IC-Garske", "ZZZ201710gavi-5", "yf-no-vaccination", 687, location),
+    "Unknown touchstone-version with id 'ZZZ201710gavi-5'")
+})
+
+test_that("Request upload token - incorrect scenario", {
+  # Failing - see i2726
+  location <- montagu_test_server()
+  expect_error(montagu_burden_estimate_set_request_upload(
+    "IC-Garske", "201710gavi-5", "ZZZyf-no-vaccination", 687, location),
+    "Unknown scenario-description with id 'ZZZ201710gavi-5'")
+})
+
+test_that("Request upload token - on stochastic set", {
+  location <- montagu_test_server()
+  expect_error(montagu_burden_estimate_set_request_upload(
+    "IC-Garske", "201710gavi-5", "yf-no-vaccination", 1050, location),
+    "Error running request:\n\t - invalid-operation: Stochastic estimate upload not supported")
+})
+
