@@ -292,15 +292,20 @@ montagu_server_request <- function(server, verb, path, ...,
 
 montagu_response <- function(r, accept, dest) {
   code <- httr::status_code(r)
-  if (code == 404) {
-    ## Not sure about 403
+  if (code >= 300) {
     if (is_json_response(r)) {
       res <- response_to_json(r)
       if (length(res$errors) == 1L) {
         stop(montagu_api_error(res$errors[[1]]$message, code, res$errors))
       }
     }
-    stop("endpoint or resource not found")
+    if (code == 404) {
+      stop("endpoint or resource not found")
+    } else if (code == 403) {
+      stop("endpoint or resource not found, or you do not have permission")
+    } else {
+      stop("montagu returned error code ", code)
+    }
   }
   if (accept == "json") {
     txt <- httr::content(r, "text", encoding = "UTF-8")
