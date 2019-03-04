@@ -278,15 +278,13 @@ montagu_server_request <- function(server, verb, path, ...,
   }
   r <- do_request()
 
-  if (httr::status_code(r) %in% 401L && retry_on_auth_error) {
+  if (httr::status_code(r) == 401L && retry_on_auth_error) {
     errors <- from_json(httr::content(r, "text", encoding = "UTF-8"))$errors
     if (any(vcapply(errors, function(x) x$code) == "bearer-token-invalid")) {
       server$reauthorise()
       r <- do_request()
     }
   }
-  
- 
 
   montagu_response(r, accept, dest)
 }
@@ -294,15 +292,20 @@ montagu_server_request <- function(server, verb, path, ...,
 
 montagu_response <- function(r, accept, dest) {
   code <- httr::status_code(r)
-  if ((code == 404) || (code == 403)) {
-    ## Not sure about 403
+  if (code >= 300) {
     if (is_json_response(r)) {
       res <- response_to_json(r)
       if (length(res$errors) == 1L) {
         stop(montagu_api_error(res$errors[[1]]$message, code, res$errors))
       }
     }
-    stop("endpoint or resource not found")
+    if (code == 404) {
+      stop("endpoint or resource not found")
+    } else if (code == 403) {
+      stop("endpoint or resource not found, or you do not have permission")
+    } else {
+      stop("montagu returned error code ", code)
+    }
   }
   if (accept == "json") {
     txt <- httr::content(r, "text", encoding = "UTF-8")

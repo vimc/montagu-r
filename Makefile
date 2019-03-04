@@ -25,11 +25,14 @@ check_all:
 ## even when they do, it's not a great idea because we build and
 ## remove a bunch of containers etc.
 vignettes/%.Rmd: vignettes_src/%.Rmd
+	rm -f vignettes_src/figure/$*-*
 	cd vignettes_src && ${RSCRIPT} -e 'knitr::knit("$(<F)", output = "../$@")'
 	sed -i.bak 's/[[:space:]]*$$//' $@
 	rm -f $@.bak
 
 vignettes_install: vignettes/montagu.Rmd vignettes/montagu_user_guide.Rmd
+	rm -rf vignettes/figure
+	cp -r vignettes_src/figure vignettes/figure
 	${RSCRIPT} -e 'tools::buildVignettes(dir = ".")'
 
 vignettes:
