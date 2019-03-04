@@ -1,7 +1,7 @@
 ---
 title: "Montagu API from R"
 author: "VIMC Technical Team"
-date: "2019-03-02"
+date: "2019-03-04"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Montagu API}
@@ -369,21 +369,21 @@ head(montagu::montagu_burden_estimate_sets("IC-Garske", "201710gavi-5", "yf-no-v
 ```
 ##      id              uploaded_on    uploaded_by               type
 ## 37  687 2018-04-06T13:08:18.883Z katy.gaythorpe   central-averaged
-## 82  698 2018-05-30T09:27:32.341Z    tini.garske central-single-run
+## 88  698 2018-05-30T09:27:32.341Z    tini.garske central-single-run
 ## 1  1049 2019-02-15T11:48:00.515Z      test.user   central-averaged
 ## 2  1050 2019-02-15T12:16:44.479Z      test.user         stochastic
 ## 4  1051 2019-02-15T12:49:19.553Z      test.user   central-averaged
 ## 5  1052 2019-02-15T15:36:46.370Z      test.user   central-averaged
 ##                                                                 details
 ## 37 Averaged over posterior predictive distribution for model parameters
-## 82                                                                    x
+## 88                                                                    x
 ## 1                                         Mean over all stochastic runs
 ## 2                                                               Details
 ## 4                                                               Details
 ## 5                                                               Details
 ##      status
 ## 37 complete
-## 82    empty
+## 88    empty
 ## 1     empty
 ## 2     empty
 ## 4   invalid
@@ -503,7 +503,7 @@ head(data)
 plot(data$x[data$age==20], data$y[data$age==20], xlab="year", ylab="cases", main="For age 20")
 ```
 
-![plot of chunk unnamed-chunk-20](figure/unnamed-chunk-20-1.png)
+![plot of chunk unnamed-chunk-19](figure/montagu_user_guide-unnamed-chunk-19-1.png)
 Or to dis-aggregate by year:-
 
 ```r
@@ -523,8 +523,10 @@ head(data)
 ```
 
 ```r
-#plot(data$x[data$year==2040], data$y[data$year==2040], xlab="age", ylab="cases", main="For year 2040")
+plot(data$x[data$year==2040], data$y[data$year==2040], xlab="age", ylab="cases", main="For year 2040")
 ```
+
+![plot of chunk unnamed-chunk-20](figure/montagu_user_guide-unnamed-chunk-20-1.png)
 
 ## Stochastic Runs
 
@@ -559,11 +561,11 @@ params
 
 ```
 ##   run_id param_1 param_2
-## 1      1       5       3
-## 2      2       1       5
-## 3      3       4       1
-## 4      4       3       4
-## 5      5       2       2
+## 1      1       2       4
+## 2      2       3       2
+## 3      3       1       3
+## 4      4       4       1
+## 5      5       5       5
 ```
 
 This can then be uploaded as follows:-
