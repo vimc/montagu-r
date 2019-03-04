@@ -315,31 +315,26 @@ test_that("Create Burden Estimate - General usage - central", {
   
   expect_error(montagu_burden_estimate_set_upload("IC-Garske", "201710gavi-5", 
         "yf-no-vaccination", bsid, data, lines = Inf, location = location),
-        paste0("Error running request:\n\t ",
-               "- bad-request: We are not expecting data for country AFG"))
+        "We are not expecting data for country AFG")
   
   data$country[data$country == 'AFG'] <- 'AGO'
   data$country_name[data$country_name == 'Afghanistan'] <- "Angola"
   
   expect_error(montagu_burden_estimate_set_upload("IC-Garske", "201710gavi-5", 
         "yf-no-vaccination", bsid, data, lines = Inf, location = location),
-        paste0("Error running request:\n\t ",
-          "- bad-request: We are not expecting data for age 50 and year 1986"))
+        "We are not expecting data for age 50 and year 1986")
   
   data$year[data$year==1986] <- 2016
   
   expect_error(montagu_burden_estimate_set_upload("IC-Garske", "201710gavi-5", 
       "yf-no-vaccination", bsid, data, lines = Inf, location = location),
-      paste0("Error running request:\n\t ",
-	           "- inconsistent-data: Provided estimate lists disease as ",
-             "'Hib3' but scenario is for disease 'YF'"))
+      "Provided estimate lists disease as 'Hib3' but scenario is for disease 'YF'")
   
   data$disease <- "YF"
   
   expect_error(montagu_burden_estimate_set_upload("IC-Garske", "201710gavi-5", 
       "yf-no-vaccination", bsid, data, lines = Inf, location = location),
-       paste0("Error running request:\n\t ",
-              "- bad-request: We are not expecting data for age 150"))
+       paste0("We are not expecting data for age 150"))
   
   data$age[data$age == 150] <- 50
   
@@ -520,6 +515,6 @@ test_that("Request upload token - on stochastic set", {
   location <- montagu_test_server()
   expect_error(montagu_burden_estimate_set_request_upload(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", 1050, location),
-    "Error running request:\n\t - invalid-operation: Stochastic estimate upload not supported")
+    "Stochastic estimate upload not supported")
 })
 

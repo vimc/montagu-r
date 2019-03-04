@@ -284,7 +284,9 @@ data <- montagu::montagu_burden_estimate_set_outcome_data("IC-Garske", "201710ga
 head(data)
 plot(data$x[data$age==20], data$y[data$age==20], xlab="year", ylab="cases", main="For age 20")
 ```
+
 Or to dis-aggregate by year:-
+
 ```{r}
 data <- montagu::montagu_burden_estimate_set_outcome_data("IC-Garske", "201710gavi-5", 
          "yf-no-vaccination", 687, "cases", group_by = "year")
