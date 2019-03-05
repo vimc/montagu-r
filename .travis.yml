@@ -5,8 +5,8 @@ sudo: false
 cache: packages
 
 r_github_packages:
-  - vimc/orderly@2517
-  - vimc/orderly.server@2517
+  - vimc/orderly
+  - vimc/orderly.server
 
 addons:
   apt:
