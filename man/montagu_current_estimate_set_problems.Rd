@@ -20,7 +20,7 @@ montagu_current_estimate_set_problems(modelling_group_id, touchstone_id,
 A list of problem text.
 }
 \description{
-Groups upload estimate sets to Montagu. The most recent set of results 
+Groups upload estimate sets to Montagu. The most recent set of results
 uploaded by a group for a given scenario can be queried for its status,
 or retrieved.
 }

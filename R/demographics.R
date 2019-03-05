@@ -71,7 +71,7 @@ montagu_demographics_download <- function(touchstone_id, source_code,
 montagu_demographic_data <- function(type_code, touchstone_id,
                                      gender_code = NULL, wide = FALSE,
                                      source_code = NULL, location = NULL) {
-  location <- montagu_location(location)
+
   cache <- location$cache
 
   key <- list(type_code = type_code, touchstone_id = touchstone_id,

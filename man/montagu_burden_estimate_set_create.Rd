@@ -15,7 +15,7 @@ montagu_burden_estimate_set_create(modelling_group_id, touchstone_id,
 
 \item{scenario_id}{Scenario identifier}
 
-\item{type}{Can be `central-single-run`, `central-averaged`, `central-unknown` 
+\item{type}{Can be `central-single-run`, `central-averaged`
 or `stochastic`}
 
 \item{model_run_parameter_set}{Identifier for the parameter set}

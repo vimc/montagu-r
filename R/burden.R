@@ -1,10 +1,10 @@
 ##' Burden estimate sets define a set of results for a modelling group. They
-##' are specific to a touchstone and scenario. Usually, they will be the 
+##' are specific to a touchstone and scenario. Usually, they will be the
 ##' populated version of the burden estimate set template, which a modelling
-##' group can download, and defines the columns and rows for all the 
+##' group can download, and defines the columns and rows for all the
 ##' countries, ages and years that are expected from that group, for that
 ##' scenario. The modelling group then overwrites the missing values with
-##' results from their model, and submits the results to Montagu. 
+##' results from their model, and submits the results to Montagu.
 ##' @title Burden Estimate Sets
 ##' @param location A montagu location
 ##' @name Burden Estimate Sets
@@ -22,7 +22,7 @@ montagu_burden_estimate_sets <- function(modelling_group_id, touchstone_id,
   assert_character(modelling_group_id)
   assert_character(touchstone_id)
   assert_character(scenario_id)
-  
+
   path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/",
                   modelling_group_id, touchstone_id, scenario_id)
   res <- montagu_api_GET(location, path)
@@ -45,12 +45,12 @@ montagu_burden_estimate_sets <- function(modelling_group_id, touchstone_id,
 ##' @return A list of information about a specific estimate set.
 montagu_burden_estimate_set_info <- function(modelling_group_id, touchstone_id,
               scenario_id, burden_estimate_set_id, location = NULL) {
-  
+
   assert_character(modelling_group_id)
   assert_character(touchstone_id)
   assert_character(scenario_id)
   assert_integer_like(burden_estimate_set_id)
-  
+
   path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/%s/",
         modelling_group_id, touchstone_id, scenario_id, burden_estimate_set_id)
   res <- montagu_api_GET(location, path)
@@ -58,7 +58,7 @@ montagu_burden_estimate_set_info <- function(modelling_group_id, touchstone_id,
   c(res[c("id", "uploaded_on", "uploaded_by")],
     typeinfo[c("type", "details")],
     res["status"])
-  
+
 }
 
 ##' @export
@@ -67,17 +67,17 @@ montagu_burden_estimate_set_info <- function(modelling_group_id, touchstone_id,
 ##' @return A list of information about a specific estimate set.
 montagu_burden_estimate_set_data <- function(modelling_group_id, touchstone_id,
                       scenario_id, burden_estimate_set_id, location = NULL) {
-  
+
   assert_character(modelling_group_id)
   assert_character(touchstone_id)
   assert_character(scenario_id)
   assert_integer_like(burden_estimate_set_id)
-  
+
   path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/%s/estimates/",
         modelling_group_id, touchstone_id, scenario_id, burden_estimate_set_id)
   res <- rawToChar(montagu_api_GET(location, path, accept="csv"))
   read.csv(text = res, header = TRUE, stringsAsFactors = FALSE)
-  
+
 }
 
 ##' @export
@@ -86,7 +86,7 @@ montagu_burden_estimate_set_data <- function(modelling_group_id, touchstone_id,
 ##' @inherit montagu_burden_estimate_sets
 ##' @param outcome_code The name of an outcome, such as 'cases' or 'deaths'.
 ##' @param group_by Set to 'age' (the default) or 'year', to set the
-##' @return A data frame with columns age or year (depending on group_by), 
+##' @return A data frame with columns age or year (depending on group_by),
 montagu_burden_estimate_set_outcome_data <- function(modelling_group_id,
                                                      touchstone_id,
                                                      scenario_id,
@@ -94,27 +94,27 @@ montagu_burden_estimate_set_outcome_data <- function(modelling_group_id,
                                                      outcome_code,
                                                      group_by = 'age',
                                                      location = NULL) {
-  
+
   assert_character(modelling_group_id)
   assert_character(touchstone_id)
   assert_character(scenario_id)
   assert_integer_like(burden_estimate_set_id)
   assert_character(outcome_code)
-  
+
   if (!group_by %in% c("age", "year")) {
     stop("group_by must be set to 'age' or 'year'")
   }
-  
+
   path <- sprintf(
     "/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/%s/estimates/%s/",
     modelling_group_id, touchstone_id, scenario_id, burden_estimate_set_id,
     outcome_code)
-  
+
   query <- list()
   if (group_by!='age') query <- list(groupBy = group_by)
-  
+
   res <- montagu_api_GET(location, path, query = query)
-  
+
   df <- data_frame(index = rep(as.integer(names(res)), each = length(res[[1]])),
         x = unlist(lapply(res, function(x) { viapply(x, function(z) { z$x })})),
         y = unlist(lapply(res, function(x) { vnapply(x, function(z) { z$y })})))
@@ -134,16 +134,16 @@ montagu_burden_estimate_set_outcome_data <- function(modelling_group_id,
 ##' @param scenario_id Scenario identifier
 ##' @param location The montagu server to connect to.
 ##' @return A list of any problems with this burden estimate set
-montagu_burden_estimate_set_problems <- function(modelling_group_id, 
+montagu_burden_estimate_set_problems <- function(modelling_group_id,
     touchstone_id, scenario_id, burden_estimate_set_id, location = NULL) {
-  
+
   assert_character(modelling_group_id)
   assert_character(touchstone_id)
   assert_character(scenario_id)
   assert_integer_like(burden_estimate_set_id)
-  
+
   path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/%s/",
-                  modelling_group_id, touchstone_id, scenario_id, 
+                  modelling_group_id, touchstone_id, scenario_id,
                   burden_estimate_set_id)
   res <- montagu_api_GET(location, path)
   res$problems
@@ -152,7 +152,7 @@ montagu_burden_estimate_set_problems <- function(modelling_group_id,
 ##' @export
 ##' @title Create a new burden estimate set
 ##' @inherit montagu_burden_estimate_sets
-##' @param type Can be `central-single-run`, `central-averaged`, `central-unknown` 
+##' @param type Can be `central-single-run`, `central-averaged`
 ##' or `stochastic`
 ##' @param model_run_parameter_set Identifier for the parameter set
 ##' @param details Optional details string
@@ -170,22 +170,22 @@ montagu_burden_estimate_set_create <- function(modelling_group_id,
   if (!is.null(model_run_parameter_set)) {
     assert_integer_like(model_run_parameter_set)
   }
-  
-  # I am not sure if I should allow the r-client to upload 
-  # with type "central-unknown" 
-  
-  if (!type %in% c("central-single-run", "stochastic", 
-                   "central-averaged", "central-unknown")) {
-    stop(paste0("Invalid type - must be one of central-single-run, stochastic,",
-               " central-averaged, or central-unknown")) 
+
+  # I am not sure if I should allow the r-client to upload
+  # with type "central-unknown"
+
+  if (!type %in% c("central-single-run", "stochastic",
+                   "central-averaged")) {
+    stop(paste0("Invalid type - must be one of central-single-run, ",
+               "central-averaged, or stochastic"))
   }
-  
+
   if (type != "stochastic") {
     if (!is.null(model_run_parameter_set)) {
       stop("model_run_parameter_set should only be specified for stochastic runs")
     }
   }
-  
+
   if (type == "stochastic") {
     if (is.null(model_run_parameter_set)) {
       stop("model_run_parameter_set must be specified for stochastic runs")
@@ -200,7 +200,7 @@ montagu_burden_estimate_set_create <- function(modelling_group_id,
   if (!is.null(details)) {
     data$type$details <- jsonlite::unbox(details)
   }
-  
+
   res <- montagu_api_POST(location, path, body = data, encode = "json")
   as.integer(sub("/", "", basename(res)))
 }
@@ -215,6 +215,11 @@ montagu_burden_estimate_set_clear <- function(modelling_group_id,
                                               scenario_id,
                                               burden_estimate_set_id,
                                               location = NULL) {
+  assert_character(modelling_group_id)
+  assert_character(touchstone_id)
+  assert_character(scenario_id)
+  assert_integer_like(burden_estimate_set_id)
+
   path <- sprintf(
     "/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/%s/actions/clear/",
     modelling_group_id, touchstone_id, scenario_id, burden_estimate_set_id)
@@ -231,31 +236,16 @@ montagu_burden_estimate_set_close <- function(modelling_group_id,
                                               scenario_id,
                                               burden_estimate_set_id,
                                               location = NULL) {
+  assert_character(modelling_group_id)
+  assert_character(touchstone_id)
+  assert_character(scenario_id)
+  assert_integer_like(burden_estimate_set_id)
+
   path <- sprintf(
     "/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/%s/actions/close/",
     modelling_group_id, touchstone_id, scenario_id, burden_estimate_set_id)
   montagu_api_POST(location, path)
 }
-
-
-##' @export
-##' @title Requests a signed upload token, that can be used to upload
-##' a file in chunks, and then populate a burden estimate set with the
-##' uploaded file. This can only be done on a central estimate set, not a
-##' stochastic set.
-##' @inherit montagu_burden_estimate_set_clear
-##' @return a token string.
-montagu_burden_estimate_set_request_upload <- function(modelling_group_id,
-                                                       touchstone_id,
-                                                       scenario_id,
-                                                       burden_estimate_set_id,
-                                                       location = NULL) {
-  path <- sprintf(
-    "/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/%s/actions/request-upload/",
-    modelling_group_id, touchstone_id, scenario_id, burden_estimate_set_id) 
-  res <- montagu_api_GET(location, path)
-}
-
 
 ##' @export
 ##' @inherit montagu_burden_estimate_set_clear
@@ -272,15 +262,15 @@ montagu_burden_estimate_set_upload <- function(modelling_group_id,
                                                location = NULL) {
   for (col in c("disease", "year", "age", "country", "country_name",
                 "cohort_size")) {
-    
+
     if (!col %in% names(data)) {
       stop(sprintf("'%s' column not found in data"))
     }
-  }  
-  
+  }
+
   tf <- tempfile()
   write.csv(x = data, file = tf, row.names = FALSE)
-  
+
   path <- sprintf(
     "/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/%s/",
     modelling_group_id, touchstone_id, scenario_id, burden_estimate_set_id)
@@ -301,7 +291,7 @@ montagu_burden_estimate_set_upload <- function(modelling_group_id,
   ## upload needs to have a header row there's not a lot of
   ## alternatives, really - we have to build up a string each time.
   ## And it looks like we can't just send the whole thing up in one go
-  
+
   con <- file(tf, "r")
   on.exit(close(con))
   header <- readLines(con, n = 1L)
@@ -325,18 +315,3 @@ montagu_burden_estimate_set_upload <- function(modelling_group_id,
   message(sprintf("...Done! (in %s)", format(Sys.time() - t0)))
 }
 
-##' @export
-montagu_touchstones_list <- function(location = NULL) {
-  res <- montagu_api_GET(location, "/")
-  v <- lapply(res, "[[", "versions")
-  vv <- unlist(v, FALSE)
-
-  n <- lengths(v)
-  i <- rep(seq_along(n), n)
-
-  data_frame(id = vcapply(vv, "[[", "id"),
-             name = vcapply(res, "[[", "id")[i],
-             version = viapply(vv, "[[", "version"),
-             status = vcapply(vv, "[[", "status"))
-
-}
