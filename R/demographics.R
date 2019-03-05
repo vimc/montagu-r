@@ -1,16 +1,22 @@
-##' This may get a name change pending splitting apart of various
-##' montagu components.
-##' @title The Montagu API: demographics
-##' @param location A montagu location
-##' @rdname montagu_demographics
-##' @name montagu_demographics
-NULL
-
+##' Montagu provides standardised demographic data for the groups to use in 
+##' their models. The source of the data is UNWPP, although various procedures
+##' are applied for convenience, including work on some smaller countries,
+##' people above the age of 80 in certain time periods, and extrapolating
+##' both cohorts backwards in time to their origins before 1950. Internal
+##' documents in the reporting portal describe the methods and motivations for
+##' these extensions.
+##' 
 
 ##' @export
-##' @rdname montagu_demographics
+##' @title List the demographic data available for a given touchstone.
 ##' @param touchstone_id Touchstone identifier
+##' @param location The location of the montagu api server.
+##' @return A data frame, giving the code and description for each demographic
+##' statistic, whether the data are stratified by gender, and a code indicating
+##' the source of the demographic data, which will change if there are future
+##' updates to any of the demographic data fields.
 montagu_demographics_list <- function(touchstone_id, location = NULL) {
+  assert_character(touchstone_id)
   location <- montagu_location(location)
   tryCatch(
     location$cache$get(touchstone_id, "demographics_list"),
@@ -29,18 +35,64 @@ montagu_demographics_list <- function(touchstone_id, location = NULL) {
 }
 
 
-## This one will be the cache-free version - it always downloads data.
-## If 'dest' is NULL we'll return the data, otherwise we just download
-## it.
+##' @export
+##' @inherit montagu_demographics_list
+##' @title Download demographic data for a given touchstone.
+##' @param source_code The name of the source, as given by 
+##'   \code{montagu_demographics_list}
+##' @param type_code The short code name for a demographic statistic, as given by
+##'   \code{montagu_demographics_list}
+##' @param gender_code One of 'male', 'female' or 'both', defaulting to 'both'.
+##' @param format 'wide' format returns years in separate columns and ages in rows, whereas 'long' 
+##' returns separate rows for each year and age.
+
 montagu_demographics_download <- function(touchstone_id, source_code,
                                           type_code, gender_code = NULL,
                                           format = NULL, dest = NULL,
                                           location = NULL) {
+  assert_character(touchstone_id)
+  assert_character(source_code)
+  assert_character(type_code)
+  
+  # See issue 2736 if the API does this...
+  d <- montagu_demographics_list(touchstone_id, location)
+  if (!source_code %in% d$source) {
+    stop(sprintf("Unknown demographic source type with id '%s'", source_code))
+  }
+  
+  if (!is.null(gender_code)) {
+    assert_character(gender_code)
+    if (!gender_code %in% c("male", "female", "both")) {
+      stop(sprintf("Invalid gender code '%s' - use male, female or both",
+                   gender_code))
+    }
+    
+    if (gender_code %in% c("male", "female")) {
+      #Uncomment next line if i2736 is addressed
+      #d <- montagu_demographics_list(touchstone_id, location)
+      d <- d[d$id == type_code & d$source == source_code,]
+      if (!d$gendered) {
+        stop(sprintf("The demographic type '%s' in '%s' is not gendered, so cannot be filtered by '%s'",
+                     type_code, source_code, gender_code))
+
+      }
+    }
+  }
+  
+  if (!is.null(format)) {
+    assert_character(format)
+    if (!format %in% c("long", "wide")) {
+      stop(sprintf("Invalid format '%s' - use long or wide",
+                   format))
+    }
+  }
+
   query <- http_query(gender_code = gender_code,
                       format = format)
+  
   path <- sprintf("/touchstones/%s/demographics/%s/%s/",
                   touchstone_id, source_code, type_code)
-  res <- montagu_api_GET(location, path, accept = "csv")
+  res <- montagu_api_GET(location, path, accept = "csv", query = query)
   if (is.null(dest)) {
     tmp <- tempfile()
     on.exit(unlink(tmp))
@@ -54,8 +106,7 @@ montagu_demographics_download <- function(touchstone_id, source_code,
 
 
 ##' @export
-##' @rdname montagu_demographics
-##'
+##' @title Download demographic data for a given touchstone.
 ##' @param type_code The demographic type code (something like
 ##'   \code{cbr} for \code{Fertility: Crude birth rate (CBR)}.  Get
 ##'   the possible values from \code{montagu_demographics_list}

@@ -1,3 +1,23 @@
+## 0.3.7
+
+* Review support of demographic endpoints (VIMC-2723)
+
+## 0.3.6
+
+* Add support for burden estimate set endpoints (VIMC-2625)
+
+## 0.3.5
+
+* Add support for model run parameter sets (VIMC-2634)
+
+## 0.3.4
+
+* Add support for modelling-group endpoints (VIMC-2557)
+
+## 0.3.3
+
+* Add support for coverage endpoints (VIMC-2567)
+
 ## 0.3.2
 
 * Error predictably when a report is killed by the remote server due to a timeout, and allow setting of this timeout (VIMC-2517)
