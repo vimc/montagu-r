@@ -332,9 +332,13 @@ id <- montagu::montagu_model_run_parameter_set_upload(
 ```
 
 and the id of the newly created parameter set will be returned. For stochastic data, we will
-need to supply this id when creating the associated burden estimate set.
+need to supply this id when creating the associated stochastic burden estimate set:-
 
-#TODO - add burden estimate set example here in i2625
+```r
+bsid <- montagu::montagu_burden_estimate_set_create(
+    "IC-Garske", "201710gavi-5", "yf-no-vaccination", 
+    "stochastic", id, "Stochastic runs")
+```
 
 We can also list the existing model run parameter sets with:-
 
