@@ -34,59 +34,16 @@ montagu_demographics_list <- function(touchstone_id, location = NULL) {
   )
 }
 
-
-##' @export
-##' @inherit montagu_demographics_list
-##' @title Download demographic data for a given touchstone.
-##' @param source_code The name of the source, as given by 
-##'   \code{montagu_demographics_list}
-##' @param type_code The short code name for a demographic statistic, as given by
-##'   \code{montagu_demographics_list}
-##' @param gender_code One of 'male', 'female' or 'both', defaulting to 'both'.
-##' @param format 'wide' format returns years in separate columns and ages in rows, whereas 'long' 
-##' returns separate rows for each year and age.
-
 montagu_demographics_download <- function(touchstone_id, source_code,
                                           type_code, gender_code = NULL,
                                           format = NULL, dest = NULL,
                                           location = NULL) {
-  assert_character(touchstone_id)
-  assert_character(source_code)
-  assert_character(type_code)
-  
   # See issue 2736 if the API does this...
   d <- montagu_demographics_list(touchstone_id, location)
   if (!source_code %in% d$source) {
     stop(sprintf("Unknown demographic source type with id '%s'", source_code))
   }
   
-  if (!is.null(gender_code)) {
-    assert_character(gender_code)
-    if (!gender_code %in% c("male", "female", "both")) {
-      stop(sprintf("Invalid gender code '%s' - use male, female or both",
-                   gender_code))
-    }
-    
-    if (gender_code %in% c("male", "female")) {
-      #Uncomment next line if i2736 is addressed
-      #d <- montagu_demographics_list(touchstone_id, location)
-      d <- d[d$id == type_code & d$source == source_code,]
-      if (!d$gendered) {
-        stop(sprintf("The demographic type '%s' in '%s' is not gendered, so cannot be filtered by '%s'",
-                     type_code, source_code, gender_code))
-
-      }
-    }
-  }
-  
-  if (!is.null(format)) {
-    assert_character(format)
-    if (!format %in% c("long", "wide")) {
-      stop(sprintf("Invalid format '%s' - use long or wide",
-                   format))
-    }
-  }
-
   query <- http_query(gender_code = gender_code,
                       format = format)
   
@@ -122,6 +79,10 @@ montagu_demographics_download <- function(touchstone_id, source_code,
 montagu_demographic_data <- function(type_code, touchstone_id,
                                      gender_code = NULL, wide = FALSE,
                                      source_code = NULL, location = NULL) {
+
+  assert_character(type_code)
+  assert_character(touchstone_id)
+  
   location <- montagu_location(location)
   cache <- location$cache
 
@@ -135,18 +96,42 @@ montagu_demographic_data <- function(type_code, touchstone_id,
   } else {
     if (is.null(source_code)) {
       d <- montagu_demographics_list(touchstone_id, location = location)
+      if (!type_code %in% d$id) {
+        stop(sprintf("Unknown demographic-statistic-type with id '%s'", type_code))
+      }
       i <- d$id == type_code
-      if (sum(i) == 0L) {
-        stop("Could not determine source_code")
-      } else if (sum(i) > 1L) {
+      if (sum(i) > 1L) {
         stop("More than one source_code applicable for this source: ",
              paste(squote(d$source[i]), collapse = ", "))
       }
       source_code <- d$source[i]
     }
+    
+    # Check gender_code is valid
+    
+    if (!is.null(gender_code)) {
+      assert_character(gender_code)
+      if (!gender_code %in% c("male", "female", "both")) {
+        stop(sprintf("Invalid gender code '%s' - use male, female or both",
+                     gender_code))
+      }
+      
+      if (gender_code %in% c("male", "female")) {
+        d <- montagu_demographics_list(touchstone_id, location)
+        d <- d[d$id == type_code,]
+        if (!d$gendered) {
+          stop(sprintf("The demographic type '%s' is not gendered, so cannot be filtered by '%s'",
+                       type_code, gender_code))
+          
+        }
+      }
+    }
+    
+    
+
     format <- if (wide) "wide" else NULL
     dat <- montagu_demographics_download(touchstone_id, source_code, type_code,
-                                         gender_code, format)
+                                         gender_code, format, NULL, location)
 
     cache$set(hash, key, "demographic_data_meta")
     cache$set(hash, dat, "demographic_data")

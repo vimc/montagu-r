@@ -17,8 +17,7 @@ test_that("demographic list - working", {
 
 test_that("download demographic data", {
   location <- montagu_test_server()
-  dat <- montagu_demographics_download("201804rfp-1", "dds-201710", "cbr",
-                                       location = location)
+  dat <- montagu_demographic_data("cbr", "201804rfp-1", location = location)
   expect_is(dat, "data.frame")
   expect_equal(sort(match(names(dat), c("country_code_numeric", "country_code",
     "country", "age_from", "age_to", "year", "gender", "value"))),
@@ -27,35 +26,30 @@ test_that("download demographic data", {
 
 test_that("download demographic data - something basic wrong", {
   location <- montagu_test_server()
-  expect_error(montagu_demographics_download("ZZZ201804rfp-1", "dds-201710", "cbr",
+  expect_error(montagu_demographic_data("cbr", "ZZZ201804rfp-1", 
                                        location = location),
                "Unknown touchstone-version with id 'ZZZ201804rfp-1'")
 
-  #NB this one is handled in demographics.R at present, not API - see i2736
-  expect_error(montagu_demographics_download("201804rfp-1", "ZZZdds-201710", "cbr",
-                                             location = location),
-               "Unknown demographic source type with id 'ZZZdds-201710'")
-  
-  expect_error(montagu_demographics_download("201804rfp-1", "dds-201710", "elf",
-                                             location = location),
+  expect_error(montagu_demographic_data("elf", "201804rfp-1",
+                                        location = location),
                "Unknown demographic-statistic-type with id 'elf'")
 
 })
 
 test_that("download demographic data - gendered tests", {
   location <- montagu_test_server()
-  expect_error(montagu_demographics_download("201804rfp-1", "dds-201710", "cbr",
+  expect_error(montagu_demographic_data("cbr", "201804rfp-1",
     gender_code = 'elf', location = location),
     "Invalid gender code 'elf' - use male, female or both")
   
   for (g in c("male", "female")) {
-    expect_error(montagu_demographics_download("201804rfp-1", "dds-201710", "cbr",
+    expect_error(montagu_demographic_data("cbr", "201804rfp-1",
                gender_code = g, location = location),
-    sprintf(paste0("The demographic type 'cbr' in 'dds-201710' is not gendered, so ",
+    sprintf(paste0("The demographic type 'cbr' is not gendered, so ",
            "cannot be filtered by '%s'"), g))
   }
 
-  d1 <- montagu_demographics_download("201804rfp-1", "dds-201710", "cbr",
+  d1 <- montagu_demographic_data("cbr", "201804rfp-1",
             gender_code = 'both', location = location)
   expect_is(d1, "data.frame")
   expect_equal(nrow(d1), 150)
@@ -64,14 +58,11 @@ test_that("download demographic data - gendered tests", {
 
 test_that("download demographic data - format tests", {
   location <- montagu_test_server()
-  expect_error(montagu_demographics_download("201804rfp-1", "dds-201710", "cbr",
-        format = "purple", location = location),
-        "Invalid format 'purple' - use long or wide")
-  dl <- montagu_demographics_download("201804rfp-1", "dds-201710", "as_fert",
-      format = "long", location = location)
+  dl <- montagu_demographic_data("as_fert", "201804rfp-1",
+      wide = FALSE, location = location)
   
-  dw <- montagu_demographics_download("201804rfp-1", "dds-201710", "as_fert",
-      format = "wide", location = location)
+  dw <- montagu_demographic_data("as_fert", "201804rfp-1", 
+      wide = TRUE, location = location)
   
   expect_is(dl, "data.frame")
   expect_is(dw, "data.frame")
@@ -79,7 +70,6 @@ test_that("download demographic data - format tests", {
   expect_gt(nrow(dw), 0)
   expect_gt(nrow(dl), nrow(dw))
 })
-
 
 test_that("demographic list is cached within session", {
   location <- montagu_location(montagu_test_server())
