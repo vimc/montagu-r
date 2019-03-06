@@ -63,6 +63,7 @@ montagu_demographics_download <- function(touchstone_id, source_code,
 
 
 ##' @export
+##' @inherit montagu_demographics_list
 ##' @title Download demographic data for a given touchstone.
 ##' @param type_code The demographic type code (something like
 ##'   \code{cbr} for \code{Fertility: Crude birth rate (CBR)}.  Get
