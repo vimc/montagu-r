@@ -26,7 +26,7 @@ test_that("download demographic data", {
 
 test_that("download demographic data - something basic wrong", {
   location <- montagu_test_server()
-  expect_error(montagu_demographic_data("cbr", "ZZZ201804rfp-1", 
+  expect_error(montagu_demographic_data("cbr", "ZZZ201804rfp-1",
                                        location = location),
                "Unknown touchstone-version with id 'ZZZ201804rfp-1'")
 
@@ -41,7 +41,7 @@ test_that("download demographic data - gendered tests", {
   expect_error(montagu_demographic_data("cbr", "201804rfp-1",
     gender_code = 'elf', location = location),
     "Invalid gender code 'elf' - use male, female or both")
-  
+
   for (g in c("male", "female")) {
     expect_error(montagu_demographic_data("cbr", "201804rfp-1",
                gender_code = g, location = location),
@@ -60,10 +60,10 @@ test_that("download demographic data - format tests", {
   location <- montagu_test_server()
   dl <- montagu_demographic_data("as_fert", "201804rfp-1",
       wide = FALSE, location = location)
-  
-  dw <- montagu_demographic_data("as_fert", "201804rfp-1", 
+
+  dw <- montagu_demographic_data("as_fert", "201804rfp-1",
       wide = TRUE, location = location)
-  
+
   expect_is(dl, "data.frame")
   expect_is(dw, "data.frame")
   expect_gt(nrow(dl), 0)

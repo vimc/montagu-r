@@ -20,7 +20,7 @@ montagu_touchstone_versions(modelling_group_id, touchstone_name = NULL,
 Data frame of touchstone id, name, version, description and status
 }
 \description{
-Touchstones are versioned; errata in the input or coverage data may be 
+Touchstones are versioned; errata in the input or coverage data may be
 addressed with a new version of the existing touchstone. When interacting
 with Montagu, a touchstone_id will consist of a basename, and a version.
 }

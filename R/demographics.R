@@ -1,11 +1,11 @@
-##' Montagu provides standardised demographic data for the groups to use in 
+##' Montagu provides standardised demographic data for the groups to use in
 ##' their models. The source of the data is UNWPP, although various procedures
 ##' are applied for convenience, including work on some smaller countries,
 ##' people above the age of 80 in certain time periods, and extrapolating
 ##' both cohorts backwards in time to their origins before 1950. Internal
 ##' documents in the reporting portal describe the methods and motivations for
 ##' these extensions.
-##' 
+##'
 
 ##' @export
 ##' @title List the demographic data available for a given touchstone.
@@ -43,10 +43,10 @@ montagu_demographics_download <- function(touchstone_id, source_code,
   if (!source_code %in% d$source) {
     stop(sprintf("Unknown demographic source type with id '%s'", source_code))
   }
-  
+
   query <- http_query(gender_code = gender_code,
                       format = format)
-  
+
   path <- sprintf("/touchstones/%s/demographics/%s/%s/",
                   touchstone_id, source_code, type_code)
   res <- montagu_api_GET(location, path, accept = "csv", query = query)
@@ -82,7 +82,7 @@ montagu_demographic_data <- function(type_code, touchstone_id,
 
   assert_character(type_code)
   assert_character(touchstone_id)
-  
+
   location <- montagu_location(location)
   cache <- location$cache
 
@@ -106,28 +106,26 @@ montagu_demographic_data <- function(type_code, touchstone_id,
       }
       source_code <- d$source[i]
     }
-    
+
     # Check gender_code is valid
-    
+
     if (!is.null(gender_code)) {
       assert_character(gender_code)
       if (!gender_code %in% c("male", "female", "both")) {
         stop(sprintf("Invalid gender code '%s' - use male, female or both",
                      gender_code))
       }
-      
+
       if (gender_code %in% c("male", "female")) {
         d <- montagu_demographics_list(touchstone_id, location)
         d <- d[d$id == type_code,]
         if (!d$gendered) {
           stop(sprintf("The demographic type '%s' is not gendered, so cannot be filtered by '%s'",
                        type_code, gender_code))
-          
+
         }
       }
     }
-    
-    
 
     format <- if (wide) "wide" else NULL
     dat <- montagu_demographics_download(touchstone_id, source_code, type_code,

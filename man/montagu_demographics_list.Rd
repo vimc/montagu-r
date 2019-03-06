@@ -18,7 +18,7 @@ the source of the demographic data, which will change if there are future
 updates to any of the demographic data fields.
 }
 \description{
-Montagu provides standardised demographic data for the groups to use in 
+Montagu provides standardised demographic data for the groups to use in
 their models. The source of the data is UNWPP, although various procedures
 are applied for convenience, including work on some smaller countries,
 people above the age of 80 in certain time periods, and extrapolating
