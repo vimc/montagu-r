@@ -1,7 +1,7 @@
 ---
 title: "Montagu API from R"
 author: "VIMC Technical Team"
-date: "2019-02-19"
+date: "2019-03-06"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Montagu API}
@@ -58,10 +58,11 @@ montagu::montagu_diseases()
 ## 11     DTP Diphtheria Tetanus Pertussis
 ```
 
-TO-DO - i2557
 
+#TODO - enable below after i2557
 ```r
-montagu::montagu_modelling_groups()
+groups <- montagu::montagu_modelling_groups()
+head(groups)
 ```
 
 ### Touchstones
@@ -272,6 +273,183 @@ montagu::montagu_expectation_applicable_scenarios("CDA-Razavi", "201710gavi-5", 
 ## [1] "hepb-bd-routine-with"
 ```
 
+### Demography
+
+Montagu provides standardised demographic data necessary for running vaccine models.
+In the early stages of VIMC, we surveyed the groups to ascertain what demographic data
+they required, and Montagu provides the superset of all those data. If, however, your
+model needs demographic data not provided by Montagu, get in touch, as we want to make
+sure that demography is always consistent between different models.
+
+We can list the available demographic data associated with a touchstone like this:-
+
+
+```r
+montagu::montagu_demographics_list("201710gavi-5")
+```
+
+```
+##              id                                             name gendered
+## 1       as_fert                Fertility: Age-specific fertility    FALSE
+## 2        births                    Fertility: Births (number of)    FALSE
+## 3     qq_births     Fertility: Births (number of) - quinquennial    FALSE
+## 4     as_births               Fertility: Births by age of mother    FALSE
+## 5           cbr                Fertility: Crude birth rate (CBR)    FALSE
+## 6      birth_mf                    Fertility: Sex-ratio at birth    FALSE
+## 7      fert_tot                       Fertility: Total Fertility    FALSE
+## 8  net_mig_rate                    Migration: Net migration rate    FALSE
+## 9     mort_rate             Mortality: Central Death Rate (ASMR)     TRUE
+## 10          cdr                Mortality: Crude death rate (CDR)    FALSE
+## 11     mort_age                Mortality: Deaths (number) by age     TRUE
+## 12     mort_tot                 Mortality: Deaths (total number)     TRUE
+## 13      life_ex      Mortality: Expected remaining years of life     TRUE
+## 14          lx0              Mortality: Life expectancy at birth     TRUE
+## 15 unwpp_cm_nmr  Mortality: Neonatal Mortality Rate (28-day NMR)    FALSE
+## 16      p_dying           Mortality: Probability of dying by age     TRUE
+## 17  n_survivors Mortality: Survivors from a birth-cohort of 100k     TRUE
+## 18    unwpp_imr          Mortality: Under 1 Mortality Rate (IMR)    FALSE
+## 19   unwpp_u5mr         Mortality: Under 5 Mortality Rate (U5MR)    FALSE
+## 20          pgr                          Population: Growth Rate    FALSE
+## 21      int_pop   Population: Interpolated (1-year time and age)     TRUE
+## 22       qq_pop   Population: Quinquennial (5-year time and age)     TRUE
+## 23      tot_pop                                Population: Total     TRUE
+##        source
+## 1  dds-201710
+## 2  dds-201710
+## 3  dds-201710
+## 4  dds-201710
+## 5  dds-201710
+## 6  dds-201710
+## 7  dds-201710
+## 8  dds-201710
+## 9  dds-201710
+## 10 dds-201710
+## 11 dds-201710
+## 12 dds-201710
+## 13 dds-201710
+## 14 dds-201710
+## 15 dds-201710
+## 16 dds-201710
+## 17 dds-201710
+## 18 dds-201710
+## 19 dds-201710
+## 20 dds-201710
+## 21 dds-201710
+## 22 dds-201710
+## 23 dds-201710
+```
+
+We can then retrieve a particular demographic statistic as follows:-
+
+
+```r
+cbr <- montagu::montagu_demographic_data("cbr", "201710gavi-5")
+head(cbr)
+```
+
+```
+##   country_code_numeric country_code     country age_from age_to year
+## 1                    4          AFG Afghanistan        0      0 1950
+## 2                    4          AFG Afghanistan        0      0 1951
+## 3                    4          AFG Afghanistan        0      0 1952
+## 4                    4          AFG Afghanistan        0      0 1953
+## 5                    4          AFG Afghanistan        0      0 1954
+## 6                    4          AFG Afghanistan        0      0 1955
+##   gender value
+## 1   both  0.05
+## 2   both  0.05
+## 3   both  0.05
+## 4   both  0.05
+## 5   both  0.05
+## 6   both  0.05
+```
+
+#### Gender
+
+The example above, the central birth rate, is not gender-specific. Other fields are
+gender-specific, where data can be downloaded for 'female', 'male', or the total of
+all people is called 'both'. By default 'both' is returned, but to select a specific
+gender:
+
+
+```r
+female_pop <- montagu::montagu_demographic_data("tot_pop", "201710gavi-5",
+                                                gender_code = "female")
+head(female_pop)
+```
+
+```
+##   country_code_numeric country_code     country age_from age_to year
+## 1                    4          AFG Afghanistan        0    120 1950
+## 2                    4          AFG Afghanistan        0    120 1951
+## 3                    4          AFG Afghanistan        0    120 1952
+## 4                    4          AFG Afghanistan        0    120 1953
+## 5                    4          AFG Afghanistan        0    120 1954
+## 6                    4          AFG Afghanistan        0    120 1955
+##   gender   value
+## 1 female 3652874
+## 2 female 3705031
+## 3 female 3760979
+## 4 female 3820747
+## 5 female 3884348
+## 6 female 3951800
+```
+
+#### Format
+
+Data is also available in long format (the default), in which years and ages are
+reported in separate rows, or wide format, in which the years of time are represented
+as columns, making the resulting data shorter, but wider. For example:-
+
+
+```r
+as_fert <- montagu::montagu_demographic_data("as_fert", "201710gavi-5")
+names(as_fert)
+```
+
+```
+## [1] "country_code_numeric" "country_code"         "country"
+## [4] "age_from"             "age_to"               "year"
+## [7] "gender"               "value"
+```
+
+```r
+nrow(as_fert)
+```
+
+```
+## [1] 21000
+```
+
+```r
+as_fert_wide <- montagu::montagu_demographic_data("as_fert", "201710gavi-5",
+                                                  wide = TRUE)
+names(as_fert_wide)
+```
+
+```
+##  [1] "country_code_numeric" "country_code"         "country"
+##  [4] "age_from"             "age_to"               "gender"
+##  [7] "X1950"                "X1955"                "X1960"
+## [10] "X1965"                "X1970"                "X1975"
+## [13] "X1980"                "X1985"                "X1990"
+## [16] "X1995"                "X2000"                "X2005"
+## [19] "X2010"                "X2015"                "X2020"
+## [22] "X2025"                "X2030"                "X2035"
+## [25] "X2040"                "X2045"                "X2050"
+## [28] "X2055"                "X2060"                "X2065"
+## [31] "X2070"                "X2075"                "X2080"
+## [34] "X2085"                "X2090"                "X2095"
+```
+
+```r
+nrow(as_fert_wide)
+```
+
+```
+## [1] 700
+```
+
 ### Templates
 
 The above will give all the information required to build your own data frame
@@ -293,6 +471,227 @@ head(df)
 ## 5      YF 2004   0     AGO       Angola          NA     NA    NA    NA
 ## 6      YF 2005   0     AGO       Angola          NA     NA    NA    NA
 ```
+
+### Coverage
+
+We now need to obtain the coverage data relevant for our disease and touchstone,
+for each of the scenarios we're going to model. Let's look at the `yf-routine-gavi`
+coverage metadata.
+
+#TODO: Enable below after i2567
+```r
+montagu::montagu_coverage_info("IC-Garske", "201710gavi-5", "yf-routine-gavi")
+```
+
+And now let's retrieve the coverage data itself, and summarise it.
+
+#TODO: Enable below after i2567
+```r
+cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi")
+head(cov[cov$coverage > 0, ])
+range(cov$year)
+length(unique(cov$country_code))
+nrow(cov)
+ncol(cov)
+
+```
+More information on the coverage is available in the Montagu Web Portal, but briefly:
+
+* _Coverage_ is measured as a proportion of the original target population. It is possible
+for this to exceed 1, if more people were vaccinated than originally targeted.
+* _Target_ is the number of individuals targeted for vaccination. If this is `NA`, then
+assume the target population matches the demographic data, and the whole population is targeted.
+
+#### Long or Wide format
+
+The data above is formatted in what we call `long format`, in which one year is reported per row.
+Alternatively, you can specify:
+#TODO: Enable below after i2567
+```r
+cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi", format="wide")
+names(cov)[1:20]
+nrow(cov)
+ncol(cov)
+```
+Here, we have one row per country, and separate columns for `coverage_year` and `target_year`.
+
+#### Returning the full range of countries
+
+By default, the coverage data returned is limited to those countries for which burden
+estimate data is required for the given scenario. HepB is a particular example, where different
+sets of countries are relevant in different scenarios, because the birth-dose vaccination
+is not applied in all countries where there is HepB vaccination. However, some groups prefer
+to model all of these scenarios similarly, with the same numbers of countries, hence they require
+the full coverage data for all countries. And for some diseases, the historic effects of vaccination
+in a country that is not required for estimates as present, may have relevance in their model to
+countries that are required.
+
+For those cases, where all countries are required, the following optional argument can be used:
+
+#TODO: Enable below after i2567
+```r
+cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi", all_countries = TRUE)
+```
+
+## Burden Estimate Sets
+
+The burden estimate set defines the results of the models, which modelling groups submit back to Montagu.
+To view the burden estimate sets already uploaded, for a group, touchstone and scenario:-
+
+#TODO - enable after i2625
+```r
+head(montagu::montagu_burden_estimate_sets("IC-Garske", "201710gavi-5", "yf-no-vaccination"))
+```
+
+If we know the burden estimate set id, we can also get a list of information about a burden estimate set with:
+
+#TODO - enable after i2625
+```r
+montagu::montagu_burden_estimate_set_info("IC-Garske", "201710gavi-5", "yf-no-vaccination", 687)
+```
+
+If there are any reported problems with a burden estimate set, we can examine those with
+
+#TODO - enable after i2625
+```r
+montagu::montagu_burden_estimate_set_problems("IC-Garske", "201710gavi-5", "yf-no-vaccination", 687)
+```
+
+and we can retrieve the data for the burden estimate set with:
+
+#TODO - enable after i2625
+```r
+data <- montagu::montagu_burden_estimate_set_data("IC-Garske", "201710gavi-5", "yf-no-vaccination", 687)
+head(data)
+```
+
+### Creating a new burden estimate set
+
+A new burden estimate set can be created as follows:-
+
+```r
+bsid <- montagu::montagu_burden_estimate_set_create(
+    "IC-Garske", "201710gavi-5", "yf-no-vaccination", "central-averaged",
+    model_run_parameter_set = NULL, details = "Details about model")
+```
+
+For central estimates, the `model_run_parameter_set` can be ignored, or set to NULL as shown here,
+but it should not have a non-null value. For stochastic estimates, it must be set to a valid
+model run parameter set - see the section below on stochastic runs.
+
+The result of the burden estimate set creation is the id of the newly created burden estimate set.
+
+### Adding data
+
+### Clearing
+
+### Closing
+
+### Plotting previous burden estimate sets
+
+One further function call useful for plotting, allows retrieving a particular burden outcome
+from a burden estimate set, summed across all countries, and dis-aggregated by either age or by year.
+The result will be a sequence of sets of (x,y) points, suitable for straightforward plotting. For
+example:
+
+#TODO - enable after i2625
+
+```r
+data <- montagu::montagu_burden_estimate_set_outcome_data("IC-Garske", "201710gavi-5",
+         "yf-no-vaccination", 687, "cases", group_by = "age")
+head(data)
+plot(data$x[data$age==20], data$y[data$age==20], xlab="year", ylab="cases", main="For age 20")
+```
+
+Or to dis-aggregate by year:-
+
+#TODO - enable after i2625
+
+```r
+data <- montagu::montagu_burden_estimate_set_outcome_data("IC-Garske", "201710gavi-5",
+         "yf-no-vaccination", 687, "cases", group_by = "year")
+head(data)
+plot(data$x[data$year==2040], data$y[data$year==2040], xlab="age", ylab="cases", main="For year 2040")
+```
+
+## Stochastic Runs
+
+In order to establish confidence intervals, modelling groups are sometimes asked to run a stochastic
+ensemble of models. This may be, for instance, 200 instances of a model, with different parameters
+for each instance. We would call the instance number, between 1 and 200, the `run_id`, and there
+would be a unique set of parameters for each.
+
+It is important that for a given `run_id`, all the
+relevant scenarios are run with the matching set of parameters for that `run_id`, so that we can
+compare scenarios and calculate impacts.
+
+It is also important that the spread of parameters chosen across the 200 runs significantly captures
+the range of sensible behaviour of the model, and that the central estimates submitted are somewhere
+near the centre of the spread of parameters.
+
+Lastly, it is desirable to vary as few parameters as possible, so that with 200 runs, we can see
+how the parameter changes affect the model outcomes. If there are too many parameters, it may be
+difficult to ascertain which parameters are causing the changes, or whether the spread of
+parameters really does capture the significant behaviour of the model.
+
+### Model Run Parameter Sets
+
+The model run parameter set has a column for `run_id`, and another column for each parameter
+being varied. For example:
+
+
+```r
+params <- data.frame(run_id = 1:5, param_1 = sample(5), param_2 = sample(5))
+params
+```
+
+```
+##   run_id param_1 param_2
+## 1      1       3       3
+## 2      2       1       2
+## 3      3       2       5
+## 4      4       5       1
+## 5      5       4       4
+```
+
+This can then be uploaded as follows:-
+
+```r
+id <- montagu::montagu_model_run_parameter_set_upload(
+    "IC-Garske", "201710gavi-5", "YF", params)
+```
+
+and the id of the newly created parameter set will be returned. For stochastic data, we will
+need to supply this id when creating the associated stochastic burden estimate set:-
+
+```r
+bsid <- montagu::montagu_burden_estimate_set_create(
+    "IC-Garske", "201710gavi-5", "yf-no-vaccination",
+    "stochastic", id, "Stochastic runs")
+```
+
+We can also list the existing model run parameter sets with:-
+
+#TODO - uncomment after i2634
+```r
+head(montagu::montagu_model_run_parameter_sets("IC-Garske", "201710gavi-5"))
+```
+
+or for a list of information about a single parameter set:
+
+#TODO - uncomment after i2634
+```r
+montagu::montagu_model_run_parameter_set_info("IC-Garske", "201710gavi-5", 20)
+```
+
+Finally, if we want to retrieve the parameter values for a previous set:-
+
+#TODO - uncomment after i2634
+```r
+data <- montagu::montagu_model_run_parameter_set_data("IC-Garske", "201710gavi-5", 20)
+data[1:5,1:5]
+```
+
 
 ## Appendix
 
@@ -353,6 +752,27 @@ montagu::montagu_model("YFIC")
 ## [1] "IC-Garske"
 ```
 
-Note that the model_id is different from the modelling_group_id, and in most
-circumstance, the modelling_group_id is the significant identifier required
+Note that the model_id (id column above) is different from the modelling_group_id,
+and generally the modelling_group_id is the significant identifier required
 for other Montagu functions.
+
+#### Demographic Sources
+
+Occasionally, there may be multiple instances of the same demographic data field,
+but for different sources. For example, infant mortality is provided by both
+UNWPP, and IGME (ChildMortality.org). Neither sources are ideal, and Montagu
+provides a documented compromise between the two sources for infant, and especially
+neonatal mortality.
+
+If an example arises where there are two instances of the same data field, then they
+will have a different data_source, which will need to be specified in the form:-
+
+```r
+montagu::montagu_demographic_data("Modelling-Group", "Touchstone",
+                                  source_code = "The-Source-Code")
+```
+
+where the The-Source-Code is in the table returned by
+```r
+montagu::montagu_demographics_list("Touchstone")
+```

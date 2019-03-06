@@ -35,8 +35,8 @@ montagu_demographics_list <- function(touchstone_id, location = NULL) {
 }
 
 montagu_demographics_download <- function(touchstone_id, source_code,
-                                          type_code, gender_code = NULL,
-                                          format = NULL, dest = NULL,
+                                          type_code, gender_code,
+                                          format, dest = NULL,
                                           location = NULL) {
   # See issue 2736 if the API does this...
   d <- montagu_demographics_list(touchstone_id, location)
@@ -44,7 +44,7 @@ montagu_demographics_download <- function(touchstone_id, source_code,
     stop(sprintf("Unknown demographic source type with id '%s'", source_code))
   }
 
-  query <- http_query(gender_code = gender_code,
+  query <- http_query(gender = gender_code,
                       format = format)
 
   path <- sprintf("/touchstones/%s/demographics/%s/%s/",

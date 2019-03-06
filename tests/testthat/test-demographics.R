@@ -49,10 +49,22 @@ test_that("download demographic data - gendered tests", {
            "cannot be filtered by '%s'"), g))
   }
 
+
   d1 <- montagu_demographic_data("cbr", "201804rfp-1",
             gender_code = 'both', location = location)
   expect_is(d1, "data.frame")
   expect_equal(nrow(d1), 150)
+  
+  d1 <- montagu_demographic_data("tot_pop", "201804rfp-1",
+                    gender_code = 'male', location = location)
+  expect_is(d1, "data.frame")
+  expect_equal(unique(d1$gender), "male")
+  
+  d1 <- montagu_demographic_data("tot_pop", "201804rfp-1",
+          gender_code = 'female', location = location)
+  expect_is(d1, "data.frame")
+  expect_equal(unique(d1$gender), "female")
+  
 
 })
 
