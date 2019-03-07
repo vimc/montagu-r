@@ -38,7 +38,7 @@ montagu_touchstone_versions <- function(modelling_group_id,
     res <- res[res$name == touchstone_name, ]
   }
 
-  if (length(res) == 0) {
+  if (nrow(res) == 0) {
     stop(sprintf("Unknown touchstone with id '%s'", touchstone_name))
   }
   

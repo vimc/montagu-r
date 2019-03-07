@@ -1,7 +1,7 @@
 ---
 title: "Montagu API"
 author: "VIMC Technical Team"
-date: "2019-02-19"
+date: "2019-02-26"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Montagu API}
@@ -38,43 +38,48 @@ montagu::montagu_touchstones_list()
 ```
 
 ```
-##                         id                  name version   status
-## 1             201710gavi-6            201710gavi       6     open
-## 2             201710gavi-5            201710gavi       5     open
-## 3             201710gavi-4            201710gavi       4 finished
-## 4             201710gavi-3            201710gavi       3 finished
-## 5             201710gavi-2            201710gavi       2 finished
-## 6             201710gavi-1            201710gavi       1 finished
-## 7        201810synthetic-3       201810synthetic       3     open
-## 8        201810synthetic-2       201810synthetic       2     open
-## 9        201810synthetic-1       201810synthetic       1     open
-## 10           201310gavi-42            201310gavi      42 finished
-## 11            201310gavi-1            201310gavi       1 finished
-## 12           201510gavi-42            201510gavi      42 finished
-## 13            201510gavi-9            201510gavi       9 finished
-## 14            201510gavi-7            201510gavi       7 finished
-## 15            201510gavi-5            201510gavi       5 finished
-## 16            201510gavi-4            201510gavi       4 finished
-## 17  201210gavi-201607wue-1  201210gavi-201607wue       1 finished
-## 18 201210gavi-201303gavi-1 201210gavi-201303gavi       1 finished
-## 19             201707wue-3             201707wue       3 finished
-## 20             201707wue-2             201707wue       2 finished
-## 21             201707wue-1             201707wue       1 finished
-## 22  201310gavi-201707wue-1  201310gavi-201707wue       1 finished
-## 23  201510gavi-201707wue-1  201510gavi-201707wue       1 finished
-## 24  201210gavi-201707wue-1  201210gavi-201707wue       1 finished
-## 25             201607wue-1             201607wue       1 finished
-## 26            201708test-2            201708test       2 finished
-## 27            201708test-1            201708test       1 finished
-## 28             201802uxe-1             201802uxe       1 finished
-## 29            201403gavi-1            201403gavi       1 finished
-## 30             201807wue-3             201807wue       3 finished
-## 31             201807wue-2             201807wue       2 finished
-## 32             201807wue-1             201807wue       1 finished
-## 33             201801rfp-1             201801rfp       1 finished
-## 34             201804rfp-1             201804rfp       1 finished
-## 35             201809hpv-1             201809hpv       1 finished
-## 36             201810rfp-1             201810rfp       1 finished
+##                         id                  name version         status
+## 1             201710gavi-6            201710gavi       6           open
+## 2             201710gavi-5            201710gavi       5           open
+## 3             201710gavi-4            201710gavi       4       finished
+## 4             201710gavi-3            201710gavi       3       finished
+## 5             201710gavi-2            201710gavi       2       finished
+## 6             201710gavi-1            201710gavi       1       finished
+## 7        201810synthetic-3       201810synthetic       3           open
+## 8        201810synthetic-2       201810synthetic       2           open
+## 9        201810synthetic-1       201810synthetic       1           open
+## 10           201310gavi-42            201310gavi      42       finished
+## 11            201310gavi-1            201310gavi       1       finished
+## 12           201510gavi-42            201510gavi      42       finished
+## 13            201510gavi-9            201510gavi       9       finished
+## 14            201510gavi-7            201510gavi       7       finished
+## 15            201510gavi-5            201510gavi       5       finished
+## 16            201510gavi-4            201510gavi       4       finished
+## 17  201210gavi-201607wue-1  201210gavi-201607wue       1       finished
+## 18 201210gavi-201303gavi-1 201210gavi-201303gavi       1       finished
+## 19             201707wue-3             201707wue       3       finished
+## 20             201707wue-2             201707wue       2       finished
+## 21             201707wue-1             201707wue       1       finished
+## 22  201310gavi-201707wue-1  201310gavi-201707wue       1       finished
+## 23  201510gavi-201707wue-1  201510gavi-201707wue       1       finished
+## 24  201210gavi-201707wue-1  201210gavi-201707wue       1       finished
+## 25             201607wue-1             201607wue       1       finished
+## 26            201708test-2            201708test       2       finished
+## 27            201708test-1            201708test       1       finished
+## 28             201802uxe-1             201802uxe       1       finished
+## 29            201403gavi-1            201403gavi       1       finished
+## 30             201807wue-3             201807wue       3       finished
+## 31             201807wue-2             201807wue       2       finished
+## 32             201807wue-1             201807wue       1       finished
+## 33             201801rfp-1             201801rfp       1       finished
+## 34             201804rfp-1             201804rfp       1       finished
+## 35             201809hpv-1             201809hpv       1       finished
+## 36             201810rfp-1             201810rfp       1       finished
+## 37        201810original-1        201810original       1 in-preparation
+## 38            201810gavi-1            201810gavi       1 in-preparation
+## 39            201810high-1            201810high       1 in-preparation
+## 40             201810low-1             201810low       1 in-preparation
+## 41        201810bestcase-1        201810bestcase       1 in-preparation
 ```
 
 ### Demographic data

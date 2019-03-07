@@ -25,9 +25,9 @@ Note that the package name is `montagu` but this repo is [`vimc/montagu-r`](http
 - [x] `/v1/modelling-groups/:group-id/responsibilities/` (GET)
 - [x] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/` (GET)
 - [ ] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/` (GET)
-- [ ] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/coverage/` (GET)
+- [x] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/coverage/` (GET)
 - [ ] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/coverage/get_onetime_link/`
-- [ ] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/coverage_sets/` (GET)
+- [x] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/coverage_sets/` (GET)
 - [ ] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/estimate-sets/` (GET)
 - [ ] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/estimate-sets/` (POST)
 - [ ] `/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/estimate-sets/:estimate-set-id` (GET)

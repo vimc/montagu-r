@@ -1,7 +1,7 @@
 ---
 title: "Montagu API from R"
 author: "VIMC Technical Team"
-date: "2019-02-19"
+date: "2019-02-20"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Montagu API}
@@ -294,6 +294,145 @@ head(df)
 ## 6      YF 2005   0     AGO       Angola          NA     NA    NA    NA
 ```
 
+### Coverage
+
+We now need to obtain the coverage data relevant for our disease and touchstone,
+for each of the scenarios we're going to model. Let's look at the `yf-routine-gavi`
+coverage metadata.
+
+
+```r
+montagu::montagu_coverage_info("IC-Garske", "201710gavi-5", "yf-routine-gavi")
+```
+
+```
+##    id touchstone_version                  name vaccine gavi_support
+## 1 651       201710gavi-5 YF: YF, with, routine      YF        total
+##   activity_type
+## 1       routine
+```
+
+And now let's retrieve the coverage data itself, and summarise it.
+
+
+```r
+cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi")
+head(cov[cov$coverage > 0, ])
+```
+
+```
+##           scenario              set_name vaccine gavi_support
+## 18 yf-routine-gavi YF: YF, with, routine      YF        total
+## 19 yf-routine-gavi YF: YF, with, routine      YF        total
+## 20 yf-routine-gavi YF: YF, with, routine      YF        total
+## 21 yf-routine-gavi YF: YF, with, routine      YF        total
+## 22 yf-routine-gavi YF: YF, with, routine      YF        total
+## 23 yf-routine-gavi YF: YF, with, routine      YF        total
+##    activity_type country_code country year age_first age_last
+## 18       routine          AGO  Angola 1997         0        0
+## 19       routine          AGO  Angola 1998         0        0
+## 20       routine          AGO  Angola 1999         0        0
+## 21       routine          AGO  Angola 2000         0        0
+## 22       routine          AGO  Angola 2001         0        0
+## 23       routine          AGO  Angola 2002         0        0
+##    age_range_verbatim target coverage
+## 18               <NA>   <NA>     0.37
+## 19               <NA>   <NA>     0.45
+## 20               <NA>   <NA>     0.53
+## 21               <NA>   <NA>     0.50
+## 22               <NA>   <NA>     0.46
+## 23               <NA>   <NA>     0.46
+```
+
+```r
+range(cov$year)
+```
+
+```
+## [1] 1980 2100
+```
+
+```r
+length(unique(cov$country_code))
+```
+
+```
+## [1] 32
+```
+
+```r
+nrow(cov)
+```
+
+```
+## [1] 3872
+```
+
+```r
+ncol(cov)
+```
+
+```
+## [1] 13
+```
+More information on the coverage is available in the Montagu Web Portal, but briefly:
+
+* _Coverage_ is measured as a proportion of the original target population. It is possible
+for this to exceed 1, if more people were vaccinated than originally targeted.
+* _Target_ is the number of individuals targeted for vaccination. If this is `NA`, then
+assume the target population matches the demographic data, and the whole population is targeted.
+
+#### Long or Wide format
+
+The data above is formatted in what we call `long format`, in which one year is reported per row.
+Alternatively, you can specify:
+
+```r
+cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi", format="wide")
+names(cov)[1:20]
+```
+
+```
+##  [1] "scenario"           "set_name"           "vaccine"
+##  [4] "gavi_support"       "activity_type"      "country_code"
+##  [7] "country"            "age_first"          "age_last"
+## [10] "age_range_verbatim" "coverage_1980"      "coverage_1981"
+## [13] "coverage_1982"      "coverage_1983"      "coverage_1984"
+## [16] "coverage_1985"      "coverage_1986"      "coverage_1987"
+## [19] "coverage_1988"      "coverage_1989"
+```
+
+```r
+nrow(cov)
+```
+
+```
+## [1] 32
+```
+
+```r
+ncol(cov)
+```
+
+```
+## [1] 252
+```
+Here, we have one row per country, and separate columns for `coverage_year` and `target_year`.
+
+#### Returning the full range of countries
+
+By default, the coverage data returned is limited to those countries for which burden
+estimate data is required for the given scenario. HepB is a particular example, where different
+sets of countries are relevant in different scenarios, because the birth-dose vaccination
+is not applied in all countries where there is HepB vaccination. However, some groups prefer
+to model all of these scenarios similarly, with the same numbers of countries, hence they require
+the full coverage data for all countries. For those cases, the following optional argument can be used:
+
+
+```r
+cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi", all_countries=TRUE)
+```
+
 ## Appendix
 
 ### Models
@@ -353,6 +492,6 @@ montagu::montagu_model("YFIC")
 ## [1] "IC-Garske"
 ```
 
-Note that the model_id is different from the modelling_group_id, and in most
-circumstance, the modelling_group_id is the significant identifier required
+Note that the model_id (id column above) is different from the modelling_group_id,
+and generally the modelling_group_id is the significant identifier required
 for other Montagu functions.

@@ -1,3 +1,7 @@
+## 0.3.3
+
+* Add support for coverage endpoints (VIMC-2567)
+
 ## 0.3.2
 
 * Error predictably when a report is killed by the remote server due to a timeout, and allow setting of this timeout (VIMC-2517)
