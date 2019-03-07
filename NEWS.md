@@ -1,6 +1,10 @@
-## 0.3.7
+## 0.3.8
 
 * Add support for touchstone endpoints (VIMC-2722)
+
+## 0.3.7
+
+* Review support of demographic endpoints (VIMC-2723)
 
 ## 0.3.6
 
