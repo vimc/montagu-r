@@ -8,13 +8,12 @@ montagu_current_estimate_set_info(modelling_group_id, touchstone_id,
   scenario_id, location = NULL)
 }
 \arguments{
-\item{modelling_group_id}{id of the modelling group.}
+\item{modelling_group_id}{id of the modelling group. If omitted, or null, 
+then all responsibility sets associated with the touchstone are returned.}
 
 \item{touchstone_id}{id of the touchstone (including version)}
 
 \item{scenario_id}{id of the scenario}
-
-\item{location}{The montagu server to connect to.}
 }
 \value{
 A list of fields about the current estimate set

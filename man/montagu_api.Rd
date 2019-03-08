@@ -5,8 +5,6 @@
 \alias{montagu_burden_estimates}
 \alias{montagu_burden_estimate_set_create}
 \alias{montagu_burden_estimate_set_upload}
-\alias{montagu_burden_estimate_set_clear}
-\alias{montagu_touchstones_list}
 \title{The Montagu API}
 \usage{
 montagu_burden_estimates(modelling_group_id, touchstone_id, scenario_id,
@@ -19,11 +17,6 @@ montagu_burden_estimate_set_create(modelling_group_id, touchstone_id,
 montagu_burden_estimate_set_upload(modelling_group_id, touchstone_id,
   scenario_id, burden_estimate_set_id, filename, lines = 10000L,
   keep_open = FALSE, location = NULL)
-
-montagu_burden_estimate_set_clear(modelling_group_id, touchstone_id,
-  scenario_id, burden_estimate_set_id, location = NULL)
-
-montagu_touchstones_list(location = NULL)
 }
 \arguments{
 \item{modelling_group_id}{Modelling group identifier}

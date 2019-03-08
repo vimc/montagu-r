@@ -4,14 +4,14 @@
 \alias{montagu_scenarios}
 \title{Retrieve information about a scenario}
 \usage{
-montagu_scenarios(modelling_group_id, touchstone_id, location = NULL)
+montagu_scenarios(modelling_group_id = NULL, touchstone_id,
+  location = NULL)
 }
 \arguments{
-\item{modelling_group_id}{id of the modelling group.}
+\item{modelling_group_id}{id of the modelling group. If omitted, or null, 
+then all responsibility sets associated with the touchstone are returned.}
 
 \item{touchstone_id}{id of the touchstone (including version)}
-
-\item{location}{The montagu server to connect to.}
 }
 \value{
 Data frame of scenario_id, description and disease.

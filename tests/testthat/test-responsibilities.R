@@ -13,12 +13,32 @@ test_that("download responbilities list - incorrect modelling_group_id", {
                "Unknown modelling-group with id 'ZZZ-IC-Garske'")
 })
 
+test_that("download all touchstone versions", {
+  location <- montagu_test_server()
+  dat <- montagu_touchstones(NULL, location = location)
+  expect_is(dat, "data.frame")
+  expect_equal(sum(is.na(match(names(dat), 
+      c("name", "description", "comment")))), 0)
+})
+
 test_that("download touchstone versions", {
   location <- montagu_test_server()
   dat <- montagu_touchstone_versions("IC-Garske", "201710gavi", location = location)
   expect_is(dat, "data.frame")
   expect_equal(names(dat), c("id", "name", "version", "description", "status"))
   expect_true(all(dat$name == "201710gavi"))
+})
+
+test_that("download all touchstone versions", {
+  location <- montagu_test_server()
+  dat <- montagu_touchstone_versions(NULL, "201710gavi", location = location)
+  dat2 <- montagu_touchstone_versions(NULL, NULL, location = location)
+  expect_is(dat, "data.frame")
+  expect_equal(names(dat), c("id", "name", "version", "description", "status"))
+  expect_true(all(dat$name == "201710gavi"))
+  expect_is(dat2, "data.frame")
+  expect_equal(names(dat2), c("id", "name", "version", "description", "status"))
+  expect_gt(nrow(dat2), nrow(dat))
 })
 
 test_that("download touchstone versions - wrong modelling group", {
@@ -35,9 +55,18 @@ test_that("download touchstone versions - wrong touchstone id", {
     "Unknown touchstone with id 'ZZZ201710gavi'")
 })
 
+################################################################################
+
 test_that("download scenarios", {
   location <- montagu_test_server()
   dat <- montagu_scenarios("IC-Garske", "201710gavi-5", location)
+  expect_is(dat, "data.frame")
+  expect_equal(names(dat), c("scenario_id" ,"description", "disease"))
+})
+
+test_that("download all scenarios", {
+  location <- montagu_test_server()
+  dat <- montagu_scenarios(NULL, "201710gavi-5", location)
   expect_is(dat, "data.frame")
   expect_equal(names(dat), c("scenario_id" ,"description", "disease"))
 })
@@ -54,9 +83,18 @@ test_that("download scenarios - wrong touchstone", {
     "Unknown touchstone-version with id 'ZZZ201710gavi-5'")
 })
 
+###############################################################################
+
 test_that("download scenario status", {
   location <- montagu_test_server()
   dat <- montagu_scenario_status("IC-Garske", "201710gavi-5",
+                                 "yf-no-vaccination", location)
+  expect_true(dat %in% c("valid", "invalid", "empty", "complete"))
+})
+
+test_that("download scenario status - all scenarios (no modelling group)", {
+  location <- montagu_test_server()
+  dat <- montagu_scenario_status(NULL, "201710gavi-5",
                                  "yf-no-vaccination", location)
   expect_true(dat %in% c("valid", "invalid", "empty", "complete"))
 })
@@ -82,10 +120,22 @@ test_that("download scenario status - wrong scenario", {
                "Unknown scenario with id 'zzzyf-no-vaccination'")
 })
 
+###############################################################################
+
 test_that("download scenario problems", {
   location <- montagu_test_server()
   dat <- montagu_scenario_problems("IC-Garske", "201710gavi-5",
                                  "yf-no-vaccination", location)
+  if (length(dat) == 0) {
+    dat <- ""
+  }
+  expect_is(dat, "character")
+})
+
+test_that("download scenario problems - null modelling group", {
+  location <- montagu_test_server()
+  dat <- montagu_scenario_problems(NULL, "201710gavi-5",
+                                   "yf-no-vaccination", location)
   if (length(dat) == 0) {
     dat <- ""
   }
@@ -113,9 +163,20 @@ test_that("download scenario problems - wrong scenario", {
                "Unknown scenario with id 'zzzyf-no-vaccination'")
 })
 
+##############################################################################
+
 test_that("download current_estimate_set", {
   location <- montagu_test_server()
   dat <- montagu_current_estimate_set_info("IC-Garske", "201710gavi-5",
+                                           "yf-no-vaccination", location)
+  expect_is(dat, "list")
+  expect_equal(names(dat), c("id", "uploaded_on", "uploaded_by", "type",
+                             "details", "status"))
+})
+
+test_that("download current_estimate_set - NULL group", {
+  location <- montagu_test_server()
+  dat <- montagu_current_estimate_set_info(NULL, "201710gavi-5",
                                            "yf-no-vaccination", location)
   expect_is(dat, "list")
   expect_equal(names(dat), c("id", "uploaded_on", "uploaded_by", "type",

@@ -8,13 +8,12 @@ montagu_expectation_outcomes(modelling_group_id, touchstone_id,
   expectation_id, location = NULL)
 }
 \arguments{
-\item{modelling_group_id}{id of the modelling group.}
+\item{modelling_group_id}{id of the modelling group. If omitted, or null, 
+then all responsibility sets associated with the touchstone are returned.}
 
 \item{touchstone_id}{id of the touchstone (including version)}
 
 \item{expectation_id}{id of the expectation (integer)}
-
-\item{location}{The montagu server to connect to.}
 }
 \value{
 A vector of outcome names

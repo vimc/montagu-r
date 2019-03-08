@@ -4,10 +4,11 @@
 \alias{montagu_touchstones}
 \title{Retrieve touchstones a modelling group is responsible for.}
 \usage{
-montagu_touchstones(modelling_group_id, location = NULL)
+montagu_touchstones(modelling_group_id = NULL, location = NULL)
 }
 \arguments{
-\item{modelling_group_id}{id of the modelling group.}
+\item{modelling_group_id}{id of the modelling group. If omitted or null, 
+then all touchstones are returned.}
 
 \item{location}{The montagu server to connect to.}
 }
