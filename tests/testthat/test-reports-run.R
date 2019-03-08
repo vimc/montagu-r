@@ -7,6 +7,7 @@ context("reports: run")
 ## there).
 
 test_that("run: success", {
+  skip_on_os("windows")
   server <- orderly_test_server()
   on.exit(server$stop())
   remote <- montagu_server("testing", "localhost", server$port, orderly = TRUE)
@@ -26,6 +27,7 @@ test_that("run: success", {
 
 
 test_that("run: error", {
+  skip_on_os("windows")
   server <- orderly_test_server()
   remote <- montagu_server("testing", "localhost", server$port, orderly = TRUE)
 
@@ -50,6 +52,7 @@ test_that("run: error", {
 
 
 test_that("set timeout", {
+  skip_on_os("windows")
   server <- orderly_test_server("interactive")
   remote <- montagu_server("testing", "localhost", server$port, orderly = TRUE)
 

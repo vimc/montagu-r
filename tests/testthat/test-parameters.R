@@ -13,10 +13,9 @@ test_that("download list of model_run_parameter_sets - unknown group", {
   location <- montagu_test_server()
   expect_error(montagu_model_run_parameter_sets("ZZZIC-Garske", "201710gavi-5",
                                                 location),
-               paste0("Error running request:\n",
-                      "\t - forbidden: You do not have sufficient permissions ",
+               paste0("You do not have sufficient permissions ",
                       "to access this resource. Missing these permissions: ",
-                      sprintf("modelling-group:ZZZIC-Garske/estimates.write")))
+                      "modelling-group:ZZZIC-Garske/estimates.write"))
 })
 
 test_that("download list of model_run_parameter_sets - unknown touchstone", {
@@ -42,10 +41,9 @@ test_that("download single model_run_parameter_set - unknown group", {
   location <- montagu_test_server()
   expect_error(montagu_model_run_parameter_set_info("ZZZIC-Garske", "201710gavi-5",
                                                 20, location),
-               paste0("Error running request:\n",
-                      "\t - forbidden: You do not have sufficient permissions ",
+               paste0("You do not have sufficient permissions ",
                       "to access this resource. Missing these permissions: ",
-                      sprintf("modelling-group:ZZZIC-Garske/estimates.write")))
+                      "modelling-group:ZZZIC-Garske/estimates.write"))
 
 })
 
@@ -75,14 +73,12 @@ test_that("download single model_run_parameter_set data", {
 
 test_that("download single model_run_parameter_set data - unknown group", {
   location <- montagu_test_server()
-  dat <- montagu_model_run_parameter_set_data("ZZZIC-Garske", "201710gavi-5",
-                                                    20, location)
-  txt <- paste0(row.names(dat),collapse = "")
-  expect_equal(txt, paste0(
-    "  data:   errors: [    {      code: forbidden      ",
-    "message: You do not have sufficient permissions to access this resource. ",
-    "Missing these permissions: modelling-group:ZZZIC-Garske/estimates.write",
-    "    }  ]  status: failure}"))
+  expect_error(montagu_model_run_parameter_set_data("ZZZIC-Garske", "201710gavi-5",
+                                                    20, location), 
+    paste0("You do not have sufficient permissions to access this resource. ",
+           "Missing these permissions: ",
+           "modelling-group:ZZZIC-Garske/estimates.write"
+    ))
 })
 
 test_that("download single model_run_parameter_set data - unknown touchstone", {
@@ -116,7 +112,15 @@ test_that("upload model_run_parameter_set", {
     "IC-Garske", "201710gavi-5", "YF", params, location)
 
   expect_is(id, "numeric")
-
+  
+  # Fetch it back...
+  
+  params2 <- montagu_model_run_parameter_set_data(
+    "IC-Garske", "201710gavi-5", id, location)
+  
+  params2 <- params2[order(params2$run_id), ]
+  expect_true(all.equal(params, params2))
+  
 })
 
 test_that("upload model_run_parameter_set data - unknown group", {
@@ -124,8 +128,7 @@ test_that("upload model_run_parameter_set data - unknown group", {
   params <- data_frame(run_id = 1:5, rnd_1 = sample(5), rnd_2 = sample(5))
   expect_error(montagu_model_run_parameter_set_upload(
     "ZZZIC-Garske", "201710gavi-5", "YF", params, location),
-    paste0("Error running request:\n\t - forbidden: ",
-           "You do not have sufficient permissions to access this resource. ",
+    paste0("You do not have sufficient permissions to access this resource. ",
             "Missing these permissions: ",
             "modelling-group:ZZZIC-Garske/estimates.write"))
 })
@@ -160,8 +163,7 @@ test_that("upload model_run_parameter_set data - silly disease_id", {
   params <- data_frame(run_id = 1:5, rnd_1 = sample(5), rnd_2 = sample(5))
   expect_error(montagu_model_run_parameter_set_upload(
     "IC-Garske", "201710gavi-5", "THE_ELVES_ARE_CURIOUS", params, location),
-    paste0("Error running request:\n\t - unexpected-database-contents-error: ",
-           "Modelling group IC-Garske does not have any models/model versions ",
+    paste0("Modelling group IC-Garske does not have any models/model versions ",
            "in the database"))
 })
 
@@ -170,7 +172,6 @@ test_that("upload model_run_parameter_set data - wrong disease_id for group", {
   params <- data_frame(run_id = 1:5, rnd_1 = sample(5), rnd_2 = sample(5))
   expect_error(montagu_model_run_parameter_set_upload(
     "IC-Garske", "201710gavi-5", "MenA", params, location),
-    paste0("Error running request:\n\t - unexpected-database-contents-error: ",
-           "Modelling group IC-Garske does not have any models/model versions ",
+    paste0("Modelling group IC-Garske does not have any models/model versions ",
            "in the database"))
 })

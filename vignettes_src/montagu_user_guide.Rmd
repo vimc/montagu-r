@@ -49,9 +49,7 @@ joining VIMC, but can be looked up with simple function calls like this:-
 montagu::montagu_diseases()
 ```
 
-
-#TODO - enable below after i2557
-```r
+```{r}
 groups <- montagu::montagu_modelling_groups()
 head(groups)
 ```
@@ -166,15 +164,13 @@ We now need to obtain the coverage data relevant for our disease and touchstone,
 for each of the scenarios we're going to model. Let's look at the `yf-routine-gavi` 
 coverage metadata.
 
-#TODO: Enable below after i2567
-```r
+```{r}
 montagu::montagu_coverage_info("IC-Garske", "201710gavi-5", "yf-routine-gavi")
 ```
 
 And now let's retrieve the coverage data itself, and summarise it.
 
-#TODO: Enable below after i2567
-```r
+```{r}
 cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi")
 head(cov[cov$coverage > 0, ])
 range(cov$year)
@@ -194,8 +190,7 @@ assume the target population matches the demographic data, and the whole populat
 
 The data above is formatted in what we call `long format`, in which one year is reported per row. 
 Alternatively, you can specify:
-#TODO: Enable below after i2567
-```r
+```{r}
 cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi", format="wide")
 names(cov)[1:20]
 nrow(cov)
@@ -210,15 +205,17 @@ estimate data is required for the given scenario. HepB is a particular example, 
 sets of countries are relevant in different scenarios, because the birth-dose vaccination
 is not applied in all countries where there is HepB vaccination. However, some groups prefer
 to model all of these scenarios similarly, with the same numbers of countries, hence they require 
+<<<<<<< HEAD
 the full coverage data for all countries. And for some diseases, the historic effects of vaccination 
 in a country that is not required for estimates as present, may have relevance in their model to 
 countries that are required. 
 
-For those cases, where all countries are required, the following optional argument can be used:
+For those cases, where all countries are required, the `all_countries` optional argument can be used:
 
-#TODO: Enable below after i2567
-```r
-cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi", all_countries = TRUE)
+```{r}
+cov_all <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi", all_countries = TRUE)
+cov_not <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi", all_countries = FALSE)
+c(nrow(cov_all$country), nrow(cov_not$country))
 ```
 
 ## Stochastic Runs
@@ -283,6 +280,14 @@ data[1:5,1:5]
 ```
 
 
+=======
+the full coverage data for all countries. For those cases, the following optional argument can be used:
+
+```{r}
+cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi", all_countries=TRUE)
+```
+
+>>>>>>> origin/master
 ## Appendix
 
 ### Models
