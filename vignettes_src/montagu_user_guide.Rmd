@@ -205,7 +205,6 @@ estimate data is required for the given scenario. HepB is a particular example, 
 sets of countries are relevant in different scenarios, because the birth-dose vaccination
 is not applied in all countries where there is HepB vaccination. However, some groups prefer
 to model all of these scenarios similarly, with the same numbers of countries, hence they require 
-<<<<<<< HEAD
 the full coverage data for all countries. And for some diseases, the historic effects of vaccination 
 in a country that is not required for estimates as present, may have relevance in their model to 
 countries that are required. 
@@ -213,9 +212,10 @@ countries that are required.
 For those cases, where all countries are required, the `all_countries` optional argument can be used:
 
 ```{r}
-cov_all <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi", all_countries = TRUE)
-cov_not <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi", all_countries = FALSE)
-c(nrow(cov_all$country), nrow(cov_not$country))
+cov_all <- montagu::montagu_coverage_data("CDA-Razavi", "201710gavi-5", "hepb-bd-routine-with", all_countries = TRUE)
+cov_not <- montagu::montagu_coverage_data("CDA-Razavi", "201710gavi-5", "hepb-bd-routine-with", all_countries = FALSE)
+length(unique(cov_all$country))
+length(unique(cov_not$country))
 ```
 
 ## Stochastic Runs
@@ -279,15 +279,6 @@ data <- montagu::montagu_model_run_parameter_set_data("IC-Garske", "201710gavi-5
 data[1:5,1:5]
 ```
 
-
-=======
-the full coverage data for all countries. For those cases, the following optional argument can be used:
-
-```{r}
-cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi", all_countries=TRUE)
-```
-
->>>>>>> origin/master
 ## Appendix
 
 ### Models

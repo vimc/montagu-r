@@ -436,7 +436,6 @@ estimate data is required for the given scenario. HepB is a particular example, 
 sets of countries are relevant in different scenarios, because the birth-dose vaccination
 is not applied in all countries where there is HepB vaccination. However, some groups prefer
 to model all of these scenarios similarly, with the same numbers of countries, hence they require
-<<<<<<< HEAD
 the full coverage data for all countries. And for some diseases, the historic effects of vaccination
 in a country that is not required for estimates as present, may have relevance in their model to
 countries that are required.
@@ -445,13 +444,21 @@ For those cases, where all countries are required, the `all_countries` optional 
 
 
 ```r
-cov_all <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi", all_countries = TRUE)
-cov_not <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi", all_countries = FALSE)
-c(nrow(cov_all$country), nrow(cov_not$country))
+cov_all <- montagu::montagu_coverage_data("CDA-Razavi", "201710gavi-5", "hepb-bd-routine-with", all_countries = TRUE)
+cov_not <- montagu::montagu_coverage_data("CDA-Razavi", "201710gavi-5", "hepb-bd-routine-with", all_countries = FALSE)
+length(unique(cov_all$country))
 ```
 
 ```
-## NULL
+## [1] 98
+```
+
+```r
+length(unique(cov_not$country))
+```
+
+```
+## [1] 19
 ```
 
 ## Stochastic Runs
@@ -487,11 +494,11 @@ params
 
 ```
 ##   run_id param_1 param_2
-## 1      1       1       2
-## 2      2       2       1
-## 3      3       4       3
-## 4      4       5       4
-## 5      5       3       5
+## 1      1       1       4
+## 2      2       5       1
+## 3      3       3       2
+## 4      4       4       3
+## 5      5       2       5
 ```
 
 This can then be uploaded as follows:-
@@ -514,13 +521,13 @@ head(montagu::montagu_model_run_parameter_sets("IC-Garske", "201710gavi-5"))
 ```
 
 ```
-##   id model uploaded_by              uploaded_on disease
-## 1 93  YFIC   test.user 2019-03-08T11:37:39.845Z      YF
-## 2 92  YFIC   test.user 2019-03-08T11:36:20.585Z      YF
-## 3 91  YFIC   test.user 2019-03-08T11:33:13.266Z      YF
-## 4 90  YFIC   test.user 2019-02-27T11:18:17.036Z      YF
-## 5 89  YFIC   test.user 2019-02-27T10:32:37.668Z      YF
-## 6 88  YFIC   test.user 2019-02-27T10:30:12.324Z      YF
+##    id model uploaded_by              uploaded_on disease
+## 1 102  YFIC   test.user 2019-03-08T12:09:00.549Z      YF
+## 2 101  YFIC   test.user 2019-03-08T12:09:00.479Z      YF
+## 3 100  YFIC   test.user 2019-03-08T12:08:46.292Z      YF
+## 4  99  YFIC   test.user 2019-03-08T12:08:46.213Z      YF
+## 5  98  YFIC   test.user 2019-03-08T12:05:21.724Z      YF
+## 6  97  YFIC   test.user 2019-03-08T12:00:27.315Z      YF
 ```
 
 or for a list of information about a single parameter set:
@@ -564,16 +571,6 @@ data[1:5,1:5]
 ## 5      8 0.002722810 0.007266782 0.00851512 4.569112e-05
 ```
 
-
-=======
-the full coverage data for all countries. For those cases, the following optional argument can be used:
-
-
-```r
-cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi", all_countries=TRUE)
-```
-
->>>>>>> origin/master
 ## Appendix
 
 ### Models
