@@ -7,11 +7,11 @@
 ##' the range of sensible behaviour of the model. The model run parameter set then
 ##' contains as many rows as there are model runs. Each row must contain a run_id,
 ##' and the value for each parameter that is varied.
-##' 
+##'
 ##' Adding, and querying existing model_run_parameter_sets is supported, and
 ##' when creating a stochastic burden estimate set, the id of the associated
 ##' model_run_parameter_set is required as a parameter.
-##' 
+##'
 ##' @title Retrieve a list of model run parameter sets for a group and touchstone
 ##' @param modelling_group_id The id of the modelling group
 ##' @param touchstone_id The id of the touchstone
@@ -72,7 +72,7 @@ montagu_model_run_parameter_set_data <- function(modelling_group_id,
 ##' @importFrom utils write.csv
 ##' @title Upload a model_run_parameter_set to Montagu.
 ##' @inherit montagu_model_run_parameter_set_info
-##' @param data a data frame with a column `run_id`, and other columns for each 
+##' @param data a data frame with a column `run_id`, and other columns for each
 ##' parameter that will be varied for each run.
 ##' @param disease_id The id of the disease associated with this model
 ##' @return the id of the newly created model_run_parameter_set
@@ -106,7 +106,7 @@ montagu_model_run_parameter_set_upload <- function(modelling_group_id,
                   modelling_group_id, touchstone_id)
 
   res <- montagu_api_POST(location, path,
-    body = list(disease = disease_id, 
+    body = list(disease = disease_id,
     file = httr::upload_file(tf, type="text/csv"),
     encode = c("multipart")))
 
