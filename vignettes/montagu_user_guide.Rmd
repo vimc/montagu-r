@@ -474,21 +474,21 @@ head(montagu::montagu_burden_estimate_sets("IC-Garske", "201710gavi-5", "yf-no-v
 ```
 ##       id              uploaded_on    uploaded_by               type
 ## 37   687 2018-04-06T13:08:18.883Z katy.gaythorpe   central-averaged
-## 120  698 2018-05-30T09:27:32.341Z    tini.garske central-single-run
+## 123  698 2018-05-30T09:27:32.341Z    tini.garske central-single-run
 ## 1   1049 2019-02-15T11:48:00.515Z      test.user   central-averaged
 ## 2   1050 2019-02-15T12:16:44.479Z      test.user         stochastic
 ## 4   1051 2019-02-15T12:49:19.553Z      test.user   central-averaged
 ## 5   1052 2019-02-15T15:36:46.370Z      test.user   central-averaged
 ##                                                                  details
 ## 37  Averaged over posterior predictive distribution for model parameters
-## 120                                                                    x
+## 123                                                                    x
 ## 1                                          Mean over all stochastic runs
 ## 2                                                                Details
 ## 4                                                                Details
 ## 5                                                                Details
 ##       status
 ## 37  complete
-## 120    empty
+## 123    empty
 ## 1      empty
 ## 2      empty
 ## 4    invalid
@@ -568,17 +568,29 @@ bsid <- montagu::montagu_burden_estimate_set_create(
     model_run_parameter_set = NULL, details = "Details about model")
 ```
 
+The fourth parameter, the type, is either:
+* `central-averaged` - for a central estimate that is calculated by the average of a number of runs
+* `central-single-run` - for a stand-alone central estimate run.
+* `stochastic` - for a run that is part of a stochastic ensemble.
+
 For central estimates, the `model_run_parameter_set` can be ignored, or set to NULL as shown here,
 but it should not have a non-null value. For stochastic estimates, it must be set to a valid
 model run parameter set - see the section below on stochastic runs.
 
-The result of the burden estimate set creation is the id of the newly created burden estimate set.
+The result of the burden estimate set creation is the id of the newly created burden estimate set,
+which must be given when we later upload results.
 
-### Adding data
+### Uploading data
 
-### Clearing
+Suppose we have now populated the appropriate burden estimate template with results, and we want
+to upload it. If `results` is our completed template, then the simplest upload function call is:-
 
-### Closing
+```r
+montagu::montagu_burden_estimate_set_upload(
+    "IC-Garske", "201710gavi-5", "yf-routine-gavi", bsid, results)
+```
+
+This will upload the completed data, and close the burden estimate set.
 
 ### Plotting previous burden estimate sets
 
@@ -599,7 +611,7 @@ head(data)
 ## 1   0 2000 21955.19
 ## 2   0 2001 22429.77
 ## 3   0 2002 22904.21
-## 4   0 2003 23388.82
+## 4   0 2003 23388.83
 ## 5   0 2004 23899.00
 ## 6   0 2005 24444.64
 ```
@@ -668,11 +680,11 @@ params
 
 ```
 ##   run_id param_1 param_2
-## 1      1       3       4
-## 2      2       4       2
-## 3      3       1       5
-## 4      4       5       1
-## 5      5       2       3
+## 1      1       4       4
+## 2      2       3       1
+## 3      3       5       3
+## 4      4       2       2
+## 5      5       1       5
 ```
 
 This can then be uploaded as follows:-
@@ -700,12 +712,12 @@ head(montagu::montagu_model_run_parameter_sets("IC-Garske", "201710gavi-5"))
 
 ```
 ##    id model uploaded_by              uploaded_on disease
-## 1 104  YFIC   test.user 2019-03-08T12:28:31.102Z      YF
-## 2 103  YFIC   test.user 2019-03-08T12:28:31.035Z      YF
-## 3 102  YFIC   test.user 2019-03-08T12:09:00.549Z      YF
-## 4 101  YFIC   test.user 2019-03-08T12:09:00.479Z      YF
-## 5 100  YFIC   test.user 2019-03-08T12:08:46.292Z      YF
-## 6  99  YFIC   test.user 2019-03-08T12:08:46.213Z      YF
+## 1 106  YFIC   test.user 2019-03-08T16:48:38.893Z      YF
+## 2 105  YFIC   test.user 2019-03-08T16:48:38.821Z      YF
+## 3 104  YFIC   test.user 2019-03-08T12:28:31.102Z      YF
+## 4 103  YFIC   test.user 2019-03-08T12:28:31.035Z      YF
+## 5 102  YFIC   test.user 2019-03-08T12:09:00.549Z      YF
+## 6 101  YFIC   test.user 2019-03-08T12:09:00.479Z      YF
 ```
 
 or for a list of information about a single parameter set:
@@ -733,7 +745,6 @@ montagu::montagu_model_run_parameter_set_info("IC-Garske", "201710gavi-5", 20)
 ```
 
 Finally, if we want to retrieve the parameter values for a previous set:-
-
 
 
 ```r

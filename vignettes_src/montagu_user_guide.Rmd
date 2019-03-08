@@ -256,17 +256,29 @@ bsid <- montagu::montagu_burden_estimate_set_create(
     model_run_parameter_set = NULL, details = "Details about model")
 ```
 
+The fourth parameter, the type, is either:
+* `central-averaged` - for a central estimate that is calculated by the average of a number of runs
+* `central-single-run` - for a stand-alone central estimate run.
+* `stochastic` - for a run that is part of a stochastic ensemble.
+
 For central estimates, the `model_run_parameter_set` can be ignored, or set to NULL as shown here,
 but it should not have a non-null value. For stochastic estimates, it must be set to a valid
 model run parameter set - see the section below on stochastic runs.
 
-The result of the burden estimate set creation is the id of the newly created burden estimate set.
+The result of the burden estimate set creation is the id of the newly created burden estimate set,
+which must be given when we later upload results.
 
-### Adding data
+### Uploading data
 
-### Clearing
+Suppose we have now populated the appropriate burden estimate template with results, and we want 
+to upload it. If `results` is our completed template, then the simplest upload function call is:-
 
-### Closing
+```r
+montagu::montagu_burden_estimate_set_upload(
+    "IC-Garske", "201710gavi-5", "yf-routine-gavi", bsid, results)
+```
+
+This will upload the completed data, and close the burden estimate set.
 
 ### Plotting previous burden estimate sets
 
@@ -350,7 +362,6 @@ montagu::montagu_model_run_parameter_set_info("IC-Garske", "201710gavi-5", 20)
 ```
 
 Finally, if we want to retrieve the parameter values for a previous set:-
-
 
 ```{r}
 data <- montagu::montagu_model_run_parameter_set_data("IC-Garske", "201710gavi-5", 20)
