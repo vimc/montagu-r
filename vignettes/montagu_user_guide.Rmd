@@ -1,7 +1,7 @@
 ---
 title: "Montagu API from R"
 author: "VIMC Technical Team"
-date: "2019-03-05"
+date: "2019-03-08"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Montagu API}
@@ -59,10 +59,19 @@ montagu::montagu_diseases()
 ```
 
 
-#TODO - enable below after i2557
 ```r
 groups <- montagu::montagu_modelling_groups()
 head(groups)
+```
+
+```
+##              id                                 description
+## 1  Suraratdecha          independent (Chutima Suraratdecha)
+## 2   KPW-Jackson Kaiser Permanente Washington (Mike Jackson)
+## 3            Li                         independent (Xi Li)
+## 4 Harvard-Sweet           Harvard University (Steven Sweet)
+## 5     IC-Garske       Imperial College London (Tini Garske)
+## 6       JHU-Tam        John Hopkins University (Yvonne Tam)
 ```
 
 ### Touchstones
@@ -301,22 +310,80 @@ We now need to obtain the coverage data relevant for our disease and touchstone,
 for each of the scenarios we're going to model. Let's look at the `yf-routine-gavi`
 coverage metadata.
 
-#TODO: Enable below after i2567
+
 ```r
 montagu::montagu_coverage_info("IC-Garske", "201710gavi-5", "yf-routine-gavi")
 ```
 
+```
+##    id touchstone_version                  name vaccine gavi_support
+## 1 651       201710gavi-5 YF: YF, with, routine      YF        total
+##   activity_type
+## 1       routine
+```
+
 And now let's retrieve the coverage data itself, and summarise it.
 
-#TODO: Enable below after i2567
+
 ```r
 cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi")
 head(cov[cov$coverage > 0, ])
-range(cov$year)
-length(unique(cov$country_code))
-nrow(cov)
-ncol(cov)
+```
 
+```
+##           scenario              set_name vaccine gavi_support
+## 18 yf-routine-gavi YF: YF, with, routine      YF        total
+## 19 yf-routine-gavi YF: YF, with, routine      YF        total
+## 20 yf-routine-gavi YF: YF, with, routine      YF        total
+## 21 yf-routine-gavi YF: YF, with, routine      YF        total
+## 22 yf-routine-gavi YF: YF, with, routine      YF        total
+## 23 yf-routine-gavi YF: YF, with, routine      YF        total
+##    activity_type country_code country year age_first age_last
+## 18       routine          AGO  Angola 1997         0        0
+## 19       routine          AGO  Angola 1998         0        0
+## 20       routine          AGO  Angola 1999         0        0
+## 21       routine          AGO  Angola 2000         0        0
+## 22       routine          AGO  Angola 2001         0        0
+## 23       routine          AGO  Angola 2002         0        0
+##    age_range_verbatim target coverage
+## 18               <NA>   <NA>     0.37
+## 19               <NA>   <NA>     0.45
+## 20               <NA>   <NA>     0.53
+## 21               <NA>   <NA>     0.50
+## 22               <NA>   <NA>     0.46
+## 23               <NA>   <NA>     0.46
+```
+
+```r
+range(cov$year)
+```
+
+```
+## [1] 1980 2100
+```
+
+```r
+length(unique(cov$country_code))
+```
+
+```
+## [1] 32
+```
+
+```r
+nrow(cov)
+```
+
+```
+## [1] 3872
+```
+
+```r
+ncol(cov)
+```
+
+```
+## [1] 13
 ```
 More information on the coverage is available in the Montagu Web Portal, but briefly:
 
@@ -329,12 +396,36 @@ assume the target population matches the demographic data, and the whole populat
 
 The data above is formatted in what we call `long format`, in which one year is reported per row.
 Alternatively, you can specify:
-#TODO: Enable below after i2567
+
 ```r
 cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi", format="wide")
 names(cov)[1:20]
+```
+
+```
+##  [1] "scenario"           "set_name"           "vaccine"
+##  [4] "gavi_support"       "activity_type"      "country_code"
+##  [7] "country"            "age_first"          "age_last"
+## [10] "age_range_verbatim" "coverage_1980"      "coverage_1981"
+## [13] "coverage_1982"      "coverage_1983"      "coverage_1984"
+## [16] "coverage_1985"      "coverage_1986"      "coverage_1987"
+## [19] "coverage_1988"      "coverage_1989"
+```
+
+```r
 nrow(cov)
+```
+
+```
+## [1] 32
+```
+
+```r
 ncol(cov)
+```
+
+```
+## [1] 252
 ```
 Here, we have one row per country, and separate columns for `coverage_year` and `target_year`.
 
@@ -351,9 +442,23 @@ countries that are required.
 
 For those cases, where all countries are required, the following optional argument can be used:
 
-#TODO: Enable below after i2567
+
 ```r
-cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi", all_countries = TRUE)
+cov_all <- montagu::montagu_coverage_data("CDA-Razavi", "201710gavi-5", "hepb-bd-routine-with", all_countries = TRUE)
+cov_not <- montagu::montagu_coverage_data("CDA-Razavi", "201710gavi-5", "hepb-bd-routine-with", all_countries = FALSE)
+length(unique(cov_all$country))
+```
+
+```
+## [1] 98
+```
+
+```r
+length(unique(cov_not$country))
+```
+
+```
+## [1] 19
 ```
 
 ## Burden Estimate Sets
@@ -503,7 +608,7 @@ head(data)
 plot(data$x[data$age==20], data$y[data$age==20], xlab="year", ylab="cases", main="For age 20")
 ```
 
-![plot of chunk unnamed-chunk-19](figure/montagu_user_guide-unnamed-chunk-19-1.png)
+![plot of chunk unnamed-chunk-24](figure/montagu_user_guide-unnamed-chunk-24-1.png)
 
 Or to dis-aggregate by year:-
 
@@ -528,7 +633,7 @@ head(data)
 plot(data$x[data$year==2040], data$y[data$year==2040], xlab="age", ylab="cases", main="For year 2040")
 ```
 
-![plot of chunk unnamed-chunk-20](figure/montagu_user_guide-unnamed-chunk-20-1.png)
+![plot of chunk unnamed-chunk-25](figure/montagu_user_guide-unnamed-chunk-25-1.png)
 
 ## Stochastic Runs
 
@@ -563,11 +668,11 @@ params
 
 ```
 ##   run_id param_1 param_2
-## 1      1       2       3
-## 2      2       3       2
-## 3      3       4       1
-## 4      4       1       4
-## 5      5       5       5
+## 1      1       3       4
+## 2      2       4       2
+## 3      3       1       5
+## 4      4       5       1
+## 5      5       2       3
 ```
 
 This can then be uploaded as follows:-
@@ -588,26 +693,62 @@ bsid <- montagu::montagu_burden_estimate_set_create(
 
 We can also list the existing model run parameter sets with:-
 
-#TODO - uncomment after i2634
+
 ```r
 head(montagu::montagu_model_run_parameter_sets("IC-Garske", "201710gavi-5"))
 ```
 
+```
+##    id model uploaded_by              uploaded_on disease
+## 1 104  YFIC   test.user 2019-03-08T12:28:31.102Z      YF
+## 2 103  YFIC   test.user 2019-03-08T12:28:31.035Z      YF
+## 3 102  YFIC   test.user 2019-03-08T12:09:00.549Z      YF
+## 4 101  YFIC   test.user 2019-03-08T12:09:00.479Z      YF
+## 5 100  YFIC   test.user 2019-03-08T12:08:46.292Z      YF
+## 6  99  YFIC   test.user 2019-03-08T12:08:46.213Z      YF
+```
+
 or for a list of information about a single parameter set:
 
-#TODO - uncomment after i2634
+
 ```r
 montagu::montagu_model_run_parameter_set_info("IC-Garske", "201710gavi-5", 20)
 ```
 
+```
+## $id
+## [1] 20
+##
+## $model
+## [1] "YFIC"
+##
+## $uploaded_by
+## [1] "katy.gaythorpe"
+##
+## $uploaded_on
+## [1] "2018-04-06T13:10:35.645Z"
+##
+## $disease
+## [1] "YF"
+```
+
 Finally, if we want to retrieve the parameter values for a previous set:-
 
-#TODO - uncomment after i2634
+
+
 ```r
 data <- montagu::montagu_model_run_parameter_set_data("IC-Garske", "201710gavi-5", 20)
 data[1:5,1:5]
 ```
 
+```
+##   run_id     FOI_AGO     FOI_BEN    FOI_BFA      FOI_BDI
+## 1      1 0.004549685 0.015696021 0.02084831 3.071269e-05
+## 2      3 0.003717290 0.011943511 0.01713641 4.950013e-05
+## 3      5 0.003522454 0.009811987 0.01321275 1.058319e-04
+## 4      6 0.003485912 0.012657722 0.01655512 7.327719e-05
+## 5      8 0.002722810 0.007266782 0.00851512 4.569112e-05
+```
 
 ## Appendix
 

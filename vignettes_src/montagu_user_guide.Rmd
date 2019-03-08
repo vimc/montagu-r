@@ -49,9 +49,7 @@ joining VIMC, but can be looked up with simple function calls like this:-
 montagu::montagu_diseases()
 ```
 
-
-#TODO - enable below after i2557
-```r
+```{r}
 groups <- montagu::montagu_modelling_groups()
 head(groups)
 ```
@@ -166,15 +164,13 @@ We now need to obtain the coverage data relevant for our disease and touchstone,
 for each of the scenarios we're going to model. Let's look at the `yf-routine-gavi` 
 coverage metadata.
 
-#TODO: Enable below after i2567
-```r
+```{r}
 montagu::montagu_coverage_info("IC-Garske", "201710gavi-5", "yf-routine-gavi")
 ```
 
 And now let's retrieve the coverage data itself, and summarise it.
 
-#TODO: Enable below after i2567
-```r
+```{r}
 cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi")
 head(cov[cov$coverage > 0, ])
 range(cov$year)
@@ -194,8 +190,7 @@ assume the target population matches the demographic data, and the whole populat
 
 The data above is formatted in what we call `long format`, in which one year is reported per row. 
 Alternatively, you can specify:
-#TODO: Enable below after i2567
-```r
+```{r}
 cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi", format="wide")
 names(cov)[1:20]
 nrow(cov)
@@ -216,9 +211,11 @@ countries that are required.
 
 For those cases, where all countries are required, the following optional argument can be used:
 
-#TODO: Enable below after i2567
-```r
-cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi", all_countries = TRUE)
+```{r}
+cov_all <- montagu::montagu_coverage_data("CDA-Razavi", "201710gavi-5", "hepb-bd-routine-with", all_countries = TRUE)
+cov_not <- montagu::montagu_coverage_data("CDA-Razavi", "201710gavi-5", "hepb-bd-routine-with", all_countries = FALSE)
+length(unique(cov_all$country))
+length(unique(cov_not$country))
 ```
 
 ## Burden Estimate Sets
@@ -342,26 +339,23 @@ bsid <- montagu::montagu_burden_estimate_set_create(
 
 We can also list the existing model run parameter sets with:-
 
-#TODO - uncomment after i2634
-```r
+```{r}
 head(montagu::montagu_model_run_parameter_sets("IC-Garske", "201710gavi-5"))
 ```
 
 or for a list of information about a single parameter set:
 
-#TODO - uncomment after i2634
-```r
+```{r}
 montagu::montagu_model_run_parameter_set_info("IC-Garske", "201710gavi-5", 20)
 ```
 
 Finally, if we want to retrieve the parameter values for a previous set:-
 
-#TODO - uncomment after i2634
-```r
+
+```{r}
 data <- montagu::montagu_model_run_parameter_set_data("IC-Garske", "201710gavi-5", 20)
 data[1:5,1:5]
 ```
-
 
 ## Appendix
 
