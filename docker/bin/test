@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+PATH_MONTAGU=/montagu
+
+export NOT_CRAN="true"
+export MONTAGU_TEST_HOST="support.montagu.dide.ic.ac.uk"
+export MONTAGU_TEST_PORT="10443"
+export MONTAGU_TEST_USERNAME=test.user@imperial.ac.uk
+export MONTAGU_TEST_PASSWORD=password
+
+mkdir /test
+cd /test
+R CMD build /montagu
+_R_CHECK_CRAN_INCOMING_=FALSE R CMD check --as-cran montagu_*.tar.gz
