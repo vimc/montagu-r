@@ -91,8 +91,8 @@ montagu_model_run_parameter_set_upload <- function(modelling_group_id,
   # Move run_id to left-most column, so we can quote it, as per the spec.
 
   if (names(data)[1] != "run_id") {
-    the_names <- c("run_id",names(data)[names(data)!="run_id"])
-    data <- params[the_names]
+    the_names <- c("run_id", names(data)[names(data) != "run_id"])
+    data <- data[the_names]
   }
 
   data$run_id <- as.character(data$run_id)
@@ -106,7 +106,8 @@ montagu_model_run_parameter_set_upload <- function(modelling_group_id,
                   modelling_group_id, touchstone_id)
 
   res <- montagu_api_POST(location, path,
-    body = list(disease = disease_id, file = httr::upload_file(tf, type="text/csv"),
+    body = list(disease = disease_id, 
+    file = httr::upload_file(tf, type="text/csv"),
     encode = c("multipart")))
 
   bits <- unlist(strsplit(res, "/"))

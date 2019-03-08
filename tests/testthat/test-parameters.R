@@ -112,13 +112,38 @@ test_that("upload model_run_parameter_set", {
     "IC-Garske", "201710gavi-5", "YF", params, location)
 
   expect_is(id, "numeric")
+
+  # Fetch it back...
+  
+  params2 <- montagu_model_run_parameter_set_data(
+    "IC-Garske", "201710gavi-5", id, location)
+  expect_equal(sum(is.na(match(names(params), names(params2)))), 0)
+  
+  params <- params[c("run_id", "rnd_1", "rnd_2")]
+  params2 <- params2[c("run_id", "rnd_1", "rnd_2")]
+  params2 <- params2[order(params2$run_id), ]
+  expect_true(all.equal(params, params2))
+  
+})
+
+test_that("upload model_run_parameter_set - col order tests", {
+  location <- montagu_test_server()
+  params <- data_frame(rnd_1 = sample(5), run_id = 1:5, rnd_2 = sample(5))
+  
+  id <- montagu_model_run_parameter_set_upload(
+    "IC-Garske", "201710gavi-5", "YF", params, location)
+  
+  expect_is(id, "numeric")
   
   # Fetch it back...
   
   params2 <- montagu_model_run_parameter_set_data(
     "IC-Garske", "201710gavi-5", id, location)
   
+  params <- params[c("run_id", "rnd_1", "rnd_2")]
+  params2 <- params2[c("run_id", "rnd_1", "rnd_2")]
   params2 <- params2[order(params2$run_id), ]
+  
   expect_true(all.equal(params, params2))
   
 })
