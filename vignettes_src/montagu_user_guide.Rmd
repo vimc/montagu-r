@@ -49,10 +49,10 @@ joining VIMC, but can be looked up with simple function calls like this:-
 montagu::montagu_diseases()
 ```
 
-TO-DO - i2557
 
-```r
-montagu::montagu_modelling_groups()
+```{r}
+groups <- montagu::montagu_modelling_groups()
+head(groups)
 ```
 
 ### Touchstones

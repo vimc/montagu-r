@@ -1,7 +1,7 @@
 ---
 title: "Montagu API from R"
 author: "VIMC Technical Team"
-date: "2019-02-20"
+date: "2019-03-07"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Montagu API}
@@ -58,10 +58,21 @@ montagu::montagu_diseases()
 ## 11     DTP Diphtheria Tetanus Pertussis
 ```
 
-TO-DO - i2557
+
 
 ```r
-montagu::montagu_modelling_groups()
+groups <- montagu::montagu_modelling_groups()
+head(groups)
+```
+
+```
+##              id                                 description
+## 1  Suraratdecha          independent (Chutima Suraratdecha)
+## 2   KPW-Jackson Kaiser Permanente Washington (Mike Jackson)
+## 3            Li                         independent (Xi Li)
+## 4 Harvard-Sweet           Harvard University (Steven Sweet)
+## 5     IC-Garske       Imperial College London (Tini Garske)
+## 6       JHU-Tam        John Hopkins University (Yvonne Tam)
 ```
 
 ### Touchstones

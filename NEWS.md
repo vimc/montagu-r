@@ -1,3 +1,7 @@
+## 0.3.4
+
+* Add support for modelling-group endpoints (VIMC-2557)
+
 ## 0.3.3
 
 * Add support for coverage endpoints (VIMC-2567)
