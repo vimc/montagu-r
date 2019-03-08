@@ -1,7 +1,7 @@
 ---
 title: "Montagu API from R"
 author: "VIMC Technical Team"
-date: "2019-03-07"
+date: "2019-03-08"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Montagu API}
@@ -57,7 +57,6 @@ montagu::montagu_diseases()
 ## 10      YF                 Yellow fever
 ## 11     DTP Diphtheria Tetanus Pertussis
 ```
-
 
 
 ```r
@@ -437,11 +436,139 @@ estimate data is required for the given scenario. HepB is a particular example, 
 sets of countries are relevant in different scenarios, because the birth-dose vaccination
 is not applied in all countries where there is HepB vaccination. However, some groups prefer
 to model all of these scenarios similarly, with the same numbers of countries, hence they require
-the full coverage data for all countries. For those cases, the following optional argument can be used:
+the full coverage data for all countries. And for some diseases, the historic effects of vaccination
+in a country that is not required for estimates as present, may have relevance in their model to
+countries that are required.
+
+For those cases, where all countries are required, the `all_countries` optional argument can be used:
 
 
 ```r
-cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi", all_countries=TRUE)
+cov_all <- montagu::montagu_coverage_data("CDA-Razavi", "201710gavi-5", "hepb-bd-routine-with", all_countries = TRUE)
+cov_not <- montagu::montagu_coverage_data("CDA-Razavi", "201710gavi-5", "hepb-bd-routine-with", all_countries = FALSE)
+length(unique(cov_all$country))
+```
+
+```
+## [1] 98
+```
+
+```r
+length(unique(cov_not$country))
+```
+
+```
+## [1] 19
+```
+
+## Stochastic Runs
+
+In order to establish confidence intervals, modelling groups are sometimes asked to run a stochastic
+ensemble of models. This may be, for instance, 200 instances of a model, with different parameters
+for each instance. We would call the instance number, between 1 and 200, the `run_id`, and there
+would be a unique set of parameters for each.
+
+It is important that for a given `run_id`, all the
+relevant scenarios are run with the matching set of parameters for that `run_id`, so that we can
+compare scenarios and calculate impacts.
+
+It is also important that the spread of parameters chosen across the 200 runs significantly captures
+the range of sensible behaviour of the model, and that the central estimates submitted are somewhere
+near the centre of the spread of parameters.
+
+Lastly, it is desirable to vary as few parameters as possible, so that with 200 runs, we can see
+how the parameter changes affect the model outcomes. If there are too many parameters, it may be
+difficult to ascertain which parameters are causing the changes, or whether the spread of
+parameters really does capture the significant behaviour of the model.
+
+### Model Run Parameter Sets
+
+The model run parameter set has a column for `run_id`, and another column for each parameter
+being varied. For example:
+
+
+```r
+params <- data.frame(run_id = 1:5, param_1 = sample(5), param_2 = sample(5))
+params
+```
+
+```
+##   run_id param_1 param_2
+## 1      1       1       4
+## 2      2       5       1
+## 3      3       3       2
+## 4      4       4       3
+## 5      5       2       5
+```
+
+This can then be uploaded as follows:-
+
+```r
+id <- montagu::montagu_model_run_parameter_set_upload(
+    "IC-Garske", "201710gavi-5", "YF", params)
+```
+
+and the id of the newly created parameter set will be returned. For stochastic data, we will
+need to supply this id when creating the associated burden estimate set.
+
+#TODO - add burden estimate set example here in i2625
+
+We can also list the existing model run parameter sets with:-
+
+
+```r
+head(montagu::montagu_model_run_parameter_sets("IC-Garske", "201710gavi-5"))
+```
+
+```
+##    id model uploaded_by              uploaded_on disease
+## 1 102  YFIC   test.user 2019-03-08T12:09:00.549Z      YF
+## 2 101  YFIC   test.user 2019-03-08T12:09:00.479Z      YF
+## 3 100  YFIC   test.user 2019-03-08T12:08:46.292Z      YF
+## 4  99  YFIC   test.user 2019-03-08T12:08:46.213Z      YF
+## 5  98  YFIC   test.user 2019-03-08T12:05:21.724Z      YF
+## 6  97  YFIC   test.user 2019-03-08T12:00:27.315Z      YF
+```
+
+or for a list of information about a single parameter set:
+
+
+```r
+montagu::montagu_model_run_parameter_set_info("IC-Garske", "201710gavi-5", 20)
+```
+
+```
+## $id
+## [1] 20
+##
+## $model
+## [1] "YFIC"
+##
+## $uploaded_by
+## [1] "katy.gaythorpe"
+##
+## $uploaded_on
+## [1] "2018-04-06T13:10:35.645Z"
+##
+## $disease
+## [1] "YF"
+```
+
+Finally, if we want to retrieve the parameter values for a previous set:-
+
+
+```r
+data <- montagu::montagu_model_run_parameter_set_data("IC-Garske", "201710gavi-5", 20)
+data[1:5,1:5]
+```
+
+```
+##   run_id     FOI_AGO     FOI_BEN    FOI_BFA      FOI_BDI
+## 1      1 0.004549685 0.015696021 0.02084831 3.071269e-05
+## 2      3 0.003717290 0.011943511 0.01713641 4.950013e-05
+## 3      5 0.003522454 0.009811987 0.01321275 1.058319e-04
+## 4      6 0.003485912 0.012657722 0.01655512 7.327719e-05
+## 5      8 0.002722810 0.007266782 0.00851512 4.569112e-05
 ```
 
 ## Appendix

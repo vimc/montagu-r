@@ -1,3 +1,7 @@
+## 0.3.5
+
+* Add support for model run parameter sets (VIMC-2634)
+
 ## 0.3.4
 
 * Add support for modelling-group endpoints (VIMC-2557)

@@ -33,7 +33,7 @@ options(montagu.username = "test.user@imperial.ac.uk",
         montagu.password = "password")
 montagu::montagu_server_global_default_set(
   montagu::montagu_server("uat", "support.montagu.dide.ic.ac.uk", 10443))
-montagu::montagu_touchstones_list()
+montagu::montagu_diseases()
 ```
 
 The next time you query the server, you may be asked to
@@ -48,7 +48,6 @@ joining VIMC, but can be looked up with simple function calls like this:-
 ```{r}
 montagu::montagu_diseases()
 ```
-
 
 ```{r}
 groups <- montagu::montagu_modelling_groups()
@@ -206,10 +205,78 @@ estimate data is required for the given scenario. HepB is a particular example, 
 sets of countries are relevant in different scenarios, because the birth-dose vaccination
 is not applied in all countries where there is HepB vaccination. However, some groups prefer
 to model all of these scenarios similarly, with the same numbers of countries, hence they require 
-the full coverage data for all countries. For those cases, the following optional argument can be used:
+the full coverage data for all countries. And for some diseases, the historic effects of vaccination 
+in a country that is not required for estimates as present, may have relevance in their model to 
+countries that are required. 
+
+For those cases, where all countries are required, the `all_countries` optional argument can be used:
 
 ```{r}
-cov <- montagu::montagu_coverage_data("IC-Garske", "201710gavi-5", "yf-routine-gavi", all_countries=TRUE)
+cov_all <- montagu::montagu_coverage_data("CDA-Razavi", "201710gavi-5", "hepb-bd-routine-with", all_countries = TRUE)
+cov_not <- montagu::montagu_coverage_data("CDA-Razavi", "201710gavi-5", "hepb-bd-routine-with", all_countries = FALSE)
+length(unique(cov_all$country))
+length(unique(cov_not$country))
+```
+
+## Stochastic Runs
+
+In order to establish confidence intervals, modelling groups are sometimes asked to run a stochastic 
+ensemble of models. This may be, for instance, 200 instances of a model, with different parameters
+for each instance. We would call the instance number, between 1 and 200, the `run_id`, and there
+would be a unique set of parameters for each. 
+
+It is important that for a given `run_id`, all the
+relevant scenarios are run with the matching set of parameters for that `run_id`, so that we can 
+compare scenarios and calculate impacts. 
+
+It is also important that the spread of parameters chosen across the 200 runs significantly captures
+the range of sensible behaviour of the model, and that the central estimates submitted are somewhere
+near the centre of the spread of parameters.  
+
+Lastly, it is desirable to vary as few parameters as possible, so that with 200 runs, we can see
+how the parameter changes affect the model outcomes. If there are too many parameters, it may be
+difficult to ascertain which parameters are causing the changes, or whether the spread of 
+parameters really does capture the significant behaviour of the model.
+
+### Model Run Parameter Sets
+
+The model run parameter set has a column for `run_id`, and another column for each parameter
+being varied. For example:
+
+```{r}
+params <- data.frame(run_id = 1:5, param_1 = sample(5), param_2 = sample(5))
+params
+```
+
+This can then be uploaded as follows:-
+
+```r
+id <- montagu::montagu_model_run_parameter_set_upload(
+    "IC-Garske", "201710gavi-5", "YF", params)
+```
+
+and the id of the newly created parameter set will be returned. For stochastic data, we will
+need to supply this id when creating the associated burden estimate set.
+
+#TODO - add burden estimate set example here in i2625
+
+We can also list the existing model run parameter sets with:-
+
+```{r}
+head(montagu::montagu_model_run_parameter_sets("IC-Garske", "201710gavi-5"))
+```
+
+or for a list of information about a single parameter set:
+
+```{r}
+montagu::montagu_model_run_parameter_set_info("IC-Garske", "201710gavi-5", 20)
+```
+
+Finally, if we want to retrieve the parameter values for a previous set:-
+
+```{r}
+data <- montagu::montagu_model_run_parameter_set_data("IC-Garske", "201710gavi-5", 20)
+data[1:5,1:5]
 ```
 
 ## Appendix
