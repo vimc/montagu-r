@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -e
+
+HERE=$(dirname $0)
+. $HERE/common
+
+docker push $APP_DOCKER_BRANCH_TAG
+docker push $APP_DOCKER_COMMIT_TAG
+
+if [ $GIT_BRANCH = "master" ]; then
+    PUBLIC_TAG=$PUBLIC_REGISTRY/$NAME:master
+    docker tag $APP_DOCKER_BRANCH_TAG $PUBLIC_TAG
+    docker push $PUBLIC_TAG
+fi

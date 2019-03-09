@@ -8,6 +8,7 @@ context("reports: run")
 
 test_that("run: success", {
   skip_on_os("windows")
+  skip("not working unsupervised")
   server <- orderly_test_server()
   on.exit(server$stop())
   remote <- montagu_server("testing", "localhost", server$port, orderly = TRUE)
@@ -28,7 +29,9 @@ test_that("run: success", {
 
 test_that("run: error", {
   skip_on_os("windows")
+  skip("not working unsupervised")
   server <- orderly_test_server()
+  on.exit(server$stop())
   remote <- montagu_server("testing", "localhost", server$port, orderly = TRUE)
 
   p <- file.path(server$path, "src", "count", "parameters.json")
@@ -53,7 +56,9 @@ test_that("run: error", {
 
 test_that("set timeout", {
   skip_on_os("windows")
+  skip("not working unsupervised")
   server <- orderly_test_server("interactive")
+  on.exit(server$stop())
   remote <- montagu_server("testing", "localhost", server$port, orderly = TRUE)
 
   p <- file.path(server$path, "src", "count", "parameters.json")
