@@ -24,7 +24,7 @@ montagu_touchstones <- function(modelling_group_id, location = NULL) {
 ##' addressed with a new version of the existing touchstone. When interacting
 ##' with Montagu, a touchstone_id will consist of a basename, and a version.
 ##' @title Retrieve list of all versions of a given touchstone.
-##' @param touchstone_name Optional base name of the touchstone to filter.
+##' @param touchstone_name Optional base name of the touchstone to filter. 
 ##' (ie, no version suffix)
 ##' @param require_open If true, include only open touchstones
 ##' @inheritParams montagu_touchstones

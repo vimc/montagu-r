@@ -97,4 +97,3 @@ test_that("demographic list is cached within session", {
     d2 <- montagu_demographics_list(touchstone_id, location = location),
     NA)
 })
-

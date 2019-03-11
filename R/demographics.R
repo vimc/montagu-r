@@ -34,11 +34,29 @@ montagu_demographics_list <- function(touchstone_id, location = NULL) {
   )
 }
 
+## I am imagining montagu_demographics_download to be private, and only
+## called by montagu_demographic_data.
+##
+## This one will be the cache-free version - it always downloads data.
+## If 'dest' is NULL we'll return the data, otherwise we just download
+## it.
+##
+## format is a string at this point, 'wide' or 'long'
+
 montagu_demographics_download <- function(touchstone_id, source_code,
                                           type_code, gender_code,
                                           format, dest = NULL,
                                           location = NULL) {
-  # See issue 2736 if the API does this...
+
+  assert_scalar_character(touchstone_id)
+  assert_scalar_character(source_code)
+  assert_scalar_character(type_code)
+  assert_scalar_character(gender_code)
+  assert_scalar_character(format)
+  
+  # See issue 2736 - the API could perhaps throw a 404 if source
+  # code is invalid.
+  
   d <- montagu_demographics_list(touchstone_id, location)
   if (!source_code %in% d$source) {
     stop(sprintf("Unknown demographic source type with id '%s'", source_code))
@@ -50,11 +68,13 @@ montagu_demographics_download <- function(touchstone_id, source_code,
   path <- sprintf("/touchstones/%s/demographics/%s/%s/",
                   touchstone_id, source_code, type_code)
   res <- montagu_api_GET(location, path, accept = "csv", query = query)
+
   if (is.null(dest)) {
     tmp <- tempfile()
     on.exit(unlink(tmp))
     writeBin(res, tmp)
     utils::read.csv(tmp, stringsAsFactors = FALSE)
+
   } else {
     writeBin(res, dest)
     invisible(dest)
@@ -81,8 +101,18 @@ montagu_demographic_data <- function(type_code, touchstone_id,
                                      gender_code = NULL, wide = FALSE,
                                      source_code = NULL, location = NULL) {
 
-  assert_character(type_code)
-  assert_character(touchstone_id)
+  assert_scalar_character(type_code)
+  assert_scalar_character(touchstone_id)
+  assert_scalar_logical(wide)
+  
+  if (!is.null(gender_code)) {
+    assert_scalar_character(gender_code)
+  }
+  
+  if (!is.null(source_code)) {
+    assert_scalar_character(source_code)
+  }
+  
   location <- montagu_location(location)
   cache <- location$cache
 
@@ -96,11 +126,10 @@ montagu_demographic_data <- function(type_code, touchstone_id,
   } else {
     if (is.null(source_code)) {
       d <- montagu_demographics_list(touchstone_id, location = location)
-      if (!type_code %in% d$id) {
-        stop(sprintf("Unknown demographic-statistic-type with id '%s'", type_code))
-      }
       i <- d$id == type_code
-      if (sum(i) > 1L) {
+      if (sum(i) == 0L) {
+        stop(sprintf("Unknown demographic-statistic-type with id '%s'", type_code))
+      } else if (sum(i) > 1L) {
         stop("More than one source_code applicable for this source: ",
              paste(squote(d$source[i]), collapse = ", "))
       }
@@ -120,7 +149,7 @@ montagu_demographic_data <- function(type_code, touchstone_id,
         d <- montagu_demographics_list(touchstone_id, location)
         d <- d[d$id == type_code,]
         if (!d$gendered) {
-          stop(sprintf("The demographic type '%s' is not gendered, so cannot be filtered by '%s'",
+          stop(sprintf("Type '%s' is non-gendered and cannot be filtered by '%s'",
                        type_code, gender_code))
 
         }
