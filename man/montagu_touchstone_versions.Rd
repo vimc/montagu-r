@@ -10,9 +10,10 @@ montagu_touchstone_versions(modelling_group_id, touchstone_name = NULL,
 \arguments{
 \item{modelling_group_id}{id of the modelling group.}
 
-\item{touchstone_name}{Optional base name of the touchstone to filter. (ie, no version suffix)}
+\item{touchstone_name}{Optional base name of the touchstone to filter. 
+(ie, no version suffix)}
 
-\item{require_open}{Only include open touchstones if set to true.}
+\item{require_open}{If true, include only open touchstones}
 
 \item{location}{The montagu server to connect to.}
 }
