@@ -49,8 +49,6 @@ joining VIMC, but can be looked up with simple function calls like this:-
 montagu::montagu_diseases()
 ```
 
-<<<<<<< HEAD
-
 ```{r}
 groups <- montagu::montagu_modelling_groups()
 head(groups)

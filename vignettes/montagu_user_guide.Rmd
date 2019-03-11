@@ -58,8 +58,6 @@ montagu::montagu_diseases()
 ## 11     DTP Diphtheria Tetanus Pertussis
 ```
 
-<<<<<<< HEAD
-
 
 ```r
 groups <- montagu::montagu_modelling_groups()
@@ -653,21 +651,21 @@ head(montagu::montagu_burden_estimate_sets("IC-Garske", "201710gavi-5", "yf-no-v
 ```
 ##       id              uploaded_on    uploaded_by               type
 ## 37   687 2018-04-06T13:08:18.883Z katy.gaythorpe   central-averaged
-## 147  698 2018-05-30T09:27:32.341Z    tini.garske central-single-run
+## 153  698 2018-05-30T09:27:32.341Z    tini.garske central-single-run
 ## 1   1049 2019-02-15T11:48:00.515Z      test.user   central-averaged
 ## 2   1050 2019-02-15T12:16:44.479Z      test.user         stochastic
 ## 4   1051 2019-02-15T12:49:19.553Z      test.user   central-averaged
 ## 5   1052 2019-02-15T15:36:46.370Z      test.user   central-averaged
 ##                                                                  details
 ## 37  Averaged over posterior predictive distribution for model parameters
-## 147                                                                    x
+## 153                                                                    x
 ## 1                                          Mean over all stochastic runs
 ## 2                                                                Details
 ## 4                                                                Details
 ## 5                                                                Details
 ##       status
 ## 37  complete
-## 147    empty
+## 153    empty
 ## 1      empty
 ## 2      empty
 ## 4    invalid
@@ -888,12 +886,12 @@ head(montagu::montagu_model_run_parameter_sets("IC-Garske", "201710gavi-5"))
 
 ```
 ##    id model uploaded_by              uploaded_on disease
-## 1 128  YFIC   test.user 2019-03-11T17:30:48.364Z      YF
-## 2 127  YFIC   test.user 2019-03-11T17:30:48.281Z      YF
-## 3 126  YFIC   test.user 2019-03-11T15:26:26.704Z      YF
-## 4 125  YFIC   test.user 2019-03-11T15:26:26.615Z      YF
-## 5 124  YFIC   test.user 2019-03-11T15:14:05.997Z      YF
-## 6 123  YFIC   test.user 2019-03-11T15:14:05.885Z      YF
+## 1 132  YFIC   test.user 2019-03-11T19:39:13.873Z      YF
+## 2 131  YFIC   test.user 2019-03-11T19:39:13.775Z      YF
+## 3 130  YFIC   test.user 2019-03-11T17:37:27.725Z      YF
+## 4 129  YFIC   test.user 2019-03-11T17:37:27.642Z      YF
+## 5 128  YFIC   test.user 2019-03-11T17:30:48.364Z      YF
+## 6 127  YFIC   test.user 2019-03-11T17:30:48.281Z      YF
 ```
 
 or for a list of information about a single parameter set:
