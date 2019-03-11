@@ -14,6 +14,8 @@ montagu_burden_estimate_set_info(modelling_group_id, touchstone_id,
 
 \item{scenario_id}{Scenario identifier}
 
+\item{burden_estimate_set_id}{The integer id of a burden estimate set}
+
 \item{location}{The montagu server to connect to.}
 }
 \value{

@@ -16,6 +16,8 @@ montagu_burden_estimate_set_outcome_data(modelling_group_id, touchstone_id,
 
 \item{scenario_id}{Scenario identifier}
 
+\item{burden_estimate_set_id}{The integer id of a burden estimate set}
+
 \item{outcome_code}{The name of an outcome, such as 'cases' or 'deaths'.}
 
 \item{group_by}{Set to 'age' (the default) or 'year', to set the}

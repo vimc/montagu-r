@@ -42,6 +42,7 @@ montagu_burden_estimate_sets <- function(modelling_group_id, touchstone_id,
 ##' @export
 ##' @title Retrieves information about a specific burden estimate set.
 ##' @inherit montagu_burden_estimate_sets
+##' @param burden_estimate_set_id The integer id of a burden estimate set
 ##' @return A list of information about a specific estimate set.
 montagu_burden_estimate_set_info <- function(modelling_group_id, touchstone_id,
               scenario_id, burden_estimate_set_id, location = NULL) {
@@ -63,7 +64,7 @@ montagu_burden_estimate_set_info <- function(modelling_group_id, touchstone_id,
 
 ##' @export
 ##' @title Retrieves the data for a specific burden estimate set.
-##' @inherit montagu_burden_estimate_sets
+##' @inherit montagu_burden_estimate_set_info
 ##' @param burden_estimate_set_id the integer id of a burden estimate set
 ##' @return A list of information about a specific estimate set.
 montagu_burden_estimate_set_data <- function(modelling_group_id, touchstone_id,
@@ -84,7 +85,7 @@ montagu_burden_estimate_set_data <- function(modelling_group_id, touchstone_id,
 ##' @export
 ##' @title Retrieve data for a particular outcoe of a burden estimate set,
 ##' aggregated across country and disaggregated by either age or year.
-##' @inherit montagu_burden_estimate_sets
+##' @inherit montagu_burden_estimate_set_info
 ##' @param outcome_code The name of an outcome, such as 'cases' or 'deaths'.
 ##' @param group_by Set to 'age' (the default) or 'year', to set the
 ##' @return A data frame with columns age or year (depending on group_by),
@@ -128,12 +129,7 @@ montagu_burden_estimate_set_outcome_data <- function(modelling_group_id,
 }
 
 ##' @export
-##' @inherit montagu_burden_estimate_sets
-##' @param burden_estimate_set_id Burden estimate set identifier
-##' @param modelling_group_id Modelling group identifier
-##' @param touchstone_id Touchstone identifier
-##' @param scenario_id Scenario identifier
-##' @param location The montagu server to connect to.
+##' @inherit montagu_burden_estimate_set_info
 ##' @return A list of any problems with this burden estimate set
 montagu_burden_estimate_set_problems <- function(modelling_group_id,
     touchstone_id, scenario_id, burden_estimate_set_id, location = NULL) {

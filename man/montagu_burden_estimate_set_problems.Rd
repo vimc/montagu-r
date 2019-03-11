@@ -2,7 +2,7 @@
 % Please edit documentation in R/burden.R
 \name{montagu_burden_estimate_set_problems}
 \alias{montagu_burden_estimate_set_problems}
-\title{Retrieves list of estimate sets for a group, touchstone and scenario.}
+\title{Retrieves information about a specific burden estimate set.}
 \usage{
 montagu_burden_estimate_set_problems(modelling_group_id, touchstone_id,
   scenario_id, burden_estimate_set_id, location = NULL)
@@ -14,7 +14,7 @@ montagu_burden_estimate_set_problems(modelling_group_id, touchstone_id,
 
 \item{scenario_id}{Scenario identifier}
 
-\item{burden_estimate_set_id}{Burden estimate set identifier}
+\item{burden_estimate_set_id}{The integer id of a burden estimate set}
 
 \item{location}{The montagu server to connect to.}
 }
@@ -22,5 +22,5 @@ montagu_burden_estimate_set_problems(modelling_group_id, touchstone_id,
 A list of any problems with this burden estimate set
 }
 \description{
-Retrieves list of estimate sets for a group, touchstone and scenario.
+Retrieves information about a specific burden estimate set.
 }
