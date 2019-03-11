@@ -64,6 +64,7 @@ montagu_burden_estimate_set_info <- function(modelling_group_id, touchstone_id,
 ##' @export
 ##' @title Retrieves the data for a specific burden estimate set.
 ##' @inherit montagu_burden_estimate_sets
+##' @param burden_estimate_set_id the integer id of a burden estimate set
 ##' @return A list of information about a specific estimate set.
 montagu_burden_estimate_set_data <- function(modelling_group_id, touchstone_id,
                       scenario_id, burden_estimate_set_id, location = NULL) {
