@@ -383,9 +383,7 @@ test_that("download stochsatic burden_estimate_template", {
   
   countries <- sort(montagu_expectation_countries("IC-Garske", "201710gavi-5", 30,
                                                   location)$id)
-  
   expect_equal(countries, sort(unique(dat$country)))
-
 })
 
 test_that("download stochastic burden_estimate_template - wrong group", {

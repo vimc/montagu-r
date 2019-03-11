@@ -83,7 +83,6 @@ montagu_demographic_data <- function(type_code, touchstone_id,
 
   assert_character(type_code)
   assert_character(touchstone_id)
-
   location <- montagu_location(location)
   cache <- location$cache
 
