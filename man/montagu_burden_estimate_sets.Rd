@@ -20,5 +20,11 @@ montagu_burden_estimate_sets(modelling_group_id, touchstone_id,
 A data frame of information about all relevant estimate sets.
 }
 \description{
-Retrieves list of estimate sets for a group, touchstone and scenario.
+Burden estimate sets define a set of results for a modelling group. They
+are specific to a touchstone and scenario. Usually, they will be the
+populated version of the burden estimate set template, which a modelling
+group can download, and defines the columns and rows for all the
+countries, ages and years that are expected from that group, for that
+scenario. The modelling group then overwrites the missing values with
+results from their model, and submits the results to Montagu.
 }

@@ -28,6 +28,11 @@ montagu_burden_estimate_set_outcome_data(modelling_group_id, touchstone_id,
 A data frame with columns age or year (depending on group_by),
 }
 \description{
-Retrieve data for a particular outcoe of a burden estimate set,
-aggregated across country and disaggregated by either age or year.
+Burden estimate sets define a set of results for a modelling group. They
+are specific to a touchstone and scenario. Usually, they will be the
+populated version of the burden estimate set template, which a modelling
+group can download, and defines the columns and rows for all the
+countries, ages and years that are expected from that group, for that
+scenario. The modelling group then overwrites the missing values with
+results from their model, and submits the results to Montagu.
 }

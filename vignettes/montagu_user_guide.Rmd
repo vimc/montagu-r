@@ -440,7 +440,7 @@ the full coverage data for all countries. And for some diseases, the historic ef
 in a country that is not required for estimates as present, may have relevance in their model to
 countries that are required.
 
-For those cases, where all countries are required, the following optional argument can be used:
+For those cases, where all countries are required, the `all_countries` argument can be used as follows:
 
 
 ```r
@@ -474,21 +474,21 @@ head(montagu::montagu_burden_estimate_sets("IC-Garske", "201710gavi-5", "yf-no-v
 ```
 ##       id              uploaded_on    uploaded_by               type
 ## 37   687 2018-04-06T13:08:18.883Z katy.gaythorpe   central-averaged
-## 126  698 2018-05-30T09:27:32.341Z    tini.garske central-single-run
+## 135  698 2018-05-30T09:27:32.341Z    tini.garske central-single-run
 ## 1   1049 2019-02-15T11:48:00.515Z      test.user   central-averaged
 ## 2   1050 2019-02-15T12:16:44.479Z      test.user         stochastic
 ## 4   1051 2019-02-15T12:49:19.553Z      test.user   central-averaged
 ## 5   1052 2019-02-15T15:36:46.370Z      test.user   central-averaged
 ##                                                                  details
 ## 37  Averaged over posterior predictive distribution for model parameters
-## 126                                                                    x
+## 135                                                                    x
 ## 1                                          Mean over all stochastic runs
 ## 2                                                                Details
 ## 4                                                                Details
 ## 5                                                                Details
 ##       status
 ## 37  complete
-## 126    empty
+## 135    empty
 ## 1      empty
 ## 2      empty
 ## 4    invalid
@@ -611,7 +611,7 @@ head(data)
 ## 1   0 2000 21955.19
 ## 2   0 2001 22429.77
 ## 3   0 2002 22904.21
-## 4   0 2003 23388.82
+## 4   0 2003 23388.83
 ## 5   0 2004 23899.00
 ## 6   0 2005 24444.64
 ```
@@ -675,11 +675,11 @@ params
 
 ```
 ##   run_id param_1 param_2
-## 1      1       3       1
-## 2      2       5       3
-## 3      3       4       2
-## 4      4       2       4
-## 5      5       1       5
+## 1      1       3       3
+## 2      2       2       2
+## 3      3       4       1
+## 4      4       1       4
+## 5      5       5       5
 ```
 
 This can then be uploaded as follows:-
@@ -707,12 +707,12 @@ head(montagu::montagu_model_run_parameter_sets("IC-Garske", "201710gavi-5"))
 
 ```
 ##    id model uploaded_by              uploaded_on disease
-## 1 114  YFIC   test.user 2019-03-11T12:14:43.552Z      YF
-## 2 113  YFIC   test.user 2019-03-11T12:14:43.494Z      YF
-## 3 112  YFIC   test.user 2019-03-11T11:43:03.451Z      YF
-## 4 111  YFIC   test.user 2019-03-11T11:43:03.338Z      YF
-## 5 110  YFIC   test.user 2019-03-11T11:30:44.742Z      YF
-## 6 109  YFIC   test.user 2019-03-11T11:30:44.659Z      YF
+## 1 120  YFIC   test.user 2019-03-11T14:34:17.042Z      YF
+## 2 119  YFIC   test.user 2019-03-11T14:34:16.916Z      YF
+## 3 118  YFIC   test.user 2019-03-11T14:23:15.276Z      YF
+## 4 117  YFIC   test.user 2019-03-11T14:23:15.156Z      YF
+## 5 116  YFIC   test.user 2019-03-11T12:33:02.809Z      YF
+## 6 115  YFIC   test.user 2019-03-11T12:33:02.698Z      YF
 ```
 
 or for a list of information about a single parameter set:

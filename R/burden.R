@@ -5,11 +5,6 @@
 ##' countries, ages and years that are expected from that group, for that
 ##' scenario. The modelling group then overwrites the missing values with
 ##' results from their model, and submits the results to Montagu.
-##' @title Burden Estimate Sets
-##' @param location A montagu location
-##' @name Burden Estimate Sets
-NULL
-
 ##' @export
 ##' @title Retrieves list of estimate sets for a group, touchstone and scenario.
 ##' @param modelling_group_id Modelling group identifier

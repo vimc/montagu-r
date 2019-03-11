@@ -209,7 +209,7 @@ the full coverage data for all countries. And for some diseases, the historic ef
 in a country that is not required for estimates as present, may have relevance in their model to 
 countries that are required. 
 
-For those cases, where all countries are required, the following optional argument can be used:
+For those cases, where all countries are required, the optional `all_countries` argument can be used as follows:
 
 ```{r}
 cov_all <- montagu::montagu_coverage_data("CDA-Razavi", "201710gavi-5", "hepb-bd-routine-with", all_countries = TRUE)
