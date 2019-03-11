@@ -14,7 +14,7 @@ montagu_model_run_parameter_set_upload(modelling_group_id, touchstone_id,
 
 \item{disease_id}{The id of the disease associated with this model}
 
-\item{data}{a data frame with a column `run_id`, and other columns for each 
+\item{data}{a data frame with a column `run_id`, and other columns for each
 parameter that will be varied for each run.}
 
 \item{location}{The montagu server to connect to.}

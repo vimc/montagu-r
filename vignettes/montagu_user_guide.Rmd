@@ -1,7 +1,7 @@
 ---
 title: "Montagu API from R"
 author: "VIMC Technical Team"
-date: "2019-03-08"
+date: "2019-03-11"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Montagu API}
@@ -440,7 +440,7 @@ the full coverage data for all countries. And for some diseases, the historic ef
 in a country that is not required for estimates as present, may have relevance in their model to
 countries that are required.
 
-For those cases, where all countries are required, the `all_countries` optional argument can be used:
+For those cases, where all countries are required, the optional `all_countries` argument can be used as follows:
 
 
 ```r
@@ -459,6 +459,187 @@ length(unique(cov_not$country))
 
 ```
 ## [1] 19
+```
+
+## Burden Estimate Sets
+
+The burden estimate set defines the results of the models, which modelling groups submit back to Montagu.
+To view the burden estimate sets already uploaded, for a group, touchstone and scenario:-
+
+
+```r
+head(montagu::montagu_burden_estimate_sets("IC-Garske", "201710gavi-5", "yf-no-vaccination"))
+```
+
+```
+##       id              uploaded_on    uploaded_by               type
+## 37   687 2018-04-06T13:08:18.883Z katy.gaythorpe   central-averaged
+## 138  698 2018-05-30T09:27:32.341Z    tini.garske central-single-run
+## 1   1049 2019-02-15T11:48:00.515Z      test.user   central-averaged
+## 2   1050 2019-02-15T12:16:44.479Z      test.user         stochastic
+## 4   1051 2019-02-15T12:49:19.553Z      test.user   central-averaged
+## 5   1052 2019-02-15T15:36:46.370Z      test.user   central-averaged
+##                                                                  details
+## 37  Averaged over posterior predictive distribution for model parameters
+## 138                                                                    x
+## 1                                          Mean over all stochastic runs
+## 2                                                                Details
+## 4                                                                Details
+## 5                                                                Details
+##       status
+## 37  complete
+## 138    empty
+## 1      empty
+## 2      empty
+## 4    invalid
+## 5    invalid
+```
+
+If we know the burden estimate set id, we can also get a list of information about a burden estimate set with:
+
+
+```r
+montagu::montagu_burden_estimate_set_info("IC-Garske", "201710gavi-5", "yf-no-vaccination", 687)
+```
+
+```
+## $id
+## [1] 687
+##
+## $uploaded_on
+## [1] "2018-04-06T13:08:18.883Z"
+##
+## $uploaded_by
+## [1] "katy.gaythorpe"
+##
+## $type
+## [1] "central-averaged"
+##
+## $details
+## [1] "Averaged over posterior predictive distribution for model parameters"
+##
+## $status
+## [1] "complete"
+```
+
+If there are any reported problems with a burden estimate set, we can examine those with
+
+
+```r
+montagu::montagu_burden_estimate_set_problems("IC-Garske", "201710gavi-5", "yf-no-vaccination", 687)
+```
+
+```
+## list()
+```
+
+and we can retrieve the data for the burden estimate set with:
+
+
+```r
+data <- montagu::montagu_burden_estimate_set_data("IC-Garske", "201710gavi-5", "yf-no-vaccination", 687)
+head(data)
+```
+
+```
+##   disease year age country             country_name cohort_size
+## 1      YF 2000   0     AGO                   Angola      700752
+## 2      YF 2000   0     BDI                  Burundi      240741
+## 3      YF 2000   0     BEN                    Benin      262535
+## 4      YF 2000   0     BFA             Burkina Faso      479329
+## 5      YF 2000   0     CAF Central African Republic      134101
+## 6      YF 2000   0     CIV            Cote d'Ivoire      621898
+##         cases        dalys       deaths
+## 1  318.439060   8546.53100  149.6663700
+## 2    1.367271     36.17757    0.6426176
+## 3  391.006130  10355.80300  183.7728900
+## 4  886.209960  22402.71700  416.5186800
+## 5  131.855550   3089.01600   61.9721070
+## 6 4620.652300 106431.76000 2171.7068000
+```
+
+### Creating a new burden estimate set
+
+A new burden estimate set can be created as follows:-
+
+```r
+bsid <- montagu::montagu_burden_estimate_set_create(
+    "IC-Garske", "201710gavi-5", "yf-no-vaccination", "central-averaged",
+    model_run_parameter_set = NULL, details = "Details about model")
+```
+
+The fourth parameter, the type, is either:
+* `central-averaged` - for a central estimate that is calculated by the average of a number of runs
+* `central-single-run` - for a stand-alone central estimate run.
+* `stochastic` - for a run that is part of a stochastic ensemble.
+
+For central estimates, the `model_run_parameter_set` can be ignored, or set to NULL as shown here,
+but it should not have a non-null value. For stochastic estimates, it must be set to a valid
+model run parameter set - see the section below on stochastic runs.
+
+The result of the burden estimate set creation is the id of the newly created burden estimate set,
+which must be given when we later upload results.
+
+### Uploading data
+
+Suppose we have now populated the appropriate burden estimate template with results, and we want
+to upload it. If `results` is our completed template, then the simplest upload function call is:-
+
+```r
+montagu::montagu_burden_estimate_set_upload(
+    "IC-Garske", "201710gavi-5", "yf-routine-gavi", bsid, results)
+```
+
+This will upload the completed data, and close the burden estimate set.
+
+### Plotting previous burden estimate sets
+
+One further function call useful for plotting, allows retrieving a particular burden outcome
+from a burden estimate set, summed across all countries, and dis-aggregated by either age or by year.
+The result will be a sequence of sets of (x,y) points, suitable for straightforward plotting. For
+example:
+
+
+```r
+data <- montagu::montagu_burden_estimate_set_outcome_data("IC-Garske", "201710gavi-5",
+         "yf-no-vaccination", 687, "cases", group_by = "age")
+head(data)
+```
+
+```
+##   age    x        y
+## 1   0 2000 21955.19
+## 2   0 2001 22429.77
+## 3   0 2002 22904.21
+## 4   0 2003 23388.83
+## 5   0 2004 23899.00
+## 6   0 2005 24444.64
+```
+
+```r
+plot(data$x[data$age==20], data$y[data$age==20], xlab="year", ylab="cases", main="For age 20")
+```
+
+Or to dis-aggregate by year:-
+
+
+```r
+data <- montagu::montagu_burden_estimate_set_outcome_data("IC-Garske", "201710gavi-5",
+         "yf-no-vaccination", 687, "cases", group_by = "year")
+head(data)
+```
+
+```
+##       year x        y
+## 20001 2000 0 21955.19
+## 20002 2000 1 20183.78
+## 20003 2000 2 18625.01
+## 20004 2000 3 17217.85
+## 20005 2000 4 15857.58
+## 20006 2000 5 14775.94
+```
+```r
+plot(data$x[data$year==2040], data$y[data$year==2040], xlab="age", ylab="cases", main="For year 2040")
 ```
 
 ## Stochastic Runs
@@ -487,6 +668,8 @@ The model run parameter set has a column for `run_id`, and another column for ea
 being varied. For example:
 
 
+
+
 ```r
 params <- data.frame(run_id = 1:5, param_1 = sample(5), param_2 = sample(5))
 params
@@ -494,11 +677,11 @@ params
 
 ```
 ##   run_id param_1 param_2
-## 1      1       1       4
-## 2      2       5       1
-## 3      3       3       2
-## 4      4       4       3
-## 5      5       2       5
+## 1      1       4       1
+## 2      2       5       2
+## 3      3       3       4
+## 4      4       2       3
+## 5      5       1       5
 ```
 
 This can then be uploaded as follows:-
@@ -509,9 +692,13 @@ id <- montagu::montagu_model_run_parameter_set_upload(
 ```
 
 and the id of the newly created parameter set will be returned. For stochastic data, we will
-need to supply this id when creating the associated burden estimate set.
+need to supply this id when creating the associated stochastic burden estimate set:-
 
-#TODO - add burden estimate set example here in i2625
+```r
+bsid <- montagu::montagu_burden_estimate_set_create(
+    "IC-Garske", "201710gavi-5", "yf-no-vaccination",
+    "stochastic", id, "Stochastic runs")
+```
 
 We can also list the existing model run parameter sets with:-
 
@@ -522,12 +709,12 @@ head(montagu::montagu_model_run_parameter_sets("IC-Garske", "201710gavi-5"))
 
 ```
 ##    id model uploaded_by              uploaded_on disease
-## 1 102  YFIC   test.user 2019-03-08T12:09:00.549Z      YF
-## 2 101  YFIC   test.user 2019-03-08T12:09:00.479Z      YF
-## 3 100  YFIC   test.user 2019-03-08T12:08:46.292Z      YF
-## 4  99  YFIC   test.user 2019-03-08T12:08:46.213Z      YF
-## 5  98  YFIC   test.user 2019-03-08T12:05:21.724Z      YF
-## 6  97  YFIC   test.user 2019-03-08T12:00:27.315Z      YF
+## 1 122  YFIC   test.user 2019-03-11T15:07:19.678Z      YF
+## 2 121  YFIC   test.user 2019-03-11T15:07:19.574Z      YF
+## 3 120  YFIC   test.user 2019-03-11T14:34:17.042Z      YF
+## 4 119  YFIC   test.user 2019-03-11T14:34:16.916Z      YF
+## 5 118  YFIC   test.user 2019-03-11T14:23:15.276Z      YF
+## 6 117  YFIC   test.user 2019-03-11T14:23:15.156Z      YF
 ```
 
 or for a list of information about a single parameter set:

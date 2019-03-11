@@ -28,7 +28,7 @@ montagu::montagu_server_global_default_set(
 ```
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(error = FALSE)
+knitr::opts_chunk$set(error = FALSE, fig.path = "figure/montagu_user_guide-")
 options(montagu.username = "test.user@imperial.ac.uk",
         montagu.password = "password")
 montagu::montagu_server_global_default_set(
@@ -209,13 +209,103 @@ the full coverage data for all countries. And for some diseases, the historic ef
 in a country that is not required for estimates as present, may have relevance in their model to 
 countries that are required. 
 
-For those cases, where all countries are required, the `all_countries` optional argument can be used:
+For those cases, where all countries are required, the optional `all_countries` argument can be used as follows:
 
 ```{r}
 cov_all <- montagu::montagu_coverage_data("CDA-Razavi", "201710gavi-5", "hepb-bd-routine-with", all_countries = TRUE)
 cov_not <- montagu::montagu_coverage_data("CDA-Razavi", "201710gavi-5", "hepb-bd-routine-with", all_countries = FALSE)
 length(unique(cov_all$country))
 length(unique(cov_not$country))
+```
+
+## Burden Estimate Sets
+
+The burden estimate set defines the results of the models, which modelling groups submit back to Montagu.
+To view the burden estimate sets already uploaded, for a group, touchstone and scenario:-
+
+```{r}
+head(montagu::montagu_burden_estimate_sets("IC-Garske", "201710gavi-5", "yf-no-vaccination"))
+```
+
+If we know the burden estimate set id, we can also get a list of information about a burden estimate set with:
+
+```{r}
+montagu::montagu_burden_estimate_set_info("IC-Garske", "201710gavi-5", "yf-no-vaccination", 687)
+```
+
+If there are any reported problems with a burden estimate set, we can examine those with
+
+```{r}
+montagu::montagu_burden_estimate_set_problems("IC-Garske", "201710gavi-5", "yf-no-vaccination", 687)
+```
+
+and we can retrieve the data for the burden estimate set with:
+
+```{r}
+data <- montagu::montagu_burden_estimate_set_data("IC-Garske", "201710gavi-5", "yf-no-vaccination", 687)
+head(data)
+```
+
+### Creating a new burden estimate set
+
+A new burden estimate set can be created as follows:-
+
+```r
+bsid <- montagu::montagu_burden_estimate_set_create(
+    "IC-Garske", "201710gavi-5", "yf-no-vaccination", "central-averaged",
+    model_run_parameter_set = NULL, details = "Details about model")
+```
+
+The fourth parameter, the type, is either:
+* `central-averaged` - for a central estimate that is calculated by the average of a number of runs
+* `central-single-run` - for a stand-alone central estimate run.
+* `stochastic` - for a run that is part of a stochastic ensemble.
+
+For central estimates, the `model_run_parameter_set` can be ignored, or set to NULL as shown here,
+but it should not have a non-null value. For stochastic estimates, it must be set to a valid
+model run parameter set - see the section below on stochastic runs.
+
+The result of the burden estimate set creation is the id of the newly created burden estimate set,
+which must be given when we later upload results.
+
+### Uploading data
+
+Suppose we have now populated the appropriate burden estimate template with results, and we want 
+to upload it. If `results` is our completed template, then the simplest upload function call is:-
+
+```r
+montagu::montagu_burden_estimate_set_upload(
+    "IC-Garske", "201710gavi-5", "yf-routine-gavi", bsid, results)
+```
+
+This will upload the completed data, and close the burden estimate set.
+
+### Plotting previous burden estimate sets
+
+One further function call useful for plotting, allows retrieving a particular burden outcome
+from a burden estimate set, summed across all countries, and dis-aggregated by either age or by year.
+The result will be a sequence of sets of (x,y) points, suitable for straightforward plotting. For
+example:
+
+```{r}
+data <- montagu::montagu_burden_estimate_set_outcome_data("IC-Garske", "201710gavi-5", 
+         "yf-no-vaccination", 687, "cases", group_by = "age")
+head(data)
+```
+
+```r
+plot(data$x[data$age==20], data$y[data$age==20], xlab="year", ylab="cases", main="For age 20")
+```
+
+Or to dis-aggregate by year:-
+
+```{r}
+data <- montagu::montagu_burden_estimate_set_outcome_data("IC-Garske", "201710gavi-5", 
+         "yf-no-vaccination", 687, "cases", group_by = "year")
+head(data)
+```
+```r
+plot(data$x[data$year==2040], data$y[data$year==2040], xlab="age", ylab="cases", main="For year 2040")
 ```
 
 ## Stochastic Runs
@@ -243,6 +333,10 @@ parameters really does capture the significant behaviour of the model.
 The model run parameter set has a column for `run_id`, and another column for each parameter
 being varied. For example:
 
+```{r include = FALSE}
+set.seed(12345)
+```
+
 ```{r}
 params <- data.frame(run_id = 1:5, param_1 = sample(5), param_2 = sample(5))
 params
@@ -256,9 +350,13 @@ id <- montagu::montagu_model_run_parameter_set_upload(
 ```
 
 and the id of the newly created parameter set will be returned. For stochastic data, we will
-need to supply this id when creating the associated burden estimate set.
+need to supply this id when creating the associated stochastic burden estimate set:-
 
-#TODO - add burden estimate set example here in i2625
+```r
+bsid <- montagu::montagu_burden_estimate_set_create(
+    "IC-Garske", "201710gavi-5", "yf-no-vaccination", 
+    "stochastic", id, "Stochastic runs")
+```
 
 We can also list the existing model run parameter sets with:-
 

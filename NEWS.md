@@ -1,3 +1,7 @@
+## 0.3.6
+
+* Add support for burden estimate set endpoints (VIMC-2625)
+
 ## 0.3.5
 
 * Add support for model run parameter sets (VIMC-2634)

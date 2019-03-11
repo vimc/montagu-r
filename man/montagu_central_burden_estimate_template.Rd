@@ -25,6 +25,6 @@ A data frame with columns disease, year, age, country, and
 The burden estimate set is the list of burden estimates for a particular
 scenario for a touchstone. Montagu provides csv templates including rows for
 all the countries, years and ages, and columns for all the burden outcomes
-expected. These templates can then be filled in by the modelling groups, 
+expected. These templates can then be filled in by the modelling groups,
 and uploaded to Montagu as their results submission.
 }
