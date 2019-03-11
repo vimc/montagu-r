@@ -333,6 +333,10 @@ parameters really does capture the significant behaviour of the model.
 The model run parameter set has a column for `run_id`, and another column for each parameter
 being varied. For example:
 
+```{r include = FALSE}
+set.seed(12345)
+```
+
 ```{r}
 params <- data.frame(run_id = 1:5, param_1 = sample(5), param_2 = sample(5))
 params
