@@ -5,8 +5,8 @@ helper_touchstones <- function(modelling_group_id, location = NULL) {
 }
 ##' Touchstones are created by the VIMC management. The touchstone id associates
 ##' a particular call for burden estimates, with the input data (coverage and
-##' demography) required to produce those estimates, and with the estimates that
-##' the modelling groups provide. Usually,
+##' demography) required to produce those estimates, and with the results that
+##' the modelling groups provide. A touchstone has a base name, and a version.
 ##' @title Retrieve touchstones a modelling group is responsible for.
 ##' @param location The montagu server to connect to.
 ##' @param modelling_group_id id of the modelling group.
@@ -24,8 +24,9 @@ montagu_touchstones <- function(modelling_group_id, location = NULL) {
 ##' addressed with a new version of the existing touchstone. When interacting
 ##' with Montagu, a touchstone_id will consist of a basename, and a version.
 ##' @title Retrieve list of all versions of a given touchstone.
-##' @param touchstone_name Optional base name of the touchstone to filter. (ie, no version suffix)
-##' @param require_open Only include open touchstones if set to true.
+##' @param touchstone_name Optional base name of the touchstone to filter. 
+##' (ie, no version suffix)
+##' @param require_open If true, include only open touchstones
 ##' @inheritParams montagu_touchstones
 ##' @return Data frame of touchstone id, name, version, description and status
 ##' @export
