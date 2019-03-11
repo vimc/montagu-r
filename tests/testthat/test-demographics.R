@@ -45,7 +45,7 @@ test_that("download demographic data - gendered tests", {
   for (g in c("male", "female")) {
     expect_error(montagu_demographic_data("cbr", "201804rfp-1",
                gender_code = g, location = location),
-    sprintf(paste0("The demographic type 'cbr' is not gendered, so ",
+    sprintf(paste0("Type 'cbr' is non-gendered and ",
            "cannot be filtered by '%s'"), g))
   }
 

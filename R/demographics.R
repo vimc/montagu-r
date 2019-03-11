@@ -109,6 +109,10 @@ montagu_demographic_data <- function(type_code, touchstone_id,
     assert_scalar_character(gender_code)
   }
   
+  if (is.null(gender_code)) {
+    gender_code <- "both"
+  }
+  
   if (!is.null(source_code)) {
     assert_scalar_character(source_code)
   }
@@ -156,7 +160,7 @@ montagu_demographic_data <- function(type_code, touchstone_id,
       }
     }
 
-    format <- if (wide) "wide" else NULL
+    format <- if (wide) "wide" else "long"
     dat <- montagu_demographics_download(touchstone_id, source_code, type_code,
                                          gender_code, format, NULL, location)
 
