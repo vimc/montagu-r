@@ -43,17 +43,9 @@ test_that("Burden estimate sets - incorrect scenario", {
 
 test_that("Burden estimate set info - incorrect group", {
   location <- montagu_test_server()
-  # This fails - see i2714
-  #expect_error(montagu_burden_estimate_set_info(
-  #  "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
-  #  paste0("You do not have sufficient permissions ",
-  #         "to access this resource. Missing these permissions: ",
-  #         "modelling-group:ZZZIC-Garske/estimates.read"))
-  
-  # When i2714 is fixed, the following will fail!
   expect_error(montagu_burden_estimate_set_info(
     "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
-    "Unknown burden-estimate-set with id '10'")
+    "Unknown modelling-group with id 'ZZZIC-Garske'")
 })
 
 test_that("Burden estimate set info - incorrect touchstone", {
@@ -80,18 +72,10 @@ test_that("Burden estimate set info - incorrect estimate set id", {
 ### BURDEN ESTIMATE SET - GET DATA
 
 test_that("Burden estimate set data - incorrect group", {
-  # This fails - see i2714
   location <- montagu_test_server()
-  #expect_error(montagu_burden_estimate_set_data(
-  #  "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
-  #  paste0("You do not have sufficient permissions ",
-  #         "to access this resource. Missing these permissions: ",
-  #         "modelling-group:ZZZIC-Garske/estimates.read"))
-  
-  # When i2714 is fixed, the following will fail!
   expect_error(montagu_burden_estimate_set_data(
     "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
-    "Unknown burden-estimate-set with id '10'")
+    "Unknown modelling-group with id 'ZZZIC-Garske'")
 })
 
 test_that("Burden estimate set data - incorrect touchstone", {
@@ -102,16 +86,10 @@ test_that("Burden estimate set data - incorrect touchstone", {
 })
 
 test_that("Burden estimate set data - incorrect scenario", {
-  # This test fails - i2714
   location <- montagu_test_server()
-  #expect_error(montagu_burden_estimate_set_data(
-  #  "IC-Garske", "201710gavi-5", "ZZZyf-no-vaccination", 10, location),
-  #  "Unknown scenario-description with id 'ZZZyf-no-vaccination")
-  
-  # When i2714 is fixed, this test will fail.
   expect_error(montagu_burden_estimate_set_data(
     "IC-Garske", "201710gavi-5", "ZZZyf-no-vaccination", 10, location),
-    "Unknown burden-estimate-set with id '10'")
+    "Unknown scenario-description with id 'ZZZyf-no-vaccination'")
 })
 
 test_that("Burden estimate set info - incorrect estimate set id", {
@@ -200,17 +178,9 @@ test_that("Burden estimate set problems", {
 
 test_that("Burden estimate set problems - incorrect group", {
   location <- montagu_test_server()
-  # This fails - i2714
-  #expect_error(montagu_burden_estimate_set_problems(
-  #  "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
-  #  paste0("You do not have sufficient permissions ",
-  #         "to access this resource. Missing these permissions: ",
-  #         "modelling-group:ZZZIC-Garske/estimates.read"))
-  
-  # THis will fail when i2714 is fixed
   expect_error(montagu_burden_estimate_set_problems(
     "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
-    "Unknown burden-estimate-set with id '10'")
+    "Unknown modelling-group with id 'ZZZIC-Garske'")
 })
 
 test_that("Burden estimate set problems - incorrect touchstone", {
