@@ -415,6 +415,12 @@ test_that("Create Burden Estimate - with keep_open=TRUE and close", {
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", bsid, location)
   expect_is(dclose, "character")
   expect_equal(dclose, "OK")
+  
+  # Close again - test for error.
+  
+  expect_error(montagu_burden_estimate_set_close(
+    "IC-Garske", "201710gavi-5", "yf-no-vaccination", bsid, location),
+    "This burden estimate set has already been closed.")
 
 })
 
