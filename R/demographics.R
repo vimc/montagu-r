@@ -162,7 +162,8 @@ montagu_demographic_data <- function(type_code, touchstone_id,
 
     format <- if (wide) "wide" else "long"
     dat <- montagu_demographics_download(touchstone_id, source_code, type_code,
-                                         gender_code, format, NULL, location)
+                                         gender_code, format, 
+                                         dest = NULL, location)
 
     cache$set(hash, key, "demographic_data_meta")
     cache$set(hash, dat, "demographic_data")
