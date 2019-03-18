@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -e
+
+HERE=$(dirname $0)
+. $HERE/common
+PACKAGE_ROOT=$(realpath $HERE/..)
+
+DOCS_DIR=$PACKAGE_ROOT/docs
+
+
+## Same pattern as for orderly
+if [ $GIT_BRANCH = "master" ]; then
+    USER_UID=`id -u`
+    USER_GID=`id -g`
+    USER_STR="${USER_UID}:${USER_GID}"
+    mkdir -p $DOCS_DIR
+    docker run --rm \
+           --user "$USER_STR" \
+           -v $DOCS_DIR:/montagu/docs \
+           -w /montagu \
+           $APP_DOCKER_COMMIT_TAG \
+           Rscript -e 'pkgdown::build_site(document = FALSE)'
+
+    REMOTE_URL=$(git config --get remote.origin.url | \
+                        sed -s 's;https://github.com/;git@github.com:;')
+    rm -rf ${DOCS_DIR}/.git
+    git init ${DOCS_DIR}
+    git -C ${DOCS_DIR} checkout --orphan gh-pages
+    git -C ${DOCS_DIR} add .
+    git -C ${DOCS_DIR} commit --no-verify -m "Update docs for version ${SHA}"
+    git -C ${DOCS_DIR} remote add origin -m "gh-pages" ${REMOTE_URL}
+    git -C ${DOCS_DIR} push --force -u origin gh-pages
+fi
