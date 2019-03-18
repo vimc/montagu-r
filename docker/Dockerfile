@@ -25,6 +25,7 @@ RUN install_packages --repo "https://vimc.github.io/drat" \
     openssl \
     orderly \
     orderly.server \
+    pkgdown \
     progress \
     rmarkdown \
     storr \
