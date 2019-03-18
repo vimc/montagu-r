@@ -4,6 +4,7 @@ RUN apt-get update && apt-get -y install \
     git \
     libcurl4-openssl-dev \
     libssl-dev \
+    libxml2-dev \
     qpdf \
     texinfo \
     wget
@@ -25,6 +26,7 @@ RUN install_packages --repo "https://vimc.github.io/drat" \
     openssl \
     orderly \
     orderly.server \
+    pkgdown \
     progress \
     rmarkdown \
     storr \
