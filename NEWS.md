@@ -1,3 +1,7 @@
+## 0.3.7
+
+* Review support of demographic endpoints (VIMC-2723)
+
 ## 0.3.6
 
 * Add support for burden estimate set endpoints (VIMC-2625)
