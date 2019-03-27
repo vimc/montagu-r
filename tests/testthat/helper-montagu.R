@@ -9,16 +9,16 @@ montagu_test_server <- function(username = NULL, password = NULL) {
     port <- Sys.getenv("MONTAGU_TEST_PORT", "10443")
     if (is.null(username)) {
       username <- Sys.getenv("MONTAGU_TEST_USERNAME", "")
-    }
-    if (!nzchar(username)) {
-      testthat::skip("MONTAGU_TEST_USERNAME is not set")
+      if (!nzchar(username)) {
+        testthat::skip("MONTAGU_TEST_USERNAME is not set")
+      }
     }
 
     if (is.null(password)) {
       password <- Sys.getenv("MONTAGU_TEST_PASSWORD", "")
-    }
-    if (!nzchar(password)) {
-      testthat::skip("MONTAGU_TEST_PASSWORD is not set")
+      if (!nzchar(password)) {
+        testthat::skip("MONTAGU_TEST_PASSWORD is not set")
+      }
     }
 
     server <- montagu_server("testing", host, as.integer(port),

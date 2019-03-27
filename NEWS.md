@@ -1,6 +1,6 @@
 ## 0.3.8
 
-* Add support for touchstone endpoints (VIMC-2722)
+* More support for touchstone endpoints (VIMC-2722)
 
 ## 0.3.7
 

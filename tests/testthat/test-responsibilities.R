@@ -407,6 +407,10 @@ test_that("download central burden_estimate_template", {
   expect_is(dat, "data.frame")
   expect_equal(ncol(dat), 9)
   expect_gt(nrow(dat),1)
+  countries <- sort(montagu_expectation_countries("IC-Garske", "201710gavi-5", 30,
+                                                  location)$id)
+  
+  expect_equal(countries, sort(unique(dat$country)))
 })
 
 test_that("download central burden_estimate_template - wrong modelling group", {
@@ -437,6 +441,14 @@ test_that("download stochsatic burden_estimate_template", {
   expect_is(dat, "data.frame")
   expect_equal(ncol(dat), 10)
   expect_gt(nrow(dat),1)
+  
+  countries <- sort(montagu_expectation_countries("IC-Garske", "201710gavi-5", 30,
+                                             location)$id)
+  
+  expect_equal(countries, sort(unique(dat$country)))
+  
+  
+  
 })
 
 test_that("download stochastic burden_estimate_template - wrong group", {

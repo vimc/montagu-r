@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -e
+
+HERE=$(dirname $0)
+. $HERE/common
+
+docker run --rm $APP_DOCKER_COMMIT_TAG test_package

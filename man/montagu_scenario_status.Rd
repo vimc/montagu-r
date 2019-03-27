@@ -22,7 +22,7 @@ then all responsibility sets associated with the touchstone are returned.}
 A scenario describes the vaccination conditions for a particular run of a
 model. Typical examples include a scenario where there is no vaccination,
 a scenario where there is routine (background) vaccination, or a scenario
-in which there are targetted campaigns to vaccinate particularly ages. 
+in which there are targetted campaigns to vaccinate particularly ages.
 Depending on disease, modelling groups may be asked to model various
 scenarios, for a particular touchstone.
 }

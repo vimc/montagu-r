@@ -21,5 +21,5 @@ A vector of outcome names
 \description{
 The expectations, for a modelling group for a particular touchstone, indicate the
 range of chronological years, ages and countries for which burden estimates
-are expected, and which burden outcomes are required.
+are expected, and what burden outcomes are required.
 }

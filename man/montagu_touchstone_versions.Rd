@@ -14,7 +14,7 @@ then all touchstones are returned.}
 \item{touchstone_name}{Optional base name of the touchstone to filter. 
 (ie, no version suffix)}
 
-\item{require_open}{Only include open touchstones if set to true.}
+\item{require_open}{If true, include only open touchstones}
 
 \item{location}{The montagu server to connect to.}
 }
@@ -22,8 +22,7 @@ then all touchstones are returned.}
 Data frame of touchstone id, name, version, description and status
 }
 \description{
-Touchstones are created by the VIMC management. The touchstone id associates
-a particular call for burden estimates, with the input data (coverage and
-demography) required to produce those estimates, and with the estimates that
-the modelling groups provide. Usually,
+Touchstones are versioned; errata in the input or coverage data may be
+addressed with a new version of the existing touchstone. When interacting
+with Montagu, a touchstone_id will consist of a basename, and a version.
 }

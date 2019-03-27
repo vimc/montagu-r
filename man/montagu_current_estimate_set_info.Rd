@@ -19,7 +19,7 @@ then all responsibility sets associated with the touchstone are returned.}
 A list of fields about the current estimate set
 }
 \description{
-Groups upload estimate sets to Montagu. The most recent set of results 
+Groups upload estimate sets to Montagu. The most recent set of results
 uploaded by a group for a given scenario can be queried for its status,
 or retrieved.
 }

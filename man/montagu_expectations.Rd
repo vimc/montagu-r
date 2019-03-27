@@ -18,6 +18,6 @@ A data frame of information about the expectation
 \description{
 The expectations, for a modelling group for a particular touchstone, indicate the
 range of chronological years, ages and countries for which burden estimates
-are expected. These are also per-disease, so groups that model multiple 
+are expected. These are also per-disease, so groups that model multiple
 diseases will see multiple rows of expectations.
 }

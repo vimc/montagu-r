@@ -39,7 +39,7 @@ montagu::montagu_touchstones_list()
 On the first request you may be prompted for a password
 
 ```{r}
-montagu::montagu_touchstones_list()
+montagu::montagu_touchstones()
 ```
 
 ### Demographic data
