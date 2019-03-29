@@ -1,3 +1,7 @@
+## 0.3.8
+
+* Fix passing through the `stop_on_timeout` parameter (VIMC-2816)
+
 ## 0.3.7
 
 * Review support of demographic endpoints (VIMC-2723)
