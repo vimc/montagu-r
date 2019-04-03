@@ -17,6 +17,15 @@ test_that("Burden estimate sets", {
   expect_equal(ncol(dat), 6)
 })
 
+test_that("Burden estimate sets info - no permission", {
+  location <- montagu_test_server("k.gaythorpe@imperial.ac.uk", "password")
+  expect_error(montagu_burden_estimate_sets(
+    "PHE-Vynnycky", "201710gavi-5", "rubella-rcv1-gavi", location),
+    paste0("You do not have sufficient permissions to access this resource. ",
+           "Missing these permissions: modelling-group:PHE-Vynnycky/",
+           "estimates.read"))
+})
+
 test_that("Burden estimate sets info - incorrect group", {
   location <- montagu_test_server()
   expect_error(montagu_burden_estimate_sets(
@@ -36,10 +45,31 @@ test_that("Burden estimate sets - incorrect scenario", {
   expect_error(montagu_burden_estimate_sets(
     "IC-Garske", "201710gavi-5", "ZZZyf-no-vaccination", location),
     "Unknown scenario-description with id 'ZZZyf-no-vaccination")
+  
 })
 
 ###############################################################################
 ### INDIVIDUAL BURDEN ESTIMATE SET
+
+test_that("Burden estimate set info", {
+  location <- montagu_test_server()
+  dat <- montagu_burden_estimate_set_info(
+    "IC-Garske", "201710gavi-5", "yf-no-vaccination", 687, location)
+  expect_is(dat, "list")
+  expect_equal(dat$id, 687)
+  expect_false(is.null(dat$uploaded_on))
+  expect_false(is.null(dat$uploaded_by))
+  expect_false(is.null(dat$type))
+  expect_false(is.null(dat$status))
+})
+
+test_that("Burden estimate set info - incorrect permissions", {
+  location <- montagu_test_server("k.gaythorpe@imperial.ac.uk", "password")
+  expect_error(montagu_burden_estimate_set_info(
+    "PHE-Vynnycky", "201710gavi-5", "rubella-rcv1-gavi", 10, location),
+    paste0("You do not have sufficient permissions to access this resource. ",
+           "Missing these permissions: modelling-group:PHE-Vynnycky/estimates.read"))
+})
 
 test_that("Burden estimate set info - incorrect group", {
   location <- montagu_test_server()
@@ -71,6 +101,14 @@ test_that("Burden estimate set info - incorrect estimate set id", {
 
 ### BURDEN ESTIMATE SET - GET DATA
 
+test_that("Burden estimate set data - incorrect permissions", {
+  location <- montagu_test_server("k.gaythorpe@imperial.ac.uk", "password")
+  expect_error(montagu_burden_estimate_set_data(
+    "PHE-Vynnycky", "201710gavi-5", "rubella-rcv1-gavi", 10, location),
+    paste0("You do not have sufficient permissions to access this resource. ",
+           "Missing these permissions: modelling-group:PHE-Vynnycky/estimates.read"))
+})
+
 test_that("Burden estimate set data - incorrect group", {
   location <- montagu_test_server()
   expect_error(montagu_burden_estimate_set_data(
@@ -100,6 +138,15 @@ test_that("Burden estimate set info - incorrect estimate set id", {
 })
 
 ### BURDEN ESTIMATE SET - OUTCOME ENDPOINT
+
+test_that("Burden outcome estimate set data - incorrect permissions", {
+  location <- montagu_test_server("k.gaythorpe@imperial.ac.uk", "password")
+  expect_error(montagu_burden_estimate_set_outcome_data(
+    "PHE-Vynnycky", "201710gavi-5", "rubella-rcv1-gavi", 10,
+    "cases", group_by = "age", location),
+    paste0("You do not have sufficient permissions to access this resource. ",
+           "Missing these permissions: modelling-group:PHE-Vynnycky/estimates.read"))
+})
 
 test_that("Burden outcome estimate set data - incorrect group", {
   location <- montagu_test_server()
@@ -170,10 +217,17 @@ test_that("Burden outcome estimate set data - correct test", {
 
 test_that("Burden estimate set problems", {
   location <- montagu_test_server()
-
   dat <- montagu_burden_estimate_set_problems(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", 687, location)
   expect_is(dat, "list")
+})
+
+test_that("Burden estimate set problems - incorrect permissions", {
+  location <- montagu_test_server("mark.jit@lshtm.ac.uk", "password")
+  expect_error(montagu_burden_estimate_set_problems(
+    "IC-Garske", "201710gavi-5", "yf-no-vaccination", 687, location),
+    paste0("You do not have sufficient permissions to access this resource. ",
+           "Missing these permissions: modelling-group:IC-Garske/estimates.read"))
 })
 
 test_that("Burden estimate set problems - incorrect group", {
@@ -201,6 +255,9 @@ test_that("Burden estimate set problems - incorrect scenario", {
 ### Create Burden Estimate Set
 
 test_that("Create Burden Estimate - incorrect group", {
+  
+  # Could report different group here...
+  
   location <- montagu_test_server()
 
   expect_error(montagu_burden_estimate_set_create(
@@ -210,6 +267,18 @@ test_that("Create Burden Estimate - incorrect group", {
            "to access this resource. Missing these permissions: ",
            "modelling-group:ZZZIC-Garske/estimates.write"))
 })
+
+test_that("Create Burden Estimate Set - incorrect permissions", {
+  
+  location <- montagu_test_server("mark.jit@lshtm.ac.uk", "password")
+  expect_error(montagu_burden_estimate_set_create(
+    "IC-Garske", "201710gavi-5", "yf-no-vaccination", "stochastic",
+    10, "Details", location),
+    paste0("You do not have sufficient permissions ",
+           "to access this resource. Missing these permissions: ",
+           "modelling-group:IC-Garske/estimates.write"))
+})
+
 
 test_that("Create Burden Estimate - incorrect touchstone", {
   location <- montagu_test_server()
@@ -462,6 +531,15 @@ test_that("Close burden estimate set - incorrect group", {
     paste0("You do not have sufficient permissions ",
            "to access this resource. Missing these permissions: ",
            "modelling-group:ZZZIC-Garske/estimates.write"))
+})
+
+test_that("Close burden estimate set - incorrect permissions", {
+  location <- montagu_test_server("mark.jit@lshtm.ac.uk", "password")
+  expect_error(montagu_burden_estimate_set_close(
+    "IC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
+    paste0("You do not have sufficient permissions ",
+           "to access this resource. Missing these permissions: ",
+           "modelling-group:IC-Garske/estimates.write"))
 })
 
 test_that("Clear non-open set - incorrect touchstone", {
