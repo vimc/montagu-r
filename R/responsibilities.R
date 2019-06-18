@@ -71,7 +71,7 @@ montagu_touchstone_versions <- function(modelling_group_id = NULL,
 
 ################################################################################
 
-helper_get_touchstone <- function(modelling_group_id = NULL, 
+helper_get_touchstone <- function(modelling_group_id, 
                                   touchstone_id,
                                   location = NULL) {
   if (is.null(modelling_group_id)) {
@@ -90,13 +90,13 @@ helper_get_touchstone <- function(modelling_group_id = NULL,
 
 helper_get_responsibilities <- function(modelling_group_id, touchstone_id, 
                                         location) {
+  resps <- helper_get_touchstone(modelling_group_id, touchstone_id, location)
+  
   if (is.null(modelling_group_id)) {
-    resps <- helper_get_touchstone(NULL, touchstone_id, location)
     resps <- lapply(resps, "[[", "responsibilities")[[1]]
     
   } else {
-    resps <- helper_get_touchstone(modelling_group_id, touchstone_id,
-                                   location)$responsibilities
+    resps <-resps$responsibilities
   }
 }
 
@@ -122,7 +122,7 @@ helper_get_responsibility <- function(modelling_group_id, touchstone_id,
 ##' scenarios, for a particular touchstone.
 ##' @title Retrieve information about a scenario
 ##' @param modelling_group_id id of the modelling group. If omitted, or null, 
-##' then all responsibility sets associated with the touchstone are returned.
+##' then all scenarios associated with the touchstone are returned.
 ##' @param touchstone_id id of the touchstone (including version)
 ##' @param location The montagu server to connect to.
 ##' @return Data frame of scenario_id, description and disease.

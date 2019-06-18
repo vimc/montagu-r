@@ -35,6 +35,8 @@ montagu_coverage_info <- function(modelling_group, touchstone_id, scenario_id,
 ##' targeted towards a certain disease or people group for a certain time period.
 ##' @title Retrieve coverage data for a scenario, touchstone and modelling group.
 ##' @inheritParams montagu_coverage_info
+##' @param modelling_group id of modelling group; if omitted or NULL, then return coverage info for 
+##'                        all modelling groups.
 ##' @param format "wide" or "long" csv format. Long format contains a row per 
 ##'                year per country; wide format contains a row per country, 
 ##'                with year-specific columns for target population
@@ -43,20 +45,25 @@ montagu_coverage_info <- function(modelling_group, touchstone_id, scenario_id,
 ##'        for which burden estimates are required.
 ##' @return A data frame of the coverage data.
 ##' @export
-montagu_coverage_data <- function(modelling_group, touchstone_id,
+montagu_coverage_data <- function(modelling_group = NULL, touchstone_id,
                                   scenario_id, format = "long",
                                   all_countries = FALSE, location = NULL) {
-  assert_character(modelling_group)
-  assert_character(touchstone_id)
-  assert_character(scenario_id)
-  assert_logical(all_countries)
-  assert_character(format)
+  if (!is.null(modelling_group)) assert_scalar_character(modelling_group)
+  assert_scalar_character(touchstone_id)
+  assert_scalar_character(scenario_id)
+  assert_scalar_logical(all_countries)
+  assert_scalar_character(format)
+
   if (!format %in% c("long", "wide")) {
     stop(sprintf("Unrecognised format '%s'\n", format))
   }
 
-  path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/coverage/",
-                  modelling_group, touchstone_id, scenario_id)
+  if (!is.null(modelling_group)) {
+    path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/coverage/",
+                    modelling_group, touchstone_id, scenario_id)
+  } else {
+    path <- sprintf("/touchstones/%s/%s/coverage/", touchstone_id, scenario_id)
+  }
 
   query <- list()
   query$format <- format

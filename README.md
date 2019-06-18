@@ -50,7 +50,7 @@ Note that the package name is `montagu` but this repo is [`vimc/montagu-r`](http
 - [x] `/v1/touchstones/:touchstone-id/demographics/:source_code/:demographic-type-code/` (GET)
 - [ ] `/v1/touchstones/:touchstone-id/demographics/:source_code/:demographic-type-code/csv/` (GET)
 - [x] `/v1/touchstones/:touchstone-id/responsibilities/` (GET)
-- [ ] `/v1/touchstones/:touchstone-id/scenario-id/coverage/` (GET)
+- [x] `/v1/touchstones/:touchstone-id/scenario-id/coverage/` (GET)
 - [ ] `/v1/touchstones/:touchstone-id/scenarios/` (GET)
 - [ ] `/v1/touchstones/:touchstone-id/scenarios/:scenario-id/` (GET)
 - [ ] `/v1/users/` (GET)
