@@ -3,7 +3,8 @@ context("demographics")
 test_that("demographic list with invalid touchstone", {
   location <- montagu_location(montagu_test_server())
   expect_error(montagu_demographics_list("ZZZ201710gavi-5", location),
-    "Unknown touchstone-version with id 'ZZZ201710gavi-5'")
+    "Unknown touchstone-version with id 'ZZZ201710gavi-5'",
+    class = "montagu_api_error")
 })
 
 test_that("demographic list - working", {
@@ -28,11 +29,13 @@ test_that("download demographic data - something basic wrong", {
   location <- montagu_test_server()
   expect_error(montagu_demographic_data("cbr", "ZZZ201804rfp-1",
                                        location = location),
-               "Unknown touchstone-version with id 'ZZZ201804rfp-1'")
+               "Unknown touchstone-version with id 'ZZZ201804rfp-1'",
+               class = "montagu_api_error")
 
   expect_error(montagu_demographic_data("elf", "201804rfp-1",
                                         location = location),
-               "Unknown demographic-statistic-type with id 'elf'")
+               "Unknown demographic-statistic-type with id 'elf'",
+               class = "simpleError")
 
 })
 
@@ -54,17 +57,17 @@ test_that("download demographic data - gendered tests", {
             gender_code = 'both', location = location)
   expect_is(d1, "data.frame")
   expect_equal(nrow(d1), 150)
-  
+
   d1 <- montagu_demographic_data("tot_pop", "201804rfp-1",
                     gender_code = 'male', location = location)
   expect_is(d1, "data.frame")
   expect_equal(unique(d1$gender), "male")
-  
+
   d1 <- montagu_demographic_data("tot_pop", "201804rfp-1",
           gender_code = 'female', location = location)
   expect_is(d1, "data.frame")
   expect_equal(unique(d1$gender), "female")
-  
+
 
 })
 

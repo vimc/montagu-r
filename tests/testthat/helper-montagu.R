@@ -9,7 +9,7 @@ montagu_test_server <- function(username = NULL, password = NULL) {
 
   if (!("testing" %in% montagu_server_global_list())) {
     host <- Sys.getenv("MONTAGU_TEST_HOST", "support.montagu.dide.ic.ac.uk")
-    port <- Sys.getenv("MONTAGU_TEST_PORT", "10443")
+    port <- Sys.getenv("MONTAGU_TEST_PORT", "11443")
     if (is.null(username)) {
       username <- Sys.getenv("MONTAGU_TEST_USERNAME", "")
       if (!nzchar(username)) {
