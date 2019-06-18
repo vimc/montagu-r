@@ -14,6 +14,8 @@ then all responsibility sets associated with the touchstone are returned.}
 \item{touchstone_id}{id of the touchstone (including version)}
 
 \item{scenario_id}{id of the scenario}
+
+\item{location}{The montagu server to connect to.}
 }
 \value{
 "invalid", "complete", "valid", or "empty"

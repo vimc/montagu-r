@@ -14,6 +14,8 @@ then all responsibility sets associated with the touchstone are returned.}
 \item{touchstone_id}{id of the touchstone (including version)}
 
 \item{expectation_id}{Integer id of the expectation}
+
+\item{location}{The montagu server to connect to.}
 }
 \value{
 A data frame of country id and name, for all expected countries.

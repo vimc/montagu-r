@@ -124,6 +124,7 @@ helper_get_responsibility <- function(modelling_group_id, touchstone_id,
 ##' @param modelling_group_id id of the modelling group. If omitted, or null, 
 ##' then all responsibility sets associated with the touchstone are returned.
 ##' @param touchstone_id id of the touchstone (including version)
+##' @param location The montagu server to connect to.
 ##' @return Data frame of scenario_id, description and disease.
 ##' @export
 montagu_scenarios <- function(modelling_group_id = NULL, 

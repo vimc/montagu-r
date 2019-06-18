@@ -12,6 +12,8 @@ montagu_scenarios(modelling_group_id = NULL, touchstone_id,
 then all responsibility sets associated with the touchstone are returned.}
 
 \item{touchstone_id}{id of the touchstone (including version)}
+
+\item{location}{The montagu server to connect to.}
 }
 \value{
 Data frame of scenario_id, description and disease.
