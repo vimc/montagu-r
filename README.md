@@ -47,7 +47,7 @@ Note that the package name is `montagu` but this repo is [`vimc/montagu-r`](http
 - [ ] `/v1/set-cookies/` (GET)
 - [x] `/v1/touchstones/` (GET)
 - [x] `/v1/touchstones/:touchstone-id/demographics/` (GET)
-- [x] `/v1/touchstones/:touchstone-id/demographics/:source_code/:demographic-type-code/ (GET)
+- [x] `/v1/touchstones/:touchstone-id/demographics/:source_code/:demographic-type-code/` (GET)
 - [ ] `/v1/touchstones/:touchstone-id/demographics/:source_code/:demographic-type-code/csv/` (GET)
 - [x] `/v1/touchstones/:touchstone-id/responsibilities/` (GET)
 - [ ] `/v1/touchstones/:touchstone-id/scenario-id/coverage/` (GET)

@@ -33,7 +33,7 @@ options(montagu.username = "test.user@imperial.ac.uk",
         montagu.password = "password")
 montagu::montagu_server_global_default_set(
   montagu::montagu_server("uat", "support.montagu.dide.ic.ac.uk", 10443))
-montagu::montagu_touchstones_list()
+montagu::montagu_diseases()
 ```
 
 On the first request you may be prompted for a password

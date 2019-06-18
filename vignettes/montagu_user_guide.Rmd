@@ -1,7 +1,7 @@
 ---
 title: "Montagu API from R"
 author: "VIMC Technical Team"
-date: "2019-03-11"
+date: "2019-03-27"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Montagu API}
@@ -651,21 +651,21 @@ head(montagu::montagu_burden_estimate_sets("IC-Garske", "201710gavi-5", "yf-no-v
 ```
 ##       id              uploaded_on    uploaded_by               type
 ## 37   687 2018-04-06T13:08:18.883Z katy.gaythorpe   central-averaged
-## 153  698 2018-05-30T09:27:32.341Z    tini.garske central-single-run
+## 216  698 2018-05-30T09:27:32.341Z    tini.garske central-single-run
 ## 1   1049 2019-02-15T11:48:00.515Z      test.user   central-averaged
 ## 2   1050 2019-02-15T12:16:44.479Z      test.user         stochastic
 ## 4   1051 2019-02-15T12:49:19.553Z      test.user   central-averaged
 ## 5   1052 2019-02-15T15:36:46.370Z      test.user   central-averaged
 ##                                                                  details
 ## 37  Averaged over posterior predictive distribution for model parameters
-## 153                                                                    x
+## 216                                                                    x
 ## 1                                          Mean over all stochastic runs
 ## 2                                                                Details
 ## 4                                                                Details
 ## 5                                                                Details
 ##       status
 ## 37  complete
-## 153    empty
+## 216    empty
 ## 1      empty
 ## 2      empty
 ## 4    invalid
@@ -886,12 +886,12 @@ head(montagu::montagu_model_run_parameter_sets("IC-Garske", "201710gavi-5"))
 
 ```
 ##    id model uploaded_by              uploaded_on disease
-## 1 132  YFIC   test.user 2019-03-11T19:39:13.873Z      YF
-## 2 131  YFIC   test.user 2019-03-11T19:39:13.775Z      YF
-## 3 130  YFIC   test.user 2019-03-11T17:37:27.725Z      YF
-## 4 129  YFIC   test.user 2019-03-11T17:37:27.642Z      YF
-## 5 128  YFIC   test.user 2019-03-11T17:30:48.364Z      YF
-## 6 127  YFIC   test.user 2019-03-11T17:30:48.281Z      YF
+## 1 174  YFIC   test.user 2019-03-27T14:13:07.040Z      YF
+## 2 173  YFIC   test.user 2019-03-27T14:13:06.950Z      YF
+## 3 172  YFIC   test.user 2019-03-18T17:31:47.033Z      YF
+## 4 171  YFIC   test.user 2019-03-18T17:31:46.922Z      YF
+## 5 170  YFIC   test.user 2019-03-18T16:52:43.130Z      YF
+## 6 169  YFIC   test.user 2019-03-18T16:52:43.035Z      YF
 ```
 
 or for a list of information about a single parameter set:

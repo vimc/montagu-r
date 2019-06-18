@@ -4,6 +4,9 @@ montagu_test_reset <- function(clear = FALSE) {
 
 montagu_test_server <- function(username = NULL, password = NULL) {
   testthat::skip_on_travis()
+
+  montagu_test_reset()
+
   if (!("testing" %in% montagu_server_global_list())) {
     host <- Sys.getenv("MONTAGU_TEST_HOST", "support.montagu.dide.ic.ac.uk")
     port <- Sys.getenv("MONTAGU_TEST_PORT", "10443")

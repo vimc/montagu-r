@@ -1,7 +1,7 @@
 ---
 title: "Montagu API"
 author: "VIMC Technical Team"
-date: "2019-03-11"
+date: "2019-03-27"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Montagu API}
@@ -30,8 +30,149 @@ montagu::montagu_server_global_default_set(
 
 
 
+On the first request you may be prompted for a password
 
 
+```r
+montagu::montagu_touchstones()
+```
+
+```
+##                     name                                      description
+## 1             201710gavi                          October 2017 touchstone
+## 2        201810synthetic                October 2018 synthetic touchstone
+## 3             201310gavi SDF (Strategic Demand Forecast) Version 12, 2013
+## 4             201510gavi SDF (Strategic Demand Forecast) Version 12, 2015
+## 5   201210gavi-201607wue      legacy sdf6 - was Actual (WUENIC) metric-v6
+## 6  201210gavi-201303gavi          legacy sdf6 - was LTSG (SDF7) metric-v6
+## 7              201707wue                                 2017 July WUENIC
+## 8   201310gavi-201707wue        201310gavi-201707wue updated to 201707wue
+## 9   201510gavi-201707wue        201510gavi-201707wue updated to 201707wue
+## 10  201210gavi-201707wue        201210gavi-201707wue updated to 201707wue
+## 11             201607wue                                 2016 July WUENIC
+## 12            201708test                           201708test (version 1)
+## 13             201802uxe                           2018 Feb UX experiment
+## 14            201403gavi  SDF (Strategic Demand Forecast) Version 9, 2014
+## 15             201807wue                                 2018 July WUENIC
+## 16             201801rfp                    2018 Jan Request for Proposal
+## 17             201804rfp                  2018 April Request for Proposal
+## 18             201809hpv                        CHINA only HPV touchstone
+## 19             201810rfp                2018 October Request for Proposal
+## 20        201810original         October 2018 interim update touchstone 1
+## 21            201810gavi         October 2018 interim update touchstone 2
+## 22            201810high         October 2018 interim update touchstone 3
+## 23             201810low         October 2018 interim update touchstone 4
+## 24        201810bestcase         October 2018 interim update touchstone 5
+##                                                                      comment
+## 1                                                 Touchstone for 201710gavi.
+## 2                         Small scale model run with synthetic coverage sets
+## 3                           SDF (Strategic Demand Forecast) Version 12, 2013
+## 4                           SDF (Strategic Demand Forecast) Version 12, 2015
+## 5                                legacy sdf6 - was Actual (WUENIC) metric-v6
+## 6                                    legacy sdf6 - was LTSG (SDF7) metric-v6
+## 7                                                   For 2017 modified update
+## 8                                                            modified update
+## 9                                                            modified update
+## 10                                                           modified update
+## 11                                                  For 2016 modified update
+## 12                                                      201708test-pilot run
+## 13                                                   experimental touchstone
+## 14                           SDF (Strategic Demand Forecast) Version 9, 2014
+## 15                                                   For 2018 interim update
+## 16                                             2018 Jan Open Call touchstone
+## 17                 2018 April Open Call touchstone for PCV Rota Hib HPV HepB
+## 18                                         BMGF's HPV-China analysis request
+## 19 2018 October Open Call touchstone for Measles and MenA using Nigeria only
+## 20                                             Touchstone with original op16
+## 21                                             Touchstone with adjusted op16
+## 22                     Touchstone with 10% above 201810gavi routine coverage
+## 23                     Touchstone with 10% below 201810gavi routine coverage
+## 24                       Touchstone with BMGF best case coverage assumptions
+```
+
+### Demographic data
+
+List available demographic data (this is cached within a session)
 
 
+```r
+touchstone_id <- "201710gavi-5"
+montagu::montagu_demographics_list(touchstone_id)
+```
 
+```
+##              id                                             name gendered
+## 1       as_fert                Fertility: Age-specific fertility    FALSE
+## 2        births                    Fertility: Births (number of)    FALSE
+## 3     qq_births     Fertility: Births (number of) - quinquennial    FALSE
+## 4     as_births               Fertility: Births by age of mother    FALSE
+## 5           cbr                Fertility: Crude birth rate (CBR)    FALSE
+## 6      birth_mf                    Fertility: Sex-ratio at birth    FALSE
+## 7      fert_tot                       Fertility: Total Fertility    FALSE
+## 8  net_mig_rate                    Migration: Net migration rate    FALSE
+## 9     mort_rate             Mortality: Central Death Rate (ASMR)     TRUE
+## 10          cdr                Mortality: Crude death rate (CDR)    FALSE
+## 11     mort_age                Mortality: Deaths (number) by age     TRUE
+## 12     mort_tot                 Mortality: Deaths (total number)     TRUE
+## 13      life_ex      Mortality: Expected remaining years of life     TRUE
+## 14          lx0              Mortality: Life expectancy at birth     TRUE
+## 15 unwpp_cm_nmr  Mortality: Neonatal Mortality Rate (28-day NMR)    FALSE
+## 16      p_dying           Mortality: Probability of dying by age     TRUE
+## 17  n_survivors Mortality: Survivors from a birth-cohort of 100k     TRUE
+## 18    unwpp_imr          Mortality: Under 1 Mortality Rate (IMR)    FALSE
+## 19   unwpp_u5mr         Mortality: Under 5 Mortality Rate (U5MR)    FALSE
+## 20          pgr                          Population: Growth Rate    FALSE
+## 21      int_pop   Population: Interpolated (1-year time and age)     TRUE
+## 22       qq_pop   Population: Quinquennial (5-year time and age)     TRUE
+## 23      tot_pop                                Population: Total     TRUE
+##        source
+## 1  dds-201710
+## 2  dds-201710
+## 3  dds-201710
+## 4  dds-201710
+## 5  dds-201710
+## 6  dds-201710
+## 7  dds-201710
+## 8  dds-201710
+## 9  dds-201710
+## 10 dds-201710
+## 11 dds-201710
+## 12 dds-201710
+## 13 dds-201710
+## 14 dds-201710
+## 15 dds-201710
+## 16 dds-201710
+## 17 dds-201710
+## 18 dds-201710
+## 19 dds-201710
+## 20 dds-201710
+## 21 dds-201710
+## 22 dds-201710
+## 23 dds-201710
+```
+
+From this list, download a data set
+
+
+```r
+dat <- montagu::montagu_demographic_data(
+    "cbr", "201710gavi-5", source_code = "dds-201710")
+head(dat)
+```
+
+```
+##   country_code_numeric country_code     country age_from age_to year
+## 1                    4          AFG Afghanistan        0      0 1950
+## 2                    4          AFG Afghanistan        0      0 1951
+## 3                    4          AFG Afghanistan        0      0 1952
+## 4                    4          AFG Afghanistan        0      0 1953
+## 5                    4          AFG Afghanistan        0      0 1954
+## 6                    4          AFG Afghanistan        0      0 1955
+##   gender value
+## 1   both  0.05
+## 2   both  0.05
+## 3   both  0.05
+## 4   both  0.05
+## 5   both  0.05
+## 6   both  0.05
+```
