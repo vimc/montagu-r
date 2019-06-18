@@ -18,7 +18,8 @@ test_that("download correct disease id", {
 test_that("download incorrect disease id", {
   location <- montagu_test_server()
   expect_error(montagu_disease(disease_id = "ZZZ", location = location),
-               "Unknown disease with id 'ZZZ'")
+               "Unknown disease with id 'ZZZ'",
+               class = "montagu_api_error")
 })
 
 test_that("download empty disease id", {
