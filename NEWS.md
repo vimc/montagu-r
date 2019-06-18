@@ -1,6 +1,10 @@
-## 0.3.8
+## 0.3.9
 
 * More support for touchstone endpoints (VIMC-2722)
+
+## 0.3.8
+
+* Fix passing through the `stop_on_timeout` parameter (VIMC-2816)
 
 ## 0.3.7
 
