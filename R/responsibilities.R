@@ -96,15 +96,17 @@ helper_get_responsibilities <- function(modelling_group_id, touchstone_id,
     resps <- lapply(resps, "[[", "responsibilities")[[1]]
     
   } else {
-    resps <-resps$responsibilities
+    resps <- resps$responsibilities
   }
+  
+  resps
 }
 
 helper_get_responsibility <- function(modelling_group_id, touchstone_id,
                                       scenario_id, location = NULL) {
 
   resps <- helper_get_responsibilities(modelling_group_id, touchstone_id,
-                                 location)
+                                       location)
 
   select <- which(vcapply(resps, function(x) x$scenario$id) == scenario_id)
   if (length(select) == 0) {
