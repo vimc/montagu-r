@@ -1,7 +1,7 @@
 ---
 title: "Montagu API"
 author: "VIMC Technical Team"
-date: "2019-03-27"
+date: "2019-06-18"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Montagu API}
@@ -38,56 +38,7 @@ montagu::montagu_touchstones()
 ```
 
 ```
-##                     name                                      description
-## 1             201710gavi                          October 2017 touchstone
-## 2        201810synthetic                October 2018 synthetic touchstone
-## 3             201310gavi SDF (Strategic Demand Forecast) Version 12, 2013
-## 4             201510gavi SDF (Strategic Demand Forecast) Version 12, 2015
-## 5   201210gavi-201607wue      legacy sdf6 - was Actual (WUENIC) metric-v6
-## 6  201210gavi-201303gavi          legacy sdf6 - was LTSG (SDF7) metric-v6
-## 7              201707wue                                 2017 July WUENIC
-## 8   201310gavi-201707wue        201310gavi-201707wue updated to 201707wue
-## 9   201510gavi-201707wue        201510gavi-201707wue updated to 201707wue
-## 10  201210gavi-201707wue        201210gavi-201707wue updated to 201707wue
-## 11             201607wue                                 2016 July WUENIC
-## 12            201708test                           201708test (version 1)
-## 13             201802uxe                           2018 Feb UX experiment
-## 14            201403gavi  SDF (Strategic Demand Forecast) Version 9, 2014
-## 15             201807wue                                 2018 July WUENIC
-## 16             201801rfp                    2018 Jan Request for Proposal
-## 17             201804rfp                  2018 April Request for Proposal
-## 18             201809hpv                        CHINA only HPV touchstone
-## 19             201810rfp                2018 October Request for Proposal
-## 20        201810original         October 2018 interim update touchstone 1
-## 21            201810gavi         October 2018 interim update touchstone 2
-## 22            201810high         October 2018 interim update touchstone 3
-## 23             201810low         October 2018 interim update touchstone 4
-## 24        201810bestcase         October 2018 interim update touchstone 5
-##                                                                      comment
-## 1                                                 Touchstone for 201710gavi.
-## 2                         Small scale model run with synthetic coverage sets
-## 3                           SDF (Strategic Demand Forecast) Version 12, 2013
-## 4                           SDF (Strategic Demand Forecast) Version 12, 2015
-## 5                                legacy sdf6 - was Actual (WUENIC) metric-v6
-## 6                                    legacy sdf6 - was LTSG (SDF7) metric-v6
-## 7                                                   For 2017 modified update
-## 8                                                            modified update
-## 9                                                            modified update
-## 10                                                           modified update
-## 11                                                  For 2016 modified update
-## 12                                                      201708test-pilot run
-## 13                                                   experimental touchstone
-## 14                           SDF (Strategic Demand Forecast) Version 9, 2014
-## 15                                                   For 2018 interim update
-## 16                                             2018 Jan Open Call touchstone
-## 17                 2018 April Open Call touchstone for PCV Rota Hib HPV HepB
-## 18                                         BMGF's HPV-China analysis request
-## 19 2018 October Open Call touchstone for Measles and MenA using Nigeria only
-## 20                                             Touchstone with original op16
-## 21                                             Touchstone with adjusted op16
-## 22                     Touchstone with 10% above 201810gavi routine coverage
-## 23                     Touchstone with 10% below 201810gavi routine coverage
-## 24                       Touchstone with BMGF best case coverage assumptions
+## Error in helper_touchstones(modelling_group_id, location): argument "modelling_group_id" is missing, with no default
 ```
 
 ### Demographic data
