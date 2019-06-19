@@ -2,6 +2,15 @@ montagu_test_reset <- function(clear = FALSE) {
   montagu_server_global_clear()
 }
 
+montagu_test_server_admin <- function() {
+  montagu_test_server("test.user@imperial.ac.uk", "password")
+}
+
+montagu_test_server_user <- function() {
+  # Change this when test user is set up
+  montagu_test_server("w.hinsley@imperial.ac.uk", "********")
+}
+
 montagu_test_server <- function(username = NULL, password = NULL) {
   testthat::skip_on_travis()
 

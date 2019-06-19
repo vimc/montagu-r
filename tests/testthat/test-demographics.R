@@ -1,14 +1,14 @@
 context("demographics")
 
 test_that("demographic list with invalid touchstone", {
-  location <- montagu_location(montagu_test_server())
+  location <- montagu_test_server_user()
   expect_error(montagu_demographics_list("ZZZ201710gavi-5", location),
     "Unknown touchstone-version with id 'ZZZ201710gavi-5'",
     class = "montagu_api_error")
 })
 
 test_that("demographic list - working", {
-  location <- montagu_location(montagu_test_server())
+  location <- montagu_test_server_user()
   demog <- montagu_demographics_list("201710gavi-5", location)
   expect_equal(sort(match(names(demog), c("id", "name", "gendered", "source"))),
                c(1,2,3,4))
@@ -17,7 +17,7 @@ test_that("demographic list - working", {
 ################################################################################
 
 test_that("download demographic data", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   dat <- montagu_demographic_data("cbr", "201804rfp-1", location = location)
   expect_is(dat, "data.frame")
   expect_equal(sort(match(names(dat), c("country_code_numeric", "country_code",
@@ -26,7 +26,7 @@ test_that("download demographic data", {
 })
 
 test_that("download demographic data - something basic wrong", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   expect_error(montagu_demographic_data("cbr", "ZZZ201804rfp-1",
                                        location = location),
                "Unknown touchstone-version with id 'ZZZ201804rfp-1'",
@@ -40,7 +40,7 @@ test_that("download demographic data - something basic wrong", {
 })
 
 test_that("download demographic data - gendered tests", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   expect_error(montagu_demographic_data("cbr", "201804rfp-1",
     gender_code = 'elf', location = location),
     "Invalid gender code 'elf' - use male, female or both")
@@ -72,7 +72,7 @@ test_that("download demographic data - gendered tests", {
 })
 
 test_that("download demographic data - format tests", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   dl <- montagu_demographic_data("as_fert", "201804rfp-1",
       wide = FALSE, location = location)
 
@@ -87,7 +87,7 @@ test_that("download demographic data - format tests", {
 })
 
 test_that("demographic list is cached within session", {
-  location <- montagu_location(montagu_test_server())
+  location <- montagu_location(montagu_test_server_user())
   location$reset_cache()
   touchstone_id <- "201710gavi-5"
   d <- montagu_demographics_list(touchstone_id, location = location)

@@ -3,7 +3,7 @@ context("burden")
 ### BURDEN ESTIMATE SETS
 
 test_that("Burden estimate sets", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   dat <- montagu_burden_estimate_sets(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", location)
   expect_is(dat, "data.frame")
@@ -18,9 +18,7 @@ test_that("Burden estimate sets", {
 })
 
 test_that("Burden estimate sets info - no permission", {
-  skip("Authentication fix needed")
-
-  location <- montagu_test_server("k.gaythorpe@imperial.ac.uk", "password")
+  location <- montagu_test_server_user()
   expect_error(montagu_burden_estimate_sets(
     "PHE-Vynnycky", "201710gavi-5", "rubella-rcv1-gavi", location),
     paste0("You do not have sufficient permissions to access this resource. ",
@@ -30,14 +28,14 @@ test_that("Burden estimate sets info - no permission", {
 })
 
 test_that("Burden estimate sets info - incorrect group", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_admin()
 
-  # This has regressed
+  expect_error(montagu_burden_estimate_sets(
+    "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", location),
+    "Unknown modelling-group with id 'ZZZIC-Garske'",
+    class = "montagu_api_error")
 
-#  expect_error(montagu_burden_estimate_sets(
-#    "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", location),
-#    "Unknown modelling-group with id 'ZZZIC-Garske'",
-#    class = "montagu_api_error")
+  location <- montagu_test_server_user()
 
   expect_error(montagu_burden_estimate_sets(
     "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", location),
@@ -47,7 +45,7 @@ test_that("Burden estimate sets info - incorrect group", {
 })
 
 test_that("Burden estimate sets - incorrect touchstone", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   expect_error(montagu_burden_estimate_sets(
     "IC-Garske", "ZZZ201710gavi-5", "yf-no-vaccination", location),
     "Unknown touchstone-version with id 'ZZZ201710gavi-5'",
@@ -55,7 +53,7 @@ test_that("Burden estimate sets - incorrect touchstone", {
 })
 
 test_that("Burden estimate sets - incorrect scenario", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   expect_error(montagu_burden_estimate_sets(
     "IC-Garske", "201710gavi-5", "ZZZyf-no-vaccination", location),
     "Unknown scenario-description with id 'ZZZyf-no-vaccination",
@@ -67,7 +65,7 @@ test_that("Burden estimate sets - incorrect scenario", {
 ### INDIVIDUAL BURDEN ESTIMATE SET
 
 test_that("Burden estimate set info", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   dat <- montagu_burden_estimate_set_info(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", 687, location)
   expect_is(dat, "list")
@@ -79,25 +77,24 @@ test_that("Burden estimate set info", {
 })
 
 test_that("Burden estimate set info - incorrect permissions", {
-  skip("Authentication fix needed")
-  location <- montagu_test_server("k.gaythorpe@imperial.ac.uk", "password")
+  location <- montagu_test_server_user()
 
   expect_error(montagu_burden_estimate_set_info(
         "PHE-Vynnycky", "201710gavi-5", "rubella-rcv1-gavi", 10, location),
         paste0("You do not have sufficient permissions to access this resource. ",
                "Missing these permissions: modelling-group:PHE-Vynnycky/estimates.read"),
-        class = "simpleError")
-
+        class = "montagu_api_error")
 })
 
 test_that("Burden estimate set info - incorrect group", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_admin()
 
-#  expect_error(montagu_burden_estimate_set_info(
-#    "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
-#    "Unknown modelling-group with id 'ZZZIC-Garske'",
-#    class = "montagu_api_error")
+  expect_error(montagu_burden_estimate_set_info(
+    "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
+    "Unknown modelling-group with id 'ZZZIC-Garske'",
+    class = "montagu_api_error")
 
+  location <- montagu_test_server_user()
 
   expect_error(montagu_burden_estimate_set_info(
     "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
@@ -108,7 +105,7 @@ test_that("Burden estimate set info - incorrect group", {
 })
 
 test_that("Burden estimate set info - incorrect touchstone", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   expect_error(montagu_burden_estimate_set_info(
     "IC-Garske", "ZZZ201710gavi-5", "yf-no-vaccination", 10, location),
     "Unknown touchstone-version with id 'ZZZ201710gavi-5'",
@@ -116,7 +113,7 @@ test_that("Burden estimate set info - incorrect touchstone", {
 })
 
 test_that("Burden estimate set info - incorrect scenario", {
- location <- montagu_test_server()
+ location <- montagu_test_server_user()
   expect_error(montagu_burden_estimate_set_info(
     "IC-Garske", "201710gavi-5", "ZZZyf-no-vaccination", 687, location),
     "Unknown scenario-description with id 'ZZZyf-no-vaccination",
@@ -124,7 +121,7 @@ test_that("Burden estimate set info - incorrect scenario", {
 })
 
 test_that("Burden estimate set info - incorrect estimate set id", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   expect_error(montagu_burden_estimate_set_info(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
     "Unknown burden-estimate-set with id '10'",
@@ -134,9 +131,7 @@ test_that("Burden estimate set info - incorrect estimate set id", {
 ### BURDEN ESTIMATE SET - GET DATA
 
 test_that("Burden estimate set data - incorrect permissions", {
-  skip("Authentication fix needed")
-
-  location <- montagu_test_server("k.gaythorpe@imperial.ac.uk", "password")
+  location <- montagu_test_server_user()
   expect_error(montagu_burden_estimate_set_data(
     "PHE-Vynnycky", "201710gavi-5", "rubella-rcv1-gavi", 10, location),
     paste0("You do not have sufficient permissions to access this resource. ",
@@ -145,11 +140,13 @@ test_that("Burden estimate set data - incorrect permissions", {
 })
 
 test_that("Burden estimate set data - incorrect group", {
-  location <- montagu_test_server()
-#  expect_error(montagu_burden_estimate_set_data(
-#    "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
-#    "Unknown modelling-group with id 'ZZZIC-Garske'",
-#    class = "montagu_api_error")
+  location <- montagu_test_server_admin()
+  expect_error(montagu_burden_estimate_set_data(
+    "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
+    "Unknown modelling-group with id 'ZZZIC-Garske'",
+    class = "montagu_api_error")
+
+  location <- montagu_test_server_user()
 
   expect_error(montagu_burden_estimate_set_data(
     "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
@@ -159,7 +156,7 @@ test_that("Burden estimate set data - incorrect group", {
 })
 
 test_that("Burden estimate set data - incorrect touchstone", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   expect_error(montagu_burden_estimate_set_data(
     "IC-Garske", "ZZZ201710gavi-5", "yf-no-vaccination", 10, location),
     "Unknown touchstone-version with id 'ZZZ201710gavi-5'",
@@ -167,7 +164,7 @@ test_that("Burden estimate set data - incorrect touchstone", {
 })
 
 test_that("Burden estimate set data - incorrect scenario", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   expect_error(montagu_burden_estimate_set_data(
     "IC-Garske", "201710gavi-5", "ZZZyf-no-vaccination", 10, location),
     "Unknown scenario-description with id 'ZZZyf-no-vaccination'",
@@ -175,7 +172,7 @@ test_that("Burden estimate set data - incorrect scenario", {
 })
 
 test_that("Burden estimate set info - incorrect estimate set id", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   expect_error(montagu_burden_estimate_set_data(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
     "Unknown burden-estimate-set with id '10'",
@@ -185,8 +182,7 @@ test_that("Burden estimate set info - incorrect estimate set id", {
 ### BURDEN ESTIMATE SET - OUTCOME ENDPOINT
 
 test_that("Burden outcome estimate set data - incorrect permissions", {
-  skip("Authentication fix needed")
-  location <- montagu_test_server("k.gaythorpe@imperial.ac.uk", "password")
+  location <- montagu_test_server_user()
   expect_error(montagu_burden_estimate_set_outcome_data(
     "PHE-Vynnycky", "201710gavi-5", "rubella-rcv1-gavi", 10,
     "cases", group_by = "age", location),
@@ -196,14 +192,15 @@ test_that("Burden outcome estimate set data - incorrect permissions", {
 })
 
 test_that("Burden outcome estimate set data - incorrect group", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_admin()
 
-  #expect_error(montagu::montagu_burden_estimate_set_outcome_data(
-    #"ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 687,
-    #"cases", group_by = "age", location),
-    #"Unknown modelling-group with id 'ZZZIC-Garske'",
-    #class = "montagu_api_error")
+  expect_error(montagu::montagu_burden_estimate_set_outcome_data(
+    "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 687,
+    "cases", group_by = "age", location),
+    "Unknown modelling-group with id 'ZZZIC-Garske'",
+    class = "montagu_api_error")
 
+  location <- montagu_test_server_user()
   expect_error(montagu::montagu_burden_estimate_set_outcome_data(
     "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 687,
     "cases", group_by = "age", location),
@@ -213,7 +210,7 @@ test_that("Burden outcome estimate set data - incorrect group", {
 })
 
 test_that("Burden outcome estimate set data - incorrect touchstone", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   expect_error(montagu::montagu_burden_estimate_set_outcome_data(
     "IC-Garske", "ZZZ201710gavi-5", "yf-no-vaccination", 687,
     "cases", group_by = "age", location),
@@ -222,7 +219,7 @@ test_that("Burden outcome estimate set data - incorrect touchstone", {
 })
 
 test_that("Burden outcome estimate set data - incorrect scenario", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   expect_error(montagu::montagu_burden_estimate_set_outcome_data(
     "IC-Garske", "201710gavi-5", "ZZZyf-no-vaccination", 687,
     "cases", group_by = "age", location),
@@ -231,7 +228,7 @@ test_that("Burden outcome estimate set data - incorrect scenario", {
 })
 
 test_that("Burden outcome estimate set data - incorrect estimate set id", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   expect_error(montagu::montagu_burden_estimate_set_outcome_data(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", 1,
     "cases", group_by = "age", location),
@@ -242,7 +239,7 @@ test_that("Burden outcome estimate set data - incorrect estimate set id", {
 test_that("Burden outcome estimate set data - incorrect outcome code", {
   # API doesn't throw an error with this; the error below is from R.
   # See i2724
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   expect_error(montagu::montagu_burden_estimate_set_outcome_data(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", 687,
     "asparagus", group_by = "age", location),
@@ -251,7 +248,7 @@ test_that("Burden outcome estimate set data - incorrect outcome code", {
 })
 
 test_that("Burden outcome estimate set data - incorrect group_by", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   expect_error(montagu::montagu_burden_estimate_set_outcome_data(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", 687,
     "cases", group_by = "gender", location),
@@ -260,7 +257,7 @@ test_that("Burden outcome estimate set data - incorrect group_by", {
 })
 
 test_that("Burden outcome estimate set data - correct test", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   dat <- montagu::montagu_burden_estimate_set_outcome_data(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", 687,
     "cases", group_by = "age", location)
@@ -277,29 +274,29 @@ test_that("Burden outcome estimate set data - correct test", {
 ### BURDEN ESTIMATE SET PROBLEMS
 
 test_that("Burden estimate set problems", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   dat <- montagu_burden_estimate_set_problems(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", 687, location)
   expect_is(dat, "list")
 })
 
 test_that("Burden estimate set problems - incorrect permissions", {
-  skip("Authentication fix needed")
-  location <- montagu_test_server("mark.jit@lshtm.ac.uk", "password")
+  location <- montagu_test_server_user()
   expect_error(montagu_burden_estimate_set_problems(
-    "IC-Garske", "201710gavi-5", "yf-no-vaccination", 687, location),
+    "PHE-Vynnycky", "201710gavi-5", "rubella-rcv2-gavi", 740, location),
     paste0("You do not have sufficient permissions to access this resource. ",
-           "Missing these permissions: modelling-group:IC-Garske/estimates.read"),
+           "Missing these permissions: modelling-group:PHE-Vynnycky/estimates.read"),
     class = "montagu_api_error")
 })
 
 test_that("Burden estimate set problems - incorrect group", {
-  location <- montagu_test_server()
-#  expect_error(montagu_burden_estimate_set_problems(
-#    "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
-#    "Unknown modelling-group with id 'ZZZIC-Garske'",
-#    class = "montagu_api_error")
+  location <- montagu_test_server_admin()
+  expect_error(montagu_burden_estimate_set_problems(
+    "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
+    "Unknown modelling-group with id 'ZZZIC-Garske'",
+    class = "montagu_api_error")
 
+  location <- montagu_test_server_user()
   expect_error(montagu_burden_estimate_set_problems(
     "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
     paste0("You do not have sufficient permissions to access this resource. ",
@@ -309,7 +306,7 @@ test_that("Burden estimate set problems - incorrect group", {
 })
 
 test_that("Burden estimate set problems - incorrect touchstone", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   expect_error(montagu_burden_estimate_set_problems(
     "IC-Garske", "ZZZ201710gavi-5", "yf-no-vaccination", 10, location),
     "Unknown touchstone-version with id 'ZZZ201710gavi-5'",
@@ -317,7 +314,7 @@ test_that("Burden estimate set problems - incorrect touchstone", {
 })
 
 test_that("Burden estimate set problems - incorrect scenario", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   expect_error(montagu_burden_estimate_set_problems(
     "IC-Garske", "201710gavi-5", "ZZZyf-no-vaccination", 10, location),
     "Unknown scenario-description with id 'ZZZyf-no-vaccination",
@@ -329,9 +326,7 @@ test_that("Burden estimate set problems - incorrect scenario", {
 
 test_that("Create Burden Estimate - incorrect group", {
 
-  # Could report different group here...
-
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
 
   expect_error(montagu_burden_estimate_set_create(
     "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", "stochastic",
@@ -343,20 +338,20 @@ test_that("Create Burden Estimate - incorrect group", {
 })
 
 test_that("Create Burden Estimate Set - incorrect permissions", {
-  skip("Authentication fix needed")
-  location <- montagu_test_server("mark.jit@lshtm.ac.uk", "password")
+
+  location <- montagu_test_server_user()
   expect_error(montagu_burden_estimate_set_create(
-    "IC-Garske", "201710gavi-5", "yf-no-vaccination", "stochastic",
+    "PHE-Vynnycky", "201710gavi-5", "rubella-rcv1-gavi", "stochastic",
     10, "Details", location),
     paste0("You do not have sufficient permissions ",
            "to access this resource. Missing these permissions: ",
-           "modelling-group:IC-Garske/estimates.write"),
+           "modelling-group:PHE-Vynnycky/estimates.write"),
     class = "montagu_api_error")
 })
 
 
 test_that("Create Burden Estimate - incorrect touchstone", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
 
   expect_error(montagu_burden_estimate_set_create(
     "IC-Garske", "ZZZ201710gavi-5", "yf-no-vaccination", "stochastic",
@@ -366,7 +361,7 @@ test_that("Create Burden Estimate - incorrect touchstone", {
 })
 
 test_that("Create Burden Estimate - incorrect scenario", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
 
   expect_error(montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "ZZZyf-no-vaccination", "stochastic",
@@ -376,7 +371,7 @@ test_that("Create Burden Estimate - incorrect scenario", {
 })
 
 test_that("Create Burden Estimate - incorrect type", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
 
   expect_error(montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", "plastic",
@@ -387,7 +382,7 @@ test_that("Create Burden Estimate - incorrect type", {
 })
 
 test_that("Create Burden Estimate - incorrect param set for stochastic", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
 
   expect_error(montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", "stochastic",
@@ -397,7 +392,7 @@ test_that("Create Burden Estimate - incorrect param set for stochastic", {
 })
 
 test_that("Create Burden Estimate - incorrect param set for non-stochastic", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
 
   expect_error(montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", "central-single-run",
@@ -407,7 +402,7 @@ test_that("Create Burden Estimate - incorrect param set for non-stochastic", {
 })
 
 test_that("Create Burden Estimate - absurd parameter set id", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
 
   expect_error(montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", "stochastic",
@@ -417,7 +412,7 @@ test_that("Create Burden Estimate - absurd parameter set id", {
 })
 
 test_that("Create Burden Estimate - misplaced parameter set id (stochastic)", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
 
   expect_error(montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", "stochastic",
@@ -427,7 +422,7 @@ test_that("Create Burden Estimate - misplaced parameter set id (stochastic)", {
 })
 
 test_that("Create Burden Estimate - General usage - central", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
 
   bsid <- montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", "central-averaged",
@@ -487,15 +482,6 @@ test_that("Create Burden Estimate - General usage - central", {
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", bsid, location)
   expect_equal(res, "OK")
 
-  # Clear a second time - expect failure
-  # This "fails" (it says OK, but should error) - see i2656
-  res <- montagu_burden_estimate_set_clear(
-    "IC-Garske", "201710gavi-5", "yf-no-vaccination", bsid, location)
-  #expect_equal(res, "NOT OK")
-
-  #Next line will fail when i2656 is fixed.
-  expect_equal(res, "OK")
-
   # Re-add incomplete - should fail with keep_open = FALSE
 
   expect_error(montagu_burden_estimate_set_upload("IC-Garske", "201710gavi-5",
@@ -514,7 +500,7 @@ test_that("Create Burden Estimate - General usage - central", {
 
 test_that("Create Burden Estimate - with keep_open=FALSE", {
 
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
 
   bsid <- montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", "central-averaged",
@@ -543,20 +529,20 @@ test_that("Create Burden Estimate - with keep_open=FALSE", {
 })
 
 test_that("Create Burden Estimate - with keep_open=TRUE and close", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
 
   bsid <- montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", "central-averaged",
     NULL, "Details", location)
   expect_is(bsid, "integer")
 
-  # Convert this to use converage.R when merged
+  # Get the template
 
-  path <- "/modelling-groups/IC-Garske/expectations/201710gavi-5/30/?type=central"
-  csv <- read.csv(
-    text = rawToChar(montagu_api_GET(location, path, accept = "csv")),
-    header = TRUE,
-    stringsAsFactors = FALSE)
+  csv <- montagu_central_burden_estimate_template(
+    "IC-Garske", "201710gavi-5", 30, location)
+
+  # Fill in with utter nonsense
+
   csv$cohort_size <- sample(nrow(csv))
   csv$deaths <- sample(nrow(csv))
   csv$cases <- sample(nrow(csv))
@@ -587,7 +573,7 @@ test_that("Create Burden Estimate - with keep_open=TRUE and close", {
 ### Clear Burden Estimate Set (get) with errors
 
 test_that("Clear non-open set - incorrect group", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
 
   expect_error(montagu_burden_estimate_set_clear(
     "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
@@ -598,7 +584,7 @@ test_that("Clear non-open set - incorrect group", {
 })
 
 test_that("Clear non-open set - incorrect touchstone", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   expect_error(montagu_burden_estimate_set_clear(
     "IC-Garske", "ZZZ201710gavi-5", "yf-no-vaccination", 10, location),
     "Unknown touchstone-version with id 'ZZZ201710gavi-5'",
@@ -606,7 +592,7 @@ test_that("Clear non-open set - incorrect touchstone", {
 })
 
 test_that("Clear non-open set - incorrect id", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   expect_error(montagu_burden_estimate_set_clear(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
     "Unknown burden-estimate-set with id '10'",
@@ -617,7 +603,7 @@ test_that("Clear non-open set - incorrect id", {
 ### Close Burden Estimate Set with erroneous params
 
 test_that("Close burden estimate set - incorrect group", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
 
   expect_error(montagu_burden_estimate_set_close(
     "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
@@ -628,18 +614,18 @@ test_that("Close burden estimate set - incorrect group", {
 })
 
 test_that("Close burden estimate set - incorrect permissions", {
-  skip("Authentication fix needed")
-  location <- montagu_test_server("mark.jit@lshtm.ac.uk", "password")
+
+  location <- montagu_test_server_user()
   expect_error(montagu_burden_estimate_set_close(
-    "IC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
+    "PHE-Vynnycky", "201710gavi-5", "rubella-rcv1-gavi", 740, location),
     paste0("You do not have sufficient permissions ",
            "to access this resource. Missing these permissions: ",
-           "modelling-group:IC-Garske/estimates.write"),
+           "modelling-group:PHE-Vynnycky/estimates.write"),
     class = "montagu_api_error")
 })
 
 test_that("Clear non-open set - incorrect touchstone", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   expect_error(montagu_burden_estimate_set_close(
     "IC-Garske", "ZZZ201710gavi-5", "yf-no-vaccination", 10, location),
     "Unknown touchstone-version with id 'ZZZ201710gavi-5'",
@@ -647,7 +633,7 @@ test_that("Clear non-open set - incorrect touchstone", {
 })
 
 test_that("Clear non-open set - incorrect id", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   expect_error(montagu_burden_estimate_set_close(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", 10, location),
     "Unknown burden-estimate-set with id '10'",
