@@ -8,7 +8,7 @@ montagu_expectations(modelling_group_id, touchstone_id, location = NULL)
 }
 \arguments{
 \item{modelling_group_id}{id of the modelling group. If omitted, or null, 
-then all responsibility sets associated with the touchstone are returned.}
+then all scenarios associated with the touchstone are returned.}
 
 \item{touchstone_id}{id of the touchstone (including version)}
 

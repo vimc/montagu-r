@@ -29,12 +29,8 @@ montagu_coverage_info <- function(modelling_group, touchstone_id, scenario_id,
   )
 }
 
-##' The coverage data describes for each country, over time and age, the
-##' efforts to vaccinate people against each disease. Routine activities involve
-##' the regular vaccination that is in place, whereas campaigns are specifically
-##' targeted towards a certain disease or people group for a certain time period.
 ##' @title Retrieve coverage data for a scenario, touchstone and modelling group.
-##' @inheritParams montagu_coverage_info
+##' @inherit montagu_coverage_info
 ##' @param modelling_group id of modelling group; if omitted or NULL, then return coverage info for 
 ##'                        all modelling groups.
 ##' @param format "wide" or "long" csv format. Long format contains a row per 
