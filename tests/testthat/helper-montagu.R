@@ -3,12 +3,11 @@ montagu_test_reset <- function(clear = FALSE) {
 }
 
 montagu_test_server_admin <- function() {
-  montagu_test_server("test.user@imperial.ac.uk", "password")
+  montagu_test_server("test.admin@imperial.ac.uk", "password")
 }
 
 montagu_test_server_user <- function() {
-  # Change this when test user is set up
-  montagu_test_server("w.hinsley@imperial.ac.uk", "********")
+  montagu_test_server("test.modeller@imperial.ac.uk", "password")
 }
 
 montagu_test_server <- function(username = NULL, password = NULL) {
@@ -18,7 +17,7 @@ montagu_test_server <- function(username = NULL, password = NULL) {
 
   if (!("testing" %in% montagu_server_global_list())) {
     host <- Sys.getenv("MONTAGU_TEST_HOST", "support.montagu.dide.ic.ac.uk")
-    port <- Sys.getenv("MONTAGU_TEST_PORT", "11443")
+    port <- Sys.getenv("MONTAGU_TEST_PORT", "10443")
     if (is.null(username)) {
       username <- Sys.getenv("MONTAGU_TEST_USERNAME", "")
       if (!nzchar(username)) {
