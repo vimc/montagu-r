@@ -10,7 +10,8 @@ test_that("run: success", {
   skip_on_os("windows")
   server <- orderly_test_server()
   on.exit(server$stop())
-  remote <- montagu_server("testing", "localhost", server$port, orderly = TRUE)
+  remote <- montagu_server("testing", "localhost", server$port,
+                           orderly = TRUE, global = FALSE)
 
   p <- file.path(server$path, "src", "count", "parameters.json")
   writeLines(jsonlite::toJSON(list(time = 0.2, poll = 0.1),
@@ -29,7 +30,8 @@ test_that("run: error", {
   skip_on_os("windows")
   server <- orderly_test_server()
   on.exit(server$stop())
-  remote <- montagu_server("testing", "localhost", server$port, orderly = TRUE)
+  remote <- montagu_server("testing", "localhost", server$port,
+                           orderly = TRUE, global = FALSE)
 
   p <- file.path(server$path, "src", "count", "parameters.json")
   writeLines(jsonlite::toJSON(list(time = 0.2, poll = -1),
@@ -55,7 +57,8 @@ test_that("set timeout", {
   skip_on_os("windows")
   server <- orderly_test_server("interactive")
   on.exit(server$stop())
-  remote <- montagu_server("testing", "localhost", server$port, orderly = TRUE)
+  remote <- montagu_server("testing", "localhost", server$port,
+                           orderly = TRUE, global = FALSE)
 
   p <- file.path(server$path, "src", "count", "parameters.json")
   writeLines(jsonlite::toJSON(list(time = 2, poll = 0.1), auto_unbox = TRUE),
