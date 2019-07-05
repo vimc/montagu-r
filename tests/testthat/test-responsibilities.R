@@ -146,7 +146,9 @@ test_that("download scenario status", {
   location <- montagu_test_server_user()
   dat <- montagu_scenario_status("IC-Garske", "201710gavi-5",
                                  "yf-no-vaccination", location)
-  expect_true(dat %in% c("valid", "invalid", "empty", "complete"))
+  for (d in dat) {
+    expect_true(d %in% c("valid", "invalid", "empty", "complete"))
+  }
 })
 
 test_that("download scenario status - all scenarios (no modelling group)", {
@@ -160,7 +162,9 @@ test_that("download scenario status - all scenarios (no modelling group)", {
   location <- montagu_test_server_admin()
   dat <- montagu_scenario_status(NULL, "201710gavi-5",
                                  "yf-no-vaccination", location)
-  expect_true(dat %in% c("valid", "invalid", "empty", "complete"))
+  for (d in dat) {
+    expect_true(d %in% c("valid", "invalid", "empty", "complete"))
+  }
 })
 
 test_that("download scenario status - wrong modelling group", {

@@ -92,14 +92,19 @@ helper_get_responsibilities <- function(modelling_group_id, touchstone_id,
                                         location) {
   resps <- helper_get_touchstone(modelling_group_id, touchstone_id, location)
   
+  # resps is a list of responsibility sets, each has the same touchstone_id,
+  # different modelling_group_id. 
+  
   if (is.null(modelling_group_id)) {
-    resps <- lapply(resps, "[[", "responsibilities")[[1]]
+    res <- list()
+    for (r in resps) {
+      res <- c(res, r$responsibilities)
+    }
+    res
     
   } else {
-    resps <- resps$responsibilities
+    resps$responsibilities
   }
-  
-  resps
 }
 
 helper_get_responsibility <- function(modelling_group_id, touchstone_id,
@@ -112,7 +117,7 @@ helper_get_responsibility <- function(modelling_group_id, touchstone_id,
   if (length(select) == 0) {
     stop(sprintf("Unknown scenario with id '%s'", scenario_id))
   }
-  resps[[select]]
+  resps[select]
 }
 
 
@@ -132,13 +137,15 @@ helper_get_responsibility <- function(modelling_group_id, touchstone_id,
 montagu_scenarios <- function(modelling_group_id = NULL, 
                               touchstone_id,
                               location = NULL) {
-
+  
   resps <- helper_get_responsibilities(modelling_group_id, touchstone_id, 
                                        location)
-  data_frame(
+  
+  unique(data_frame(
     scenario_id = vcapply(resps, function(x) x$scenario$id),
     description = vcapply(resps, function(x) x$scenario$description),
-    disease = vcapply(resps, function(x) x$scenario$disease))
+    disease = vcapply(resps, function(x) x$scenario$disease)))
+  
 }
 
 ##' @title Retrieve current status of a groups' scenario.
@@ -149,8 +156,9 @@ montagu_scenarios <- function(modelling_group_id = NULL,
 montagu_scenario_status <- function(modelling_group_id, touchstone_id,
                                     scenario_id, location = NULL) {
 
-  helper_get_responsibility(modelling_group_id, touchstone_id, scenario_id,
-                            location)$status
+  resps <- helper_get_responsibility(modelling_group_id, touchstone_id, scenario_id,
+                            location)
+  unlist(lapply(resps, "[[", "status"))
 }
 
 ##' @title Retrieve a list of any problems with a scenario.
