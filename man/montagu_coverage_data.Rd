@@ -4,11 +4,12 @@
 \alias{montagu_coverage_data}
 \title{Retrieve coverage data for a scenario, touchstone and modelling group.}
 \usage{
-montagu_coverage_data(modelling_group, touchstone_id, scenario_id,
+montagu_coverage_data(modelling_group = NULL, touchstone_id, scenario_id,
   format = "long", all_countries = FALSE, location = NULL)
 }
 \arguments{
-\item{modelling_group}{id of modelling group}
+\item{modelling_group}{id of modelling group; if omitted or NULL, then return coverage info for 
+all modelling groups.}
 
 \item{touchstone_id}{id of touchstone (including version)}
 

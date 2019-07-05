@@ -1,7 +1,7 @@
 ---
 title: "Montagu API from R"
 author: "VIMC Technical Team"
-date: "2019-03-11"
+date: "2019-06-19"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Montagu API}
@@ -35,8 +35,8 @@ login with a username and password.
 ### Basic Information
 
 For many of the montagu api functions, you will need to provide your
-modelling group id, and your disease id. These will have been communicated on
-joining VIMC, but can be looked up with simple function calls like this:-
+modelling group id, and your disease id. Your group id will have been communicated on
+joining VIMC; the disease ids can be looked up with a simple function call like this:-
 
 
 ```r
@@ -56,22 +56,6 @@ montagu::montagu_diseases()
 ## 9  Rubella                      Rubella
 ## 10      YF                 Yellow fever
 ## 11     DTP Diphtheria Tetanus Pertussis
-```
-
-
-```r
-groups <- montagu::montagu_modelling_groups()
-head(groups)
-```
-
-```
-##              id                                 description
-## 1  Suraratdecha          independent (Chutima Suraratdecha)
-## 2   KPW-Jackson Kaiser Permanente Washington (Mike Jackson)
-## 3            Li                         independent (Xi Li)
-## 4 Harvard-Sweet           Harvard University (Steven Sweet)
-## 5     IC-Garske       Imperial College London (Tini Garske)
-## 6       JHU-Tam        John Hopkins University (Yvonne Tam)
 ```
 
 ### Touchstones
@@ -493,10 +477,12 @@ montagu::montagu_coverage_info("IC-Garske", "201710gavi-5", "yf-routine-gavi")
 ```
 
 ```
-##    id touchstone_version                  name vaccine gavi_support
-## 1 651       201710gavi-5 YF: YF, with, routine      YF        total
+##     id touchstone_version                   name vaccine gavi_support
+## 1 1182       201710gavi-5 YF: YF, none, campaign      YF   no vaccine
+## 2  651       201710gavi-5  YF: YF, with, routine      YF        total
 ##   activity_type
-## 1       routine
+## 1      campaign
+## 2       routine
 ```
 
 And now let's retrieve the coverage data itself, and summarise it.
@@ -508,27 +494,27 @@ head(cov[cov$coverage > 0, ])
 ```
 
 ```
-##           scenario              set_name vaccine gavi_support
-## 18 yf-routine-gavi YF: YF, with, routine      YF        total
-## 19 yf-routine-gavi YF: YF, with, routine      YF        total
-## 20 yf-routine-gavi YF: YF, with, routine      YF        total
-## 21 yf-routine-gavi YF: YF, with, routine      YF        total
-## 22 yf-routine-gavi YF: YF, with, routine      YF        total
-## 23 yf-routine-gavi YF: YF, with, routine      YF        total
-##    activity_type country_code country year age_first age_last
-## 18       routine          AGO  Angola 1997         0        0
-## 19       routine          AGO  Angola 1998         0        0
-## 20       routine          AGO  Angola 1999         0        0
-## 21       routine          AGO  Angola 2000         0        0
-## 22       routine          AGO  Angola 2001         0        0
-## 23       routine          AGO  Angola 2002         0        0
-##    age_range_verbatim target coverage
-## 18               <NA>   <NA>     0.37
-## 19               <NA>   <NA>     0.45
-## 20               <NA>   <NA>     0.53
-## 21               <NA>   <NA>     0.50
-## 22               <NA>   <NA>     0.46
-## 23               <NA>   <NA>     0.46
+##          scenario               set_name vaccine gavi_support
+## 1 yf-routine-gavi YF: YF, none, campaign      YF   no vaccine
+## 2 yf-routine-gavi YF: YF, none, campaign      YF   no vaccine
+## 3 yf-routine-gavi YF: YF, none, campaign      YF   no vaccine
+## 4 yf-routine-gavi YF: YF, none, campaign      YF   no vaccine
+## 5 yf-routine-gavi YF: YF, none, campaign      YF   no vaccine
+## 6 yf-routine-gavi YF: YF, none, campaign      YF   no vaccine
+##   activity_type country_code country year age_first age_last
+## 1      campaign          AGO  Angola 1988         1      100
+## 2      campaign          AGO  Angola 2016         1      100
+## 3      campaign          BEN   Benin 1940         0      100
+## 4      campaign          BEN   Benin 1944         0      100
+## 5      campaign          BEN   Benin 1948         0      100
+## 6      campaign          BEN   Benin 1952         0      100
+##   age_range_verbatim     target coverage
+## 1               <NA> 2689316.39     0.25
+## 2               <NA>    7067755     0.03
+## 3               <NA>       <NA>     0.11
+## 4               <NA>       <NA>     0.60
+## 5               <NA>       <NA>     0.60
+## 6               <NA>       <NA>     0.71
 ```
 
 ```r
@@ -536,7 +522,7 @@ range(cov$year)
 ```
 
 ```
-## [1] 1980 2100
+## [1] 1940 2100
 ```
 
 ```r
@@ -552,7 +538,7 @@ nrow(cov)
 ```
 
 ```
-## [1] 3872
+## [1] 4048
 ```
 
 ```r
@@ -583,10 +569,10 @@ names(cov)[1:20]
 ##  [1] "scenario"           "set_name"           "vaccine"
 ##  [4] "gavi_support"       "activity_type"      "country_code"
 ##  [7] "country"            "age_first"          "age_last"
-## [10] "age_range_verbatim" "coverage_1980"      "coverage_1981"
-## [13] "coverage_1982"      "coverage_1983"      "coverage_1984"
-## [16] "coverage_1985"      "coverage_1986"      "coverage_1987"
-## [19] "coverage_1988"      "coverage_1989"
+## [10] "age_range_verbatim" "coverage_1988"      "coverage_2016"
+## [13] "target_1988"        "target_2016"        NA
+## [16] NA                   NA                   NA
+## [19] NA                   NA
 ```
 
 ```r
@@ -594,7 +580,7 @@ nrow(cov)
 ```
 
 ```
-## [1] 32
+## [1] 71
 ```
 
 ```r
@@ -602,7 +588,7 @@ ncol(cov)
 ```
 
 ```
-## [1] 252
+## [1] 14
 ```
 Here, we have one row per country, and separate columns for `coverage_year` and `target_year`.
 
@@ -649,27 +635,27 @@ head(montagu::montagu_burden_estimate_sets("IC-Garske", "201710gavi-5", "yf-no-v
 ```
 
 ```
-##       id              uploaded_on    uploaded_by               type
-## 37   687 2018-04-06T13:08:18.883Z katy.gaythorpe   central-averaged
-## 153  698 2018-05-30T09:27:32.341Z    tini.garske central-single-run
-## 1   1049 2019-02-15T11:48:00.515Z      test.user   central-averaged
-## 2   1050 2019-02-15T12:16:44.479Z      test.user         stochastic
-## 4   1051 2019-02-15T12:49:19.553Z      test.user   central-averaged
-## 5   1052 2019-02-15T15:36:46.370Z      test.user   central-averaged
-##                                                                  details
-## 37  Averaged over posterior predictive distribution for model parameters
-## 153                                                                    x
-## 1                                          Mean over all stochastic runs
-## 2                                                                Details
-## 4                                                                Details
-## 5                                                                Details
-##       status
-## 37  complete
-## 153    empty
-## 1      empty
-## 2      empty
-## 4    invalid
-## 5    invalid
+##      id              uploaded_on    uploaded_by               type
+## 20  687 2018-04-06T13:08:18.883Z katy.gaythorpe   central-averaged
+## 32  698 2018-05-30T09:27:32.341Z    tini.garske central-single-run
+## 4  1034 2019-04-04T13:01:58.052Z katy.gaythorpe   central-averaged
+## 31 1037 2019-04-05T09:04:59.238Z katy.gaythorpe   central-averaged
+## 6  1098 2019-06-18T11:31:20.370Z      test.user   central-averaged
+## 25 1099 2019-06-18T11:31:22.057Z      test.user   central-averaged
+##                                                                 details
+## 20 Averaged over posterior predictive distribution for model parameters
+## 32                                                                    x
+## 4                       The median of posterior predictive distribution
+## 31                      The median of posterior predictive distribution
+## 6                                                               Details
+## 25                                                              Details
+##      status
+## 20 complete
+## 32    empty
+## 4  complete
+## 31 complete
+## 6   invalid
+## 25 complete
 ```
 
 If we know the burden estimate set id, we can also get a list of information about a burden estimate set with:
@@ -885,13 +871,13 @@ head(montagu::montagu_model_run_parameter_sets("IC-Garske", "201710gavi-5"))
 ```
 
 ```
-##    id model uploaded_by              uploaded_on disease
-## 1 132  YFIC   test.user 2019-03-11T19:39:13.873Z      YF
-## 2 131  YFIC   test.user 2019-03-11T19:39:13.775Z      YF
-## 3 130  YFIC   test.user 2019-03-11T17:37:27.725Z      YF
-## 4 129  YFIC   test.user 2019-03-11T17:37:27.642Z      YF
-## 5 128  YFIC   test.user 2019-03-11T17:30:48.364Z      YF
-## 6 127  YFIC   test.user 2019-03-11T17:30:48.281Z      YF
+##   id model uploaded_by              uploaded_on disease
+## 1 97  YFIC         wes 2019-06-19T14:18:01.116Z      YF
+## 2 96  YFIC         wes 2019-06-19T14:18:00.946Z      YF
+## 3 95  YFIC         wes 2019-06-19T13:47:10.690Z      YF
+## 4 94  YFIC         wes 2019-06-19T13:47:03.622Z      YF
+## 5 93  YFIC   test.user 2019-06-18T21:13:27.392Z      YF
+## 6 92  YFIC   test.user 2019-06-18T21:13:27.258Z      YF
 ```
 
 or for a list of information about a single parameter set:

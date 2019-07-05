@@ -1,13 +1,14 @@
 context("demographics")
 
 test_that("demographic list with invalid touchstone", {
-  location <- montagu_location(montagu_test_server())
+  location <- montagu_test_server_user()
   expect_error(montagu_demographics_list("ZZZ201710gavi-5", location),
-    "Unknown touchstone-version with id 'ZZZ201710gavi-5'")
+    "Unknown touchstone-version with id 'ZZZ201710gavi-5'",
+    class = "montagu_api_error")
 })
 
 test_that("demographic list - working", {
-  location <- montagu_location(montagu_test_server())
+  location <- montagu_test_server_user()
   demog <- montagu_demographics_list("201710gavi-5", location)
   expect_equal(sort(match(names(demog), c("id", "name", "gendered", "source"))),
                c(1,2,3,4))
@@ -16,7 +17,7 @@ test_that("demographic list - working", {
 ################################################################################
 
 test_that("download demographic data", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   dat <- montagu_demographic_data("cbr", "201804rfp-1", location = location)
   expect_is(dat, "data.frame")
   expect_equal(sort(match(names(dat), c("country_code_numeric", "country_code",
@@ -25,19 +26,21 @@ test_that("download demographic data", {
 })
 
 test_that("download demographic data - something basic wrong", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   expect_error(montagu_demographic_data("cbr", "ZZZ201804rfp-1",
                                        location = location),
-               "Unknown touchstone-version with id 'ZZZ201804rfp-1'")
+               "Unknown touchstone-version with id 'ZZZ201804rfp-1'",
+               class = "montagu_api_error")
 
   expect_error(montagu_demographic_data("elf", "201804rfp-1",
                                         location = location),
-               "Unknown demographic-statistic-type with id 'elf'")
+               "Unknown demographic-statistic-type with id 'elf'",
+               class = "simpleError")
 
 })
 
 test_that("download demographic data - gendered tests", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   expect_error(montagu_demographic_data("cbr", "201804rfp-1",
     gender_code = 'elf', location = location),
     "Invalid gender code 'elf' - use male, female or both")
@@ -54,22 +57,22 @@ test_that("download demographic data - gendered tests", {
             gender_code = 'both', location = location)
   expect_is(d1, "data.frame")
   expect_equal(nrow(d1), 150)
-  
+
   d1 <- montagu_demographic_data("tot_pop", "201804rfp-1",
                     gender_code = 'male', location = location)
   expect_is(d1, "data.frame")
   expect_equal(unique(d1$gender), "male")
-  
+
   d1 <- montagu_demographic_data("tot_pop", "201804rfp-1",
           gender_code = 'female', location = location)
   expect_is(d1, "data.frame")
   expect_equal(unique(d1$gender), "female")
-  
+
 
 })
 
 test_that("download demographic data - format tests", {
-  location <- montagu_test_server()
+  location <- montagu_test_server_user()
   dl <- montagu_demographic_data("as_fert", "201804rfp-1",
       wide = FALSE, location = location)
 
@@ -84,7 +87,7 @@ test_that("download demographic data - format tests", {
 })
 
 test_that("demographic list is cached within session", {
-  location <- montagu_location(montagu_test_server())
+  location <- montagu_location(montagu_test_server_user())
   location$reset_cache()
   touchstone_id <- "201710gavi-5"
   d <- montagu_demographics_list(touchstone_id, location = location)
