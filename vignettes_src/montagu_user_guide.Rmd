@@ -32,7 +32,7 @@ knitr::opts_chunk$set(error = FALSE, fig.path = "figure/montagu_user_guide-")
 options(montagu.username = "test.user@imperial.ac.uk",
         montagu.password = "password")
 montagu::montagu_server_global_default_set(
-  montagu::montagu_server("uat", "support.montagu.dide.ic.ac.uk", 10443))
+  montagu::montagu_server("science", "support.montagu.dide.ic.ac.uk", 11443))
 montagu::montagu_diseases()
 ```
 
@@ -42,16 +42,11 @@ login with a username and password.
 ### Basic Information
 
 For many of the montagu api functions, you will need to provide your
-modelling group id, and your disease id. These will have been communicated on
-joining VIMC, but can be looked up with simple function calls like this:-
+modelling group id, and your disease id. Your group id will have been communicated on
+joining VIMC; the disease ids can be looked up with a simple function call like this:-
 
 ```{r}
 montagu::montagu_diseases()
-```
-
-```{r}
-groups <- montagu::montagu_modelling_groups()
-head(groups)
 ```
 
 ### Touchstones

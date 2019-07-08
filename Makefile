@@ -30,7 +30,7 @@ vignettes/%.Rmd: vignettes_src/%.Rmd
 	sed -i.bak 's/[[:space:]]*$$//' $@
 	rm -f $@.bak
 
-vignettes_install: vignettes/montagu.Rmd vignettes/montagu_user_guide.Rmd
+vignettes_install: vignettes/montagu_user_guide.Rmd
 	rm -rf vignettes/figure
 	cp -r vignettes_src/figure vignettes/figure
 	${RSCRIPT} -e 'tools::buildVignettes(dir = ".")'
