@@ -8,7 +8,8 @@ montagu_expectation_countries(modelling_group_id, touchstone_id,
   expectation_id, location = NULL)
 }
 \arguments{
-\item{modelling_group_id}{id of the modelling group.}
+\item{modelling_group_id}{id of the modelling group. If omitted, or null, 
+then all scenarios associated with the touchstone are returned.}
 
 \item{touchstone_id}{id of the touchstone (including version)}
 
@@ -22,5 +23,5 @@ A data frame of country id and name, for all expected countries.
 \description{
 The expectations, for a modelling group for a particular touchstone, indicate the
 range of chronological years, ages and countries for which burden estimates
-are expected, and which burden outcomes are required.
+are expected, and what burden outcomes are required.
 }
