@@ -1,7 +1,11 @@
-helper_touchstones <- function(modelling_group_id, location = NULL) {
-  assert_scalar_character(modelling_group_id)
-  path <- sprintf("/modelling-groups/%s/responsibilities/", modelling_group_id)
-  montagu_api_GET(location, path)
+helper_touchstones <- function(modelling_group_id = NULL, location = NULL) {
+  if (is.null(modelling_group_id)) {
+    montagu_api_GET(location, "/touchstones/")
+  } else {
+    assert_scalar_character(modelling_group_id)
+    path <- sprintf("/modelling-groups/%s/responsibilities/", modelling_group_id)
+    montagu_api_GET(location, path)
+  }
 }
 ##' Touchstones are created by the VIMC management. The touchstone id associates
 ##' a particular call for burden estimates, with the input data (coverage and
@@ -9,10 +13,11 @@ helper_touchstones <- function(modelling_group_id, location = NULL) {
 ##' the modelling groups provide. A touchstone has a base name, and a version.
 ##' @title Retrieve touchstones a modelling group is responsible for.
 ##' @param location The montagu server to connect to.
-##' @param modelling_group_id id of the modelling group.
+##' @param modelling_group_id id of the modelling group. If omitted or null, 
+##' then all touchstones are returned.
 ##' @return Data frame of touchstone name, description and comment.
 ##' @export
-montagu_touchstones <- function(modelling_group_id, location = NULL) {
+montagu_touchstones <- function(modelling_group_id = NULL, location = NULL) {
   res <- helper_touchstones(modelling_group_id, location)
   data_frame(
     name = vcapply(res, "[[", "id"),
@@ -30,11 +35,13 @@ montagu_touchstones <- function(modelling_group_id, location = NULL) {
 ##' @inheritParams montagu_touchstones
 ##' @return Data frame of touchstone id, name, version, description and status
 ##' @export
-montagu_touchstone_versions <- function(modelling_group_id,
+montagu_touchstone_versions <- function(modelling_group_id = NULL,
                                         touchstone_name = NULL,
                                         require_open = FALSE, location = NULL) {
-
+  
   res <- montagu_touchstones(modelling_group_id, location)
+  res2 <- helper_touchstones(modelling_group_id, location)
+  
   if (!is.null(touchstone_name)) {
     res <- res[res$name == touchstone_name, ]
   }
@@ -44,8 +51,6 @@ montagu_touchstone_versions <- function(modelling_group_id,
   }
 
   collect_data <- NULL
-
-  res2 <- helper_touchstones(modelling_group_id, location)
 
   for (i in seq_len(nrow(res))) {
 
@@ -64,27 +69,57 @@ montagu_touchstone_versions <- function(modelling_group_id,
   collect_data
 }
 
-helper_get_touchstone <- function(modelling_group_id, touchstone_id,
+################################################################################
+
+helper_get_touchstone <- function(modelling_group_id, 
+                                  touchstone_id,
                                   location = NULL) {
-  assert_scalar_character(modelling_group_id)
-  assert_scalar_character(touchstone_id)
-  path <- sprintf("/modelling-groups/%s/responsibilities/%s/",
-                  modelling_group_id, touchstone_id)
-  montagu_api_GET(location, path)
+  if (is.null(modelling_group_id)) {
+    path <- sprintf("/touchstones/%s/responsibilities/",
+                    touchstone_id)
+    montagu_api_GET(location, path)
+  
+  } else {
+    assert_scalar_character(modelling_group_id)
+    assert_scalar_character(touchstone_id)
+    path <- sprintf("/modelling-groups/%s/responsibilities/%s/",
+                    modelling_group_id, touchstone_id)
+    montagu_api_GET(location, path)
+  }
+}
+
+helper_get_responsibilities <- function(modelling_group_id, touchstone_id, 
+                                        location) {
+  resps <- helper_get_touchstone(modelling_group_id, touchstone_id, location)
+  
+  # resps is a list of responsibility sets, each has the same touchstone_id,
+  # different modelling_group_id. 
+  
+  if (is.null(modelling_group_id)) {
+    res <- list()
+    for (r in resps) {
+      res <- c(res, r$responsibilities)
+    }
+    res
+    
+  } else {
+    resps$responsibilities
+  }
 }
 
 helper_get_responsibility <- function(modelling_group_id, touchstone_id,
                                       scenario_id, location = NULL) {
 
-  resps <- helper_get_touchstone(modelling_group_id, touchstone_id,
-                                 location)$responsibilities
+  resps <- helper_get_responsibilities(modelling_group_id, touchstone_id,
+                                       location)
 
   select <- which(vcapply(resps, function(x) x$scenario$id) == scenario_id)
   if (length(select) == 0) {
     stop(sprintf("Unknown scenario with id '%s'", scenario_id))
   }
-  resps[[select]]
+  resps[select]
 }
+
 
 ##' A scenario describes the vaccination conditions for a particular run of a
 ##' model. Typical examples include a scenario where there is no vaccination,
@@ -93,47 +128,41 @@ helper_get_responsibility <- function(modelling_group_id, touchstone_id,
 ##' Depending on disease, modelling groups may be asked to model various
 ##' scenarios, for a particular touchstone.
 ##' @title Retrieve information about a scenario
+##' @param modelling_group_id id of the modelling group. If omitted, or null, 
+##' then all scenarios associated with the touchstone are returned.
 ##' @param touchstone_id id of the touchstone (including version)
-##' @inheritParams montagu_touchstone_versions
+##' @param location The montagu server to connect to.
 ##' @return Data frame of scenario_id, description and disease.
 ##' @export
-montagu_scenarios <- function(modelling_group_id, touchstone_id,
+montagu_scenarios <- function(modelling_group_id = NULL, 
+                              touchstone_id,
                               location = NULL) {
-
-  resps <- helper_get_touchstone(modelling_group_id, touchstone_id,
-                                 location)$responsibilities
-  data_frame(
+  
+  resps <- helper_get_responsibilities(modelling_group_id, touchstone_id, 
+                                       location)
+  
+  unique(data_frame(
     scenario_id = vcapply(resps, function(x) x$scenario$id),
     description = vcapply(resps, function(x) x$scenario$description),
-    disease = vcapply(resps, function(x) x$scenario$disease))
+    disease = vcapply(resps, function(x) x$scenario$disease)))
+  
 }
 
-##' A scenario describes the vaccination conditions for a particular run of a
-##' model. Typical examples include a scenario where there is no vaccination,
-##' a scenario where there is routine (background) vaccination, or a scenario
-##' in which there are targetted campaigns to vaccinate particularly ages.
-##' Depending on disease, modelling groups may be asked to model various
-##' scenarios, for a particular touchstone.
 ##' @title Retrieve current status of a groups' scenario.
 ##' @param scenario_id id of the scenario
-##' @inheritParams montagu_scenarios
+##' @inherit montagu_scenarios
 ##' @return "invalid", "complete", "valid", or "empty"
 ##' @export
 montagu_scenario_status <- function(modelling_group_id, touchstone_id,
                                     scenario_id, location = NULL) {
 
-  helper_get_responsibility(modelling_group_id, touchstone_id, scenario_id,
-                            location)$status
+  resps <- helper_get_responsibility(modelling_group_id, touchstone_id, scenario_id,
+                            location)
+  unlist(lapply(resps, "[[", "status"))
 }
 
-##' A scenario describes the vaccination conditions for a particular run of a
-##' model. Typical examples include a scenario where there is no vaccination,
-##' a scenario where there is routine (background) vaccination, or a scenario
-##' in which there are targetted campaigns to vaccinate particularly ages.
-##' Depending on disease, modelling groups may be asked to model various
-##' scenarios, for a particular touchstone.
 ##' @title Retrieve a list of any problems with a scenario.
-##' @inheritParams montagu_scenario_status
+##' @inherit montagu_scenario_status
 ##' @return A list of problem text.
 ##' @export
 montagu_scenario_problems <- function(modelling_group_id, touchstone_id,
@@ -263,11 +292,8 @@ montagu_expectation <- function(modelling_group_id, touchstone_id,
   )
 }
 
-##' The expectations, for a modelling group for a particular touchstone, indicate the
-##' range of chronological years, ages and countries for which burden estimates
-##' are expected, and which burden outcomes are required.
 ##' @title Get country list for an expectation
-##' @inheritParams montagu_expectation
+##' @inherit montagu_expectation
 ##' @param expectation_id Integer id of the expectation
 ##' @return A data frame of country id and name, for all expected countries.
 ##' @export
@@ -282,11 +308,8 @@ montagu_expectation_countries <- function(modelling_group_id, touchstone_id,
               name = vcapply(countries, function(x) x$name))
 }
 
-##' The expectations, for a modelling group for a particular touchstone, indicate the
-##' range of chronological years, ages and countries for which burden estimates
-##' are expected, and which burden outcomes are required.
 ##' @title Get expected outcomes
-##' @inheritParams montagu_expectation
+##' @inherit montagu_expectation
 ##' @return A vector of outcome names
 ##' @export
 montagu_expectation_outcomes <- function(modelling_group_id, touchstone_id,
