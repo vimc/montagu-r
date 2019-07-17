@@ -135,7 +135,8 @@ R6_montagu_server <- R6::R6Class(
     url_www = NULL,
     url_api = NULL,
     url_reports = NULL,
-    token = NULL,
+    token_api = NULL,
+    token_reports = NULL,
     cache = NULL,
 
     initialize = function(name, hostname, port, basic,
@@ -192,7 +193,7 @@ R6_montagu_server <- R6::R6Class(
     },
 
     is_authorised = function() {
-      !is.null(self$token) || self$orderly
+      !is.null(self$token_api) || self$orderly
     },
 
     reauthorise = function() {
@@ -205,12 +206,16 @@ R6_montagu_server <- R6::R6Class(
 
     reset_cache = function() {
       self$cache <- storr::storr_environment()
+    },
+
+    token = function(reports) {
+      if (reports) self$token_reports else self$token_api
     }
   ))
 
 
 montagu_server_authorise <- function(x, refresh = FALSE) {
-  if ((is.null(x$token) || refresh) && !x$orderly) {
+  if ((!x$is_authorised() || refresh) && !x$orderly) {
     message(sprintf("Authorising with server '%s' (%s)", x$name, x$url_www))
     username <- get_credential(x$username, "username", FALSE, x$name)
     password <- get_credential(x$password, "password", TRUE, x$name)
@@ -219,7 +224,8 @@ montagu_server_authorise <- function(x, refresh = FALSE) {
       basic_auth <- httr::authenticate(username, password)
       r <- httr::GET(x$url_reports, basic_auth)
       httr::stop_for_status(r)
-      x$token <- basic_auth
+      x$token_api <- basic_auth
+      x$token_reports <- basic_auth
     } else {
       auth_str <- openssl::base64_encode(sprintf(
         "%s:%s", username, password))
@@ -231,7 +237,17 @@ montagu_server_authorise <- function(x, refresh = FALSE) {
                       encode = "form")
       httr::stop_for_status(r)
       t <- from_json(httr::content(r, "text", encoding = "UTF-8"))
-      x$token <- httr::add_headers(
+      x$token_api <- httr::add_headers(
+        "Authorization" = paste("Bearer", t$access_token))
+
+      headers <- httr::add_headers(
+        "Authorization" = paste("token", t$access_token))
+      r <- httr::POST(paste0(x$url_reports, "/login/"),
+                      headers, x$opts$verbose, x$opts$insecure,
+                      encode = "form")
+      httr::stop_for_status(r)
+      t <- from_json(httr::content(r, "text", encoding = "UTF-8"))
+      x$token_reports <- httr::add_headers(
         "Authorization" = paste("Bearer", t$access_token))
     }
     ## Retain the username and password in case we reauthorise; only
@@ -273,7 +289,7 @@ montagu_server_request <- function(server, verb, path, ...,
   url <- paste0(base, path)
 
   do_request <- function() {
-    verb(url, server$token, server$opts$verbose, server$opts$insecure,
+    verb(url, server$token(reports), server$opts$verbose, server$opts$insecure,
          montagu_accept(accept), montagu_dest(dest, accept, progress), ...)
   }
   r <- do_request()
