@@ -1,3 +1,7 @@
+## 0.4.0
+
+* Support for the new montagu/OrderlyWeb authentication flow, required for use with montagu >= 2.0.0 (VIMC-3029)
+
 ## 0.3.9
 
 * More support for touchstone endpoints (VIMC-2722)

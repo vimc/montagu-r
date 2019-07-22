@@ -41,7 +41,7 @@ R6_montagu_orderly_remote <- R6::R6Class(
     pull = function(name, id, root) {
       tmp <- montagu_reports_report_download(name, id, location = self$location)
       on.exit(file.remove(tmp))
-      orderly::unzip_archive(tmp, root, name, id)
+      orderly:::unzip_archive(tmp, root, name, id)
     },
 
     push = function(...) {
