@@ -22,9 +22,11 @@ R6_montagu_orderly_remote <- R6::R6Class(
 
   public = list(
     location = NULL,
+    name = NULL,
 
     initialize = function(location) {
       self$location <- location
+      self$name <- location$name
     },
 
     ## in orderly we currently use report_names, report_versions
