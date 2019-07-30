@@ -5,7 +5,7 @@
 \title{orderly remote driver}
 \usage{
 montagu_orderly_remote(name, host, port = 443, basic = FALSE,
-  username = NULL, password = NULL)
+  github = FALSE, username = NULL, password = NULL)
 }
 \arguments{
 \item{name}{Name for the remote}
@@ -15,6 +15,12 @@ montagu_orderly_remote(name, host, port = 443, basic = FALSE,
 \item{port}{Port}
 
 \item{basic}{Logical, indicating if this remote uses basic authentication}
+
+\item{github}{Logical, indicating if the server is secured with
+OrderlyWeb's GitHub flow.  If provided then the \code{password}
+field must contain the github token, or the name of an
+environment variable that represents the github token (with a
+leading \code{$}, for example \code{$ORDERLY_GITHUB_TOKEN}).}
 
 \item{username}{Username}
 
