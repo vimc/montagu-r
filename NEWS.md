@@ -1,3 +1,7 @@
+## 0.5.0
+
+* Support for login using GitHub for OrderlyWeb (VIMC-3051)
+
 ## 0.4.0
 
 * Support for the new montagu/OrderlyWeb authentication flow, required for use with montagu >= 2.0.0 (VIMC-3029)
