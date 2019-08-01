@@ -14,6 +14,12 @@
 ##' @param basic Logical, indicating if the server is secured with
 ##'   http basic auth only.
 ##'
+##' @param github Logical, indicating if the server is secured with
+##'   OrderlyWeb's GitHub flow.  If provided then the \code{password}
+##'   field must contain the github token, or the name of an
+##'   environment variable that represents the github token (with a
+##'   leading \code{$}, for example \code{$ORDERLY_GITHUB_TOKEN}).
+##'
 ##' @param username The username.  If not given, then on
 ##'   authorisation, the user will be prompted.  Falls back on the R
 ##'   global options \code{montagu.<name>.username} and
@@ -44,13 +50,14 @@
 ##' @return Invisibly, a \code{montagu_server} object.
 ##' @importFrom R6 R6Class
 montagu_server <- function(name, hostname, port = 443, basic = FALSE,
+                           github = FALSE,
                            username = NULL, password = NULL,
                            orderly = FALSE,
                            verbose = FALSE, global = TRUE, overwrite = FALSE) {
   if (global && !overwrite && name %in% montagu_server_global_list()) {
     return(global_servers[[name]])
   }
-  server <- R6_montagu_server$new(name, hostname, port, basic,
+  server <- R6_montagu_server$new(name, hostname, port, basic, github,
                                   username, password, verbose, orderly)
   if (global) {
     global_servers[[name]] <- server
@@ -126,6 +133,7 @@ R6_montagu_server <- R6::R6Class(
     hostname = NULL,
     port = NULL,
     basic = NULL,
+    github = NULL,
     username = NULL,
     password = NULL,
     orderly = NULL,
@@ -139,13 +147,14 @@ R6_montagu_server <- R6::R6Class(
     token_reports = NULL,
     cache = NULL,
 
-    initialize = function(name, hostname, port, basic,
+    initialize = function(name, hostname, port, basic, github,
                           username, password, verbose,
                           orderly) {
       assert_scalar_character(name)
       assert_scalar_character(hostname)
       assert_scalar_integer(port)
       assert_scalar_logical(basic)
+      assert_scalar_logical(github)
       if (!is.null(username)) {
         assert_scalar_character(username)
       }
@@ -165,6 +174,7 @@ R6_montagu_server <- R6::R6Class(
       self$hostname <- hostname
       self$port <- port
       self$basic <- basic
+      self$github <- github
       self$username <- username
       self$password <- password
       self$orderly <- orderly
@@ -217,8 +227,17 @@ R6_montagu_server <- R6::R6Class(
 montagu_server_authorise <- function(x, refresh = FALSE) {
   if ((!x$is_authorised() || refresh) && !x$orderly) {
     message(sprintf("Authorising with server '%s' (%s)", x$name, x$url_www))
-    username <- get_credential(x$username, "username", FALSE, x$name)
-    password <- get_credential(x$password, "password", TRUE, x$name)
+    if (x$github) {
+      ## Slightly different path here - it's not great because there's
+      ## no way of hitting this option, but at least it's somewhat
+      ## sane.
+      password <- get_credential(x$password, "github token", TRUE, x$name)
+      password <- resolve_envvar(password)
+      username <- NULL
+    } else {
+      username <- get_credential(x$username, "username", FALSE, x$name)
+      password <- get_credential(x$password, "password", TRUE, x$name)
+    }
 
     if (x$basic) {
       basic_auth <- httr::authenticate(username, password)
@@ -226,6 +245,21 @@ montagu_server_authorise <- function(x, refresh = FALSE) {
       httr::stop_for_status(r)
       x$token_api <- basic_auth
       x$token_reports <- basic_auth
+    } else if (x$github) {
+      headers <- httr::add_headers(c(
+        "Authorization" = paste("token", password)))
+      r <- httr::POST(paste0(x$url_api, "/login/"), headers,
+                      x$opts$verbose, x$opts$insecure, encode = "form")
+      httr::stop_for_status(r)
+      t <- from_json(httr::content(r, "text", encoding = "UTF-8"))
+      ## NOTE: setting token_api here as well, even though it can't be
+      ## used, because otherwise the client won't think that it's
+      ## authorised.
+      x$token_api <- x$token_reports <-
+        httr::add_headers("Authorization" = paste("Bearer", t$access_token))
+      ## NOTE: in orderly web deployments, this will be the reporting
+      ## API url
+      x$url_reports <- x$url_api
     } else {
       auth_str <- openssl::base64_encode(sprintf(
         "%s:%s", username, password))

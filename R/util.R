@@ -141,3 +141,12 @@ response_to_json <- function(r) {
   txt <- httr::content(r, "text", encoding = "UTF-8")
   from_json(txt)
 }
+
+
+resolve_envvar <- function(x) {
+  if (identical(substr(x, 1, 1), "$")) {
+    Sys.getenv(substr(x, 2, nchar(x)))
+  } else {
+    x
+  }
+}

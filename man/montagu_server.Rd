@@ -5,8 +5,9 @@
 \title{Create a handle to a montagu server}
 \usage{
 montagu_server(name, hostname, port = 443, basic = FALSE,
-  username = NULL, password = NULL, orderly = FALSE,
-  verbose = FALSE, global = TRUE, overwrite = FALSE)
+  github = FALSE, username = NULL, password = NULL,
+  orderly = FALSE, verbose = FALSE, global = TRUE,
+  overwrite = FALSE)
 }
 \arguments{
 \item{name}{The name to call this server.  This appears in a few
@@ -20,6 +21,12 @@ which is the standard https port)}
 
 \item{basic}{Logical, indicating if the server is secured with
 http basic auth only.}
+
+\item{github}{Logical, indicating if the server is secured with
+OrderlyWeb's GitHub flow.  If provided then the \code{password}
+field must contain the github token, or the name of an
+environment variable that represents the github token (with a
+leading \code{$}, for example \code{$ORDERLY_GITHUB_TOKEN}).}
 
 \item{username}{The username.  If not given, then on
 authorisation, the user will be prompted.  Falls back on the R

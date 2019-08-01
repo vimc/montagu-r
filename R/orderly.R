@@ -5,13 +5,19 @@
 ##' @param host Hostname
 ##' @param port Port
 ##' @param basic Logical, indicating if this remote uses basic authentication
+##' @param github Logical, indicating if the server is secured with
+##'   OrderlyWeb's GitHub flow.  If provided then the \code{password}
+##'   field must contain the github token, or the name of an
+##'   environment variable that represents the github token (with a
+##'   leading \code{$}, for example \code{$ORDERLY_GITHUB_TOKEN}).
 ##' @param username Username
 ##' @param password Password
 ##' @export
 montagu_orderly_remote <- function(name, host, port = 443, basic = FALSE,
-                            username = NULL, password = NULL) {
+                                   github = FALSE, username = NULL,
+                                   password = NULL) {
   location <- montagu_server(name, hostname = host, port = port,
-                             basic = basic,
+                             basic = basic, github = github,
                              username = username, password = password)
   R6_montagu_orderly_remote$new(location)
 }
