@@ -315,8 +315,9 @@ montagu_expectation_countries <- function(modelling_group_id, touchstone_id,
 montagu_expectation_outcomes <- function(modelling_group_id, touchstone_id,
                                          expectation_id, location = NULL) {
 
-  helper_get_expectation(modelling_group_id, touchstone_id,
-                         expectation_id, location)$expectation$outcomes
+  unlist(lapply(helper_get_expectation(modelling_group_id, touchstone_id,
+                         expectation_id, location)$expectation$outcomes, 
+         "[[", "name"))
 }
 
 ##' Different scenarios may have different expectations. For example, for
