@@ -20,6 +20,6 @@ test_that("download correct model id", {
 test_that("download incorrect model id", {
   location <- montagu_test_server_user()
   expect_error(montagu_model(model_id = "YFICZZZ", location = location),
-               "Unknown model with id 'YFICZZZ'",
+               "Unknown model_id with id 'YFICZZZ'",
                class = "montagu_api_error")
 })
