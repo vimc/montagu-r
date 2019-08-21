@@ -317,7 +317,7 @@ montagu_expectation_outcomes <- function(modelling_group_id, touchstone_id,
 
   unlist(lapply(helper_get_expectation(modelling_group_id, touchstone_id,
                          expectation_id, location)$expectation$outcomes, 
-         "[[", "name"))
+         "[[", "code"))
 }
 
 ##' Different scenarios may have different expectations. For example, for
