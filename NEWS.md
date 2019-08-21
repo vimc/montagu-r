@@ -1,3 +1,7 @@
+## 0.5.1
+
+* Update montagu_expectation_outcomes due to API change. (VIMC-3102, VIMC-3081)
+
 ## 0.5.0
 
 * Support for login using GitHub for OrderlyWeb (VIMC-3051)

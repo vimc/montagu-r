@@ -17,7 +17,7 @@ Note that the package name is `montagu` but this repo is [`vimc/montagu-r`](http
 - [x] `/v1/modelling-groups/` (GET)
 - [ ] `/v1/modelling-groups/` (POST)
 - [x] `/v1/modelling-groups/:group-id/` (GET)
-- [ ] `/v1/modelling-groups/:group-id/actions/associate-memeber/` (POST)
+- [ ] `/v1/modelling-groups/:group-id/actions/associate-member/` (POST)
 - [x] `/v1/modelling-groups/:group-id/expectations/:touchstone-id/:expectation-id/` (GET)
 - [x] `/v1/modelling-groups/:group-id/model-run-parameters/:touchstone-id/` (GET)
 - [x] `/v1/modelling-groups/:group-id/model-run-parameters/:touchstone-id/` (POST)

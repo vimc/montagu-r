@@ -29,7 +29,7 @@ montagu::montagu_server_global_default_set(
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(error = FALSE, fig.path = "figure/montagu_user_guide-")
-options(montagu.username = "test.user@imperial.ac.uk",
+options(montagu.username = "test.admin@imperial.ac.uk",
         montagu.password = "password")
 montagu::montagu_server_global_default_set(
   montagu::montagu_server("science", "support.montagu.dide.ic.ac.uk", 11443))
