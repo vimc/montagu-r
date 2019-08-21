@@ -1,6 +1,6 @@
 ## 0.5.1
 
-* Update montagu_expectation_outcomes due to API change. (VIMC-3102, VIMC
+* Update montagu_expectation_outcomes due to API change. (VIMC-3102, VIMC-3081)
 
 ## 0.5.0
 
