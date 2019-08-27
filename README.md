@@ -2,7 +2,7 @@
 
 [![Travis build status](https://travis-ci.org/vimc/montagu-r.svg?branch=master)](https://travis-ci.org/vimc/montagu-r)
 
-This is the R client for the montagu API.  In the first instance, both the core API and the reporting API will be included here; the reporting API will probably later be spun out into its own thing so that it can be used for with orderly outside of montagu (but we have no timeline for that).
+This is the R client for the montagu API.
 
 Note that the package name is `montagu` but this repo is [`vimc/montagu-r`](https://github.com/vimc/montagu-r) to avoid colliding with the [main montagu repository](https://github.com/vimc/montagu).
 
@@ -60,23 +60,6 @@ Note that the package name is `montagu` but this repo is [`vimc/montagu-r`](http
 - [ ] `/v1/users/report-headers/:reportname/` (GET)
 - [ ] `/v1/users/rfp/agree-confidentiality/` (GET)
 - [ ] `/v1/users/rfp/agree-confidentiality/` (POST)
-
-### Reporting API
-
-- [ ] `/v1/`
-- [x] `/v1/data/csv/:id/`
-- [x] `/v1/data/rds/:id/`
-- [ ] `/v1/onetime_token/`
-- [x] `/v1/reports/`
-- [x] `/v1/reports/:name/`
-- [x] `/v1/reports/:name/:version/`
-- [x] `/v1/reports/:name/:version/all/`
-- [x] `/v1/reports/:name/:version/artefacts/`
-- [x] `/v1/reports/:name/:version/artefacts/:artefact/`
-- [x] `/v1/reports/:name/:version/resources/`
-- [ ] `/v1/reports/:name/:version/resources/:resource/`
-- [x] `/v1/reports/:name/:version/data/`
-- [x] `/v1/reports/:name/:version/data/:data/`
 
 ## Installation
 

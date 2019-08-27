@@ -1,3 +1,7 @@
+## 0.6.0
+
+* All orderly functionality has been moved into the `orderlyweb` package (VIMC-3053)
+
 ## 0.5.1
 
 * Update montagu_expectation_outcomes due to API change. (VIMC-3102, VIMC-3081)
