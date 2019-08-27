@@ -21,11 +21,6 @@
 ##'   global options \code{montagu.<name>.password} and
 ##'   \code{montagu.password} in turn.
 ##'
-##' @param orderly Logical, indicating if this is \emph{only} the
-##'   orderly.server part of the API (no auth, http, only a fraction
-##'   of endpoints missing).  This is only useful for testing
-##'   \code{orderly.runner}.
-##'
 ##' @param verbose Logical, indicating if verbose http communication
 ##'   should be used.  This is for debugging only.
 ##'
@@ -42,13 +37,12 @@
 ##' @importFrom R6 R6Class
 montagu_server <- function(name, hostname, port = 443,
                            username = NULL, password = NULL,
-                           orderly = FALSE,
                            verbose = FALSE, global = TRUE, overwrite = FALSE) {
   if (global && !overwrite && name %in% montagu_server_global_list()) {
     return(global_servers[[name]])
   }
-  server <- R6_montagu_server$new(name, hostname, port,
-                                  username, password, verbose, orderly)
+  server <- R6_montagu_server$new(name, hostname, port, username, password,
+                                  verbose)
   if (global) {
     global_servers[[name]] <- server
   }
@@ -97,22 +91,12 @@ montagu_location <- function(location) {
 
 ## Then these are the functions to use from code
 montagu_api_GET <- function(location, path, ...) {
-  montagu_location(location)$request(httr::GET, path, ..., reports = FALSE)
+  montagu_location(location)$request(httr::GET, path, ...)
 }
 
 
 montagu_api_POST <- function(location, path, ...) {
-  montagu_location(location)$request(httr::POST, path, ..., reports = FALSE)
-}
-
-
-montagu_reports_GET <- function(location, path, ...) {
-  montagu_location(location)$request(httr::GET, path, ..., reports = TRUE)
-}
-
-
-montagu_reports_POST <- function(location, path, ...) {
-  montagu_location(location)$request(httr::POST, path, ..., reports = TRUE)
+  montagu_location(location)$request(httr::POST, path, ...)
 }
 
 
@@ -124,19 +108,15 @@ R6_montagu_server <- R6::R6Class(
     port = NULL,
     username = NULL,
     password = NULL,
-    orderly = NULL,
-    protocol = NULL,
     api_version = 1L,
     opts = NULL,
     url_www = NULL,
     url_api = NULL,
-    url_reports = NULL,
     token = NULL,
     cache = NULL,
 
     initialize = function(name, hostname, port,
-                          username, password, verbose,
-                          orderly) {
+                          username, password, verbose) {
       assert_scalar_character(name)
       assert_scalar_character(hostname)
       assert_scalar_integer(port)
@@ -146,37 +126,24 @@ R6_montagu_server <- R6::R6Class(
       if (!is.null(password)) {
         assert_scalar_character(password)
       }
-      assert_scalar_logical(orderly)
-      if (orderly) {
-        self$protocol <- "http"
-        prefix <- ""
-      } else {
-        self$protocol <- "https"
-        prefix <- "/reports/api"
-      }
 
       self$name <- name
       self$hostname <- hostname
       self$port <- port
       self$username <- username
       self$password <- password
-      self$orderly <- orderly
 
       self$opts <- list(
         verbose = if (verbose) httr::verbose(),
-        insecure = if (hostname == "localhost" && self$protocol == "https")
-                     curl_insecure())
-      if (port == 443 && self$protocol == "https") {
-        self$url_www <- sprintf("%s://%s", self$protocol, hostname)
+        insecure = if (hostname == "localhost") curl_insecure())
+      if (port == 443) {
+        self$url_www <- sprintf("https://%s", hostname)
       } else {
-        self$url_www <- sprintf("%s://%s:%s", self$protocol, hostname, port)
+        self$url_www <- sprintf("https://%s:%s", hostname, port)
       }
 
-      self$url_api <- sprintf("%s://%s:%d/api/v%d",
-                              self$protocol, hostname, port, self$api_version)
-      self$url_reports <- sprintf("%s://%s:%d%s/v%d",
-                                  self$protocol, hostname, port, prefix,
-                                  self$api_version)
+      self$url_api <- sprintf("https://%s:%d/api/v%d",
+                              hostname, port, self$api_version)
 
       self$cache <- montagu_cache(name)
     },
@@ -186,7 +153,7 @@ R6_montagu_server <- R6::R6Class(
     },
 
     is_authorised = function() {
-      !is.null(self$token) || self$orderly
+      !is.null(self$token)
     },
 
     reauthorise = function() {
@@ -204,7 +171,7 @@ R6_montagu_server <- R6::R6Class(
 
 
 montagu_server_authorise <- function(x, refresh = FALSE, quiet = FALSE) {
-  if ((!x$is_authorised() || refresh) && !x$orderly) {
+  if (!x$is_authorised() || refresh) {
     if (!quiet) {
       message(sprintf("Authorising with server '%s' (%s)", x$name, x$url_www))
     }
@@ -248,12 +215,10 @@ get_credential <- function(value, name, secret, location) {
 
 
 montagu_server_request <- function(server, verb, path, ...,
-                                   accept = "json", dest = NULL,
-                                   progress = TRUE,
-                                   reports = FALSE, montagu = NULL,
-                                   retry_on_auth_error = TRUE) {
+                                   accept = "json",
+                                   retry_on_auth_error = TRUE,
+                                   dest = NULL, progress = TRUE) {
   server$authorise()
-  base <- if (reports) server$url_reports else server$url_api
   if (!grepl("^/", path)) {
     stop("Expected an absolute path")
   }
@@ -261,7 +226,7 @@ montagu_server_request <- function(server, verb, path, ...,
   if (grepl(re_version, path)) {
     path <- sub(re_version, "/", path)
   }
-  url <- paste0(base, path)
+  url <- paste0(server$url_api, path)
 
   do_request <- function() {
     verb(url, server$token$header, server$opts$verbose, server$opts$insecure,
