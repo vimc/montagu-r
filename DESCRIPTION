@@ -23,7 +23,6 @@ Suggests:
     knitr,
     orderly (>= 0.7.5),
     orderlyweb (>= 0.1.1),
-    orderly.server (>= 0.1.2),
     rmarkdown,
     sys,
     testthat,
