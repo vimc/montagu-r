@@ -95,7 +95,7 @@ test_that("demographic list is cached within session", {
   expect_identical(d, location$cache$get(touchstone_id, "demographics_list"))
   ## Remove the token so that we can't possibly make a call; if we do
   ## make a call after this we'll get a message
-  location$token_api <- NULL
+  location$token <- NULL
   expect_message(
     d2 <- montagu_demographics_list(touchstone_id, location = location),
     NA)
