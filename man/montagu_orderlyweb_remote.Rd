@@ -4,13 +4,13 @@
 \alias{montagu_orderlyweb_remote}
 \title{orderly remote driver}
 \usage{
-montagu_orderlyweb_remote(name, hostname, port, ...)
+montagu_orderlyweb_remote(name, host, port, ...)
 }
 \arguments{
 \item{name}{Name for the remote, shared with the
 \code{\link{montagu_server}} name.}
 
-\item{hostname}{Hostname, shared with the
+\item{host}{Hostname, shared with the
 \code{\link{montagu_server}} host.}
 
 \item{port}{Port, shared with the

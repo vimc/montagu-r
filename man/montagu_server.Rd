@@ -4,7 +4,7 @@
 \alias{montagu_server}
 \title{Create a handle to a montagu server}
 \usage{
-montagu_server(name, hostname, port = 443, username = NULL,
+montagu_server(name, host, port = 443, username = NULL,
   password = NULL, verbose = FALSE, global = TRUE,
   overwrite = FALSE)
 }
@@ -13,7 +13,7 @@ montagu_server(name, hostname, port = 443, username = NULL,
 places as a "friendly" name.  If \code{global = TRUE} then this
 will be available from the package using this name.}
 
-\item{hostname}{The hostname of the server}
+\item{host}{The hostname of the server}
 
 \item{port}{The port the server is running on (default is 443
 which is the standard https port)}

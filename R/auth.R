@@ -6,7 +6,7 @@
 ##'   places as a "friendly" name.  If \code{global = TRUE} then this
 ##'   will be available from the package using this name.
 ##'
-##' @param hostname The hostname of the server
+##' @param host The hostname of the server
 ##'
 ##' @param port The port the server is running on (default is 443
 ##'   which is the standard https port)
@@ -35,13 +35,13 @@
 ##' @export
 ##' @return Invisibly, a \code{montagu_server} object.
 ##' @importFrom R6 R6Class
-montagu_server <- function(name, hostname, port = 443,
+montagu_server <- function(name, host, port = 443,
                            username = NULL, password = NULL,
                            verbose = FALSE, global = TRUE, overwrite = FALSE) {
   if (global && !overwrite && name %in% montagu_server_global_list()) {
     return(global_servers[[name]])
   }
-  server <- R6_montagu_server$new(name, hostname, port, username, password,
+  server <- R6_montagu_server$new(name, host, port, username, password,
                                   verbose)
   if (global) {
     global_servers[[name]] <- server
@@ -104,7 +104,7 @@ R6_montagu_server <- R6::R6Class(
   "montagu_server",
   public = list(
     name = NULL,
-    hostname = NULL,
+    host = NULL,
     port = NULL,
     username = NULL,
     password = NULL,
@@ -115,10 +115,10 @@ R6_montagu_server <- R6::R6Class(
     token = NULL,
     cache = NULL,
 
-    initialize = function(name, hostname, port,
+    initialize = function(name, host, port,
                           username, password, verbose) {
       assert_scalar_character(name)
-      assert_scalar_character(hostname)
+      assert_scalar_character(host)
       assert_scalar_integer(port)
       if (!is.null(username)) {
         assert_scalar_character(username)
@@ -128,22 +128,22 @@ R6_montagu_server <- R6::R6Class(
       }
 
       self$name <- name
-      self$hostname <- hostname
+      self$host <- host
       self$port <- port
       self$username <- username
       self$password <- password
 
       self$opts <- list(
         verbose = if (verbose) httr::verbose(),
-        insecure = if (hostname == "localhost") curl_insecure())
+        insecure = if (host == "localhost") curl_insecure())
       if (port == 443) {
-        self$url_www <- sprintf("https://%s", hostname)
+        self$url_www <- sprintf("https://%s", host)
       } else {
-        self$url_www <- sprintf("https://%s:%s", hostname, port)
+        self$url_www <- sprintf("https://%s:%s", host, port)
       }
 
       self$url_api <- sprintf("https://%s:%d/api/v%d",
-                              hostname, port, self$api_version)
+                              host, port, self$api_version)
 
       self$cache <- montagu_cache(name)
     },

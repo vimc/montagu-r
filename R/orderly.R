@@ -5,7 +5,7 @@
 ##' @param name Name for the remote, shared with the
 ##'   \code{\link{montagu_server}} name.
 ##'
-##' @param hostname Hostname, shared with the
+##' @param host Hostname, shared with the
 ##'   \code{\link{montagu_server}} host.
 ##'
 ##' @param port Port, shared with the
@@ -14,10 +14,10 @@
 ##' @param ... Additional arguments passed through to
 ##'   \code{\link{montagu_server}}
 ##' @export
-montagu_orderlyweb_remote <- function(name, hostname, port, ...) {
-  montagu <- montagu_server(name, hostname, port, ...)
+montagu_orderlyweb_remote <- function(name, host, port, ...) {
+  montagu <- montagu_server(name, host, port, ...)
   token <- montagu_orderlyweb_token(montagu)
-  orderlyweb_remote(hostname, port, token, name = name, prefix = "reports")
+  orderlyweb_remote(host, port, token, name = name, prefix = "reports")
 }
 
 
