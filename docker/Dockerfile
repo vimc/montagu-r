@@ -38,7 +38,4 @@ RUN install_packages --repo "https://vimc.github.io/drat" \
 RUN Rscript -e "tinytex::install_tinytex()"
 ENV PATH="/root/bin:$PATH"
 
-## TODO: Do not merge with this line in
-RUN install_remote vimc/orderlyweb@vimc-3103
-
 COPY . /montagu
