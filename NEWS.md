@@ -1,6 +1,6 @@
 ## 0.6.0
 
-* All orderly functionality has been moved into the `orderlyweb` package (VIMC-3053)
+* All orderly functionality has been moved into the `orderlyweb` package (VIMC-3103)
 
 ## 0.5.1
 
