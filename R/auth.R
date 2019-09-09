@@ -6,19 +6,10 @@
 ##'   places as a "friendly" name.  If \code{global = TRUE} then this
 ##'   will be available from the package using this name.
 ##'
-##' @param hostname The hostname of the server
+##' @param host The hostname of the server
 ##'
 ##' @param port The port the server is running on (default is 443
 ##'   which is the standard https port)
-##'
-##' @param basic Logical, indicating if the server is secured with
-##'   http basic auth only.
-##'
-##' @param github Logical, indicating if the server is secured with
-##'   OrderlyWeb's GitHub flow.  If provided then the \code{password}
-##'   field must contain the github token, or the name of an
-##'   environment variable that represents the github token (with a
-##'   leading \code{$}, for example \code{$ORDERLY_GITHUB_TOKEN}).
 ##'
 ##' @param username The username.  If not given, then on
 ##'   authorisation, the user will be prompted.  Falls back on the R
@@ -29,11 +20,6 @@
 ##'   authorisation, the user will be prompted.  Falls back on the R
 ##'   global options \code{montagu.<name>.password} and
 ##'   \code{montagu.password} in turn.
-##'
-##' @param orderly Logical, indicating if this is \emph{only} the
-##'   orderly.server part of the API (no auth, http, only a fraction
-##'   of endpoints missing).  This is only useful for testing
-##'   \code{orderly.runner}.
 ##'
 ##' @param verbose Logical, indicating if verbose http communication
 ##'   should be used.  This is for debugging only.
@@ -49,16 +35,14 @@
 ##' @export
 ##' @return Invisibly, a \code{montagu_server} object.
 ##' @importFrom R6 R6Class
-montagu_server <- function(name, hostname, port = 443, basic = FALSE,
-                           github = FALSE,
+montagu_server <- function(name, host, port = 443,
                            username = NULL, password = NULL,
-                           orderly = FALSE,
                            verbose = FALSE, global = TRUE, overwrite = FALSE) {
   if (global && !overwrite && name %in% montagu_server_global_list()) {
     return(global_servers[[name]])
   }
-  server <- R6_montagu_server$new(name, hostname, port, basic, github,
-                                  username, password, verbose, orderly)
+  server <- R6_montagu_server$new(name, host, port, username, password,
+                                  verbose)
   if (global) {
     global_servers[[name]] <- server
   }
@@ -107,22 +91,12 @@ montagu_location <- function(location) {
 
 ## Then these are the functions to use from code
 montagu_api_GET <- function(location, path, ...) {
-  montagu_location(location)$request(httr::GET, path, ..., reports = FALSE)
+  montagu_location(location)$request(httr::GET, path, ...)
 }
 
 
 montagu_api_POST <- function(location, path, ...) {
-  montagu_location(location)$request(httr::POST, path, ..., reports = FALSE)
-}
-
-
-montagu_reports_GET <- function(location, path, ...) {
-  montagu_location(location)$request(httr::GET, path, ..., reports = TRUE)
-}
-
-
-montagu_reports_POST <- function(location, path, ...) {
-  montagu_location(location)$request(httr::POST, path, ..., reports = TRUE)
+  montagu_location(location)$request(httr::POST, path, ...)
 }
 
 
@@ -130,80 +104,56 @@ R6_montagu_server <- R6::R6Class(
   "montagu_server",
   public = list(
     name = NULL,
-    hostname = NULL,
+    host = NULL,
     port = NULL,
-    basic = NULL,
-    github = NULL,
     username = NULL,
     password = NULL,
-    orderly = NULL,
-    protocol = NULL,
     api_version = 1L,
     opts = NULL,
     url_www = NULL,
     url_api = NULL,
-    url_reports = NULL,
-    token_api = NULL,
-    token_reports = NULL,
+    token = NULL,
     cache = NULL,
 
-    initialize = function(name, hostname, port, basic, github,
-                          username, password, verbose,
-                          orderly) {
+    initialize = function(name, host, port,
+                          username, password, verbose) {
       assert_scalar_character(name)
-      assert_scalar_character(hostname)
+      assert_scalar_character(host)
       assert_scalar_integer(port)
-      assert_scalar_logical(basic)
-      assert_scalar_logical(github)
       if (!is.null(username)) {
         assert_scalar_character(username)
       }
       if (!is.null(password)) {
         assert_scalar_character(password)
       }
-      assert_scalar_logical(orderly)
-      if (orderly) {
-        self$protocol <- "http"
-        prefix <- ""
-      } else {
-        self$protocol <- "https"
-        prefix <- "/reports/api"
-      }
 
       self$name <- name
-      self$hostname <- hostname
+      self$host <- host
       self$port <- port
-      self$basic <- basic
-      self$github <- github
       self$username <- username
       self$password <- password
-      self$orderly <- orderly
 
       self$opts <- list(
         verbose = if (verbose) httr::verbose(),
-        insecure = if (hostname == "localhost" && self$protocol == "https")
-                     curl_insecure())
-      if (port == 443 && self$protocol == "https") {
-        self$url_www <- sprintf("%s://%s", self$protocol, hostname)
+        insecure = if (host == "localhost") curl_insecure())
+      if (port == 443) {
+        self$url_www <- sprintf("https://%s", host)
       } else {
-        self$url_www <- sprintf("%s://%s:%s", self$protocol, hostname, port)
+        self$url_www <- sprintf("https://%s:%s", host, port)
       }
 
-      self$url_api <- sprintf("%s://%s:%d/api/v%d",
-                              self$protocol, hostname, port, self$api_version)
-      self$url_reports <- sprintf("%s://%s:%d%s/v%d",
-                                  self$protocol, hostname, port, prefix,
-                                  self$api_version)
+      self$url_api <- sprintf("https://%s:%d/api/v%d",
+                              host, port, self$api_version)
 
       self$cache <- montagu_cache(name)
     },
 
-    authorise = function(refresh = FALSE) {
-      montagu_server_authorise(self, refresh)
+    authorise = function(refresh = FALSE, quiet = FALSE) {
+      montagu_server_authorise(self, refresh, quiet)
     },
 
     is_authorised = function() {
-      !is.null(self$token_api) || self$orderly
+      !is.null(self$token)
     },
 
     reauthorise = function() {
@@ -216,74 +166,32 @@ R6_montagu_server <- R6::R6Class(
 
     reset_cache = function() {
       self$cache <- storr::storr_environment()
-    },
-
-    token = function(reports) {
-      if (reports) self$token_reports else self$token_api
     }
   ))
 
 
-montagu_server_authorise <- function(x, refresh = FALSE) {
-  if ((!x$is_authorised() || refresh) && !x$orderly) {
-    message(sprintf("Authorising with server '%s' (%s)", x$name, x$url_www))
-    if (x$github) {
-      ## Slightly different path here - it's not great because there's
-      ## no way of hitting this option, but at least it's somewhat
-      ## sane.
-      password <- get_credential(x$password, "github token", TRUE, x$name)
-      password <- resolve_envvar(password)
-      username <- NULL
-    } else {
-      username <- get_credential(x$username, "username", FALSE, x$name)
-      password <- get_credential(x$password, "password", TRUE, x$name)
+montagu_server_authorise <- function(x, refresh = FALSE, quiet = FALSE) {
+  if (!x$is_authorised() || refresh) {
+    if (!quiet) {
+      message(sprintf("Authorising with server '%s' (%s)", x$name, x$url_www))
     }
+    username <- get_credential(x$username, "username", FALSE, x$name)
+    password <- get_credential(x$password, "password", TRUE, x$name)
 
-    if (x$basic) {
-      basic_auth <- httr::authenticate(username, password)
-      r <- httr::GET(x$url_reports, basic_auth)
-      httr::stop_for_status(r)
-      x$token_api <- basic_auth
-      x$token_reports <- basic_auth
-    } else if (x$github) {
-      headers <- httr::add_headers(c(
-        "Authorization" = paste("token", password)))
-      r <- httr::POST(paste0(x$url_api, "/login/"), headers,
-                      x$opts$verbose, x$opts$insecure, encode = "form")
-      httr::stop_for_status(r)
-      t <- from_json(httr::content(r, "text", encoding = "UTF-8"))
-      ## NOTE: setting token_api here as well, even though it can't be
-      ## used, because otherwise the client won't think that it's
-      ## authorised.
-      x$token_api <- x$token_reports <-
-        httr::add_headers("Authorization" = paste("Bearer", t$access_token))
-      ## NOTE: in orderly web deployments, this will be the reporting
-      ## API url
-      x$url_reports <- x$url_api
-    } else {
-      auth_str <- openssl::base64_encode(sprintf(
-        "%s:%s", username, password))
-      headers <- httr::add_headers("Authorization" = paste("Basic", auth_str))
+    auth_str <- openssl::base64_encode(sprintf(
+      "%s:%s", username, password))
+    headers <- httr::add_headers("Authorization" = paste("Basic", auth_str))
 
-      r <- httr::POST(paste0(x$url_api, "/authenticate/"),
-                      headers, x$opts$verbose, x$opts$insecure,
-                      body = list("grant_type" = "client_credentials"),
-                      encode = "form")
-      httr::stop_for_status(r)
-      t <- from_json(httr::content(r, "text", encoding = "UTF-8"))
-      x$token_api <- httr::add_headers(
-        "Authorization" = paste("Bearer", t$access_token))
+    r <- httr::POST(paste0(x$url_api, "/authenticate/"),
+                    headers, x$opts$verbose, x$opts$insecure,
+                    body = list("grant_type" = "client_credentials"),
+                    encode = "form")
+    httr::stop_for_status(r)
 
-      headers <- httr::add_headers(
-        "Authorization" = paste("token", t$access_token))
-      r <- httr::POST(paste0(x$url_reports, "/login/"),
-                      headers, x$opts$verbose, x$opts$insecure,
-                      encode = "form")
-      httr::stop_for_status(r)
-      t <- from_json(httr::content(r, "text", encoding = "UTF-8"))
-      x$token_reports <- httr::add_headers(
-        "Authorization" = paste("Bearer", t$access_token))
-    }
+    token <- response_to_json(r)$access_token
+    header <- httr::add_headers("Authorization" = paste("Bearer", token))
+    x$token <- list(header = header, value = token)
+
     ## Retain the username and password in case we reauthorise; only
     ## do this on exit because it's only then we know they're correct
     x$username <- username
@@ -307,12 +215,10 @@ get_credential <- function(value, name, secret, location) {
 
 
 montagu_server_request <- function(server, verb, path, ...,
-                                   accept = "json", dest = NULL,
-                                   progress = TRUE,
-                                   reports = FALSE, montagu = NULL,
-                                   retry_on_auth_error = TRUE) {
+                                   accept = "json",
+                                   retry_on_auth_error = TRUE,
+                                   dest = NULL, progress = TRUE) {
   server$authorise()
-  base <- if (reports) server$url_reports else server$url_api
   if (!grepl("^/", path)) {
     stop("Expected an absolute path")
   }
@@ -320,10 +226,10 @@ montagu_server_request <- function(server, verb, path, ...,
   if (grepl(re_version, path)) {
     path <- sub(re_version, "/", path)
   }
-  url <- paste0(base, path)
+  url <- paste0(server$url_api, path)
 
   do_request <- function() {
-    verb(url, server$token(reports), server$opts$verbose, server$opts$insecure,
+    verb(url, server$token$header, server$opts$verbose, server$opts$insecure,
          montagu_accept(accept), montagu_dest(dest, accept, progress), ...)
   }
   r <- do_request()

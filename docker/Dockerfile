@@ -25,7 +25,7 @@ RUN install_packages --repo "https://vimc.github.io/drat" \
     knitr \
     openssl \
     orderly \
-    orderly.server \
+    orderlyweb \
     pkgdown \
     progress \
     rmarkdown \

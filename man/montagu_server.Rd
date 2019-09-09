@@ -4,9 +4,8 @@
 \alias{montagu_server}
 \title{Create a handle to a montagu server}
 \usage{
-montagu_server(name, hostname, port = 443, basic = FALSE,
-  github = FALSE, username = NULL, password = NULL,
-  orderly = FALSE, verbose = FALSE, global = TRUE,
+montagu_server(name, host, port = 443, username = NULL,
+  password = NULL, verbose = FALSE, global = TRUE,
   overwrite = FALSE)
 }
 \arguments{
@@ -14,19 +13,10 @@ montagu_server(name, hostname, port = 443, basic = FALSE,
 places as a "friendly" name.  If \code{global = TRUE} then this
 will be available from the package using this name.}
 
-\item{hostname}{The hostname of the server}
+\item{host}{The hostname of the server}
 
 \item{port}{The port the server is running on (default is 443
 which is the standard https port)}
-
-\item{basic}{Logical, indicating if the server is secured with
-http basic auth only.}
-
-\item{github}{Logical, indicating if the server is secured with
-OrderlyWeb's GitHub flow.  If provided then the \code{password}
-field must contain the github token, or the name of an
-environment variable that represents the github token (with a
-leading \code{$}, for example \code{$ORDERLY_GITHUB_TOKEN}).}
 
 \item{username}{The username.  If not given, then on
 authorisation, the user will be prompted.  Falls back on the R
@@ -37,11 +27,6 @@ global options \code{montagu.<name>.username} and
 authorisation, the user will be prompted.  Falls back on the R
 global options \code{montagu.<name>.password} and
 \code{montagu.password} in turn.}
-
-\item{orderly}{Logical, indicating if this is \emph{only} the
-orderly.server part of the API (no auth, http, only a fraction
-of endpoints missing).  This is only useful for testing
-\code{orderly.runner}.}
 
 \item{verbose}{Logical, indicating if verbose http communication
 should be used.  This is for debugging only.}
