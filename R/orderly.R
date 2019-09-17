@@ -17,7 +17,8 @@
 montagu_orderlyweb_remote <- function(name, host, port, ...) {
   montagu <- montagu_server(name, host, port, ...)
   token <- montagu_orderlyweb_token(montagu)
-  orderlyweb_remote(host, port, token, name = name, prefix = "reports")
+  orderlyweb::orderlyweb_remote(host, port, token, name = name,
+                                prefix = "reports")
 }
 
 
