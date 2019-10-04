@@ -41,7 +41,3 @@ montagu_test_server <- function(username = NULL, password = NULL) {
   }
   "testing"
 }
-
-skip_on_windows <- function() {
-  testthat::skip_on_os("windows")
-}
