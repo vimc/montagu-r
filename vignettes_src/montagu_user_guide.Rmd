@@ -29,7 +29,7 @@ montagu::montagu_server_global_default_set(
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(error = FALSE, fig.path = "figure/montagu_user_guide-")
-options(montagu.username = "test.admin@imperial.ac.uk",
+options(montagu.username = "test.modeller@imperial.ac.uk",
         montagu.password = "password")
 montagu::montagu_server_global_default_set(
   montagu::montagu_server("science", "support.montagu.dide.ic.ac.uk", 11443))
@@ -109,10 +109,6 @@ Some modelling groups model more than one disease, in which case a row appears
 for each disease. And additionally, if there is some reason to have different
 expectations for different scenarios, then multiple lines for the same disease
 may appear, with a difference in the description column indicating the scenario.
-For example:
-```{r}
-montagu::montagu_expectations("CDA-Razavi", "201710gavi-5")
-```
 
 If we already knew the expectation id, we could look up
 a single expectation with
@@ -139,7 +135,6 @@ And to confirm which scnearios an expectation applies to (which should align
 with the description text for the expectation):
 ```{r}
 montagu::montagu_expectation_applicable_scenarios("IC-Garske", "201710gavi-5", 30)
-montagu::montagu_expectation_applicable_scenarios("CDA-Razavi", "201710gavi-5", 2)
 ```
 
 ### Demography
@@ -254,14 +249,7 @@ the full coverage data for all countries. And for some diseases, the historic ef
 in a country that is not required for estimates as present, may have relevance in their model to 
 countries that are required. 
 
-For those cases, where all countries are required, the optional `all_countries` argument can be used as follows:
-
-```{r}
-cov_all <- montagu::montagu_coverage_data("CDA-Razavi", "201710gavi-5", "hepb-bd-routine-with", all_countries = TRUE)
-cov_not <- montagu::montagu_coverage_data("CDA-Razavi", "201710gavi-5", "hepb-bd-routine-with", all_countries = FALSE)
-length(unique(cov_all$country))
-length(unique(cov_not$country))
-```
+For those cases, where all countries are required, the optional `all_countries` argument can be used.
 
 ## Burden Estimate Sets
 
@@ -298,17 +286,12 @@ A new burden estimate set can be created as follows:-
 ```r
 bsid <- montagu::montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", "central-averaged",
-    model_run_parameter_set = NULL, details = "Details about model")
+    details = "Details about model")
 ```
 
 The fourth parameter, the type, is either:
 * `central-averaged` - for a central estimate that is calculated by the average of a number of runs
 * `central-single-run` - for a stand-alone central estimate run.
-* `stochastic` - for a run that is part of a stochastic ensemble.
-
-For central estimates, the `model_run_parameter_set` can be ignored, or set to NULL as shown here,
-but it should not have a non-null value. For stochastic estimates, it must be set to a valid
-model run parameter set - see the section below on stochastic runs.
 
 The result of the burden estimate set creation is the id of the newly created burden estimate set,
 which must be given when we later upload results.
@@ -361,8 +344,8 @@ for each instance. We would call the instance number, between 1 and 200, the `ru
 would be a unique set of parameters for each. 
 
 It is important that for a given `run_id`, all the
-relevant scenarios are run with the matching set of parameters for that `run_id`, so that we can 
-compare scenarios and calculate impacts. 
+scenarios are run with the matching set of parameters for that `run_id`, so that we can 
+calculate impacts by comparing scenarios. 
 
 It is also important that the spread of parameters chosen across the 200 runs significantly captures
 the range of sensible behaviour of the model, and that the central estimates submitted are somewhere
@@ -372,6 +355,12 @@ Lastly, it is desirable to vary as few parameters as possible, so that with 200 
 how the parameter changes affect the model outcomes. If there are too many parameters, it may be
 difficult to ascertain which parameters are causing the changes, or whether the spread of 
 parameters really does capture the significant behaviour of the model.
+
+The R client cannot currently support the full upload process of stochastic runs. Because of their
+large volume, and the international locations of modelling groups, dropbox provides a more
+robust service for uploading. It is possible, however, to work with model run parameter sets,
+and using the Montagu client will make it easier to produce the stochastic results (perhaps
+directly into a local dropbox folder), in a systematic way.
 
 ### Model Run Parameter Sets
 
@@ -394,14 +383,7 @@ id <- montagu::montagu_model_run_parameter_set_upload(
     "IC-Garske", "201710gavi-5", "YF", params)
 ```
 
-and the id of the newly created parameter set will be returned. For stochastic data, we will
-need to supply this id when creating the associated stochastic burden estimate set:-
-
-```r
-bsid <- montagu::montagu_burden_estimate_set_create(
-    "IC-Garske", "201710gavi-5", "yf-no-vaccination", 
-    "stochastic", id, "Stochastic runs")
-```
+The id of the newly created parameter set will be returned. 
 
 We can also list the existing model run parameter sets with:-
 

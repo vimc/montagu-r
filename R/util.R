@@ -150,3 +150,8 @@ resolve_envvar <- function(x) {
     x
   }
 }
+
+split_by <- function(x, by) {
+  stopifnot(length(x) == 1)
+  strsplit(x, by)[[1]]
+}

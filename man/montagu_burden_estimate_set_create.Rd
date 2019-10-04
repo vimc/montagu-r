@@ -5,8 +5,7 @@
 \title{Create a new burden estimate set}
 \usage{
 montagu_burden_estimate_set_create(modelling_group_id, touchstone_id,
-  scenario_id, type, model_run_parameter_set = NULL, details = NULL,
-  location = NULL)
+  scenario_id, type, details = NULL, location = NULL)
 }
 \arguments{
 \item{modelling_group_id}{Modelling group identifier}
@@ -15,10 +14,7 @@ montagu_burden_estimate_set_create(modelling_group_id, touchstone_id,
 
 \item{scenario_id}{Scenario identifier}
 
-\item{type}{Can be `central-single-run`, `central-averaged`
-or `stochastic`}
-
-\item{model_run_parameter_set}{Identifier for the parameter set}
+\item{type}{Can be `central-single-run` or `central-averaged`}
 
 \item{details}{Optional details string}
 
