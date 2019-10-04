@@ -158,7 +158,7 @@ montagu_burden_estimate_set_create <- function(modelling_group_id,
   assert_character(type)
 
   if (!type %in% c("central-single-run", "central-averaged")) {
-    stop("Invalid type - must be one of central-single-run or central-everaged.")
+    stop("Invalid type - must be one of central-single-run or central-averaged.")
   }
 
   path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/",

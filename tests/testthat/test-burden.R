@@ -376,7 +376,7 @@ test_that("Create Burden Estimate - incorrect type", {
   expect_error(montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", "plastic",
     "Details", location),
-    "Invalid type - must be one of central-single-run or central-everaged.",
+    "Invalid type - must be one of central-single-run or central-averaged.",
     class = "simpleError")
 })
 
