@@ -144,51 +144,28 @@ montagu_burden_estimate_set_problems <- function(modelling_group_id,
 ##' @export
 ##' @title Create a new burden estimate set
 ##' @inherit montagu_burden_estimate_sets
-##' @param type Can be `central-single-run`, `central-averaged`
-##' or `stochastic`
-##' @param model_run_parameter_set Identifier for the parameter set
+##' @param type Can be `central-single-run` or `central-averaged`
 ##' @param details Optional details string
 ##' @return The id of the burden estimate set
 montagu_burden_estimate_set_create <- function(modelling_group_id,
                                                touchstone_id, scenario_id,
                                                type,
-                                               model_run_parameter_set = NULL,
                                                details = NULL,
                                                location = NULL) {
   assert_character(modelling_group_id)
   assert_character(touchstone_id)
   assert_character(scenario_id)
   assert_character(type)
-  if (!is.null(model_run_parameter_set)) {
-    assert_integer_like(model_run_parameter_set)
-  }
 
-  # I am not sure if I should allow the r-client to upload
-  # with type "central-unknown"
-
-  if (!type %in% c("central-single-run", "stochastic",
-                   "central-averaged")) {
-    stop(paste0("Invalid type - must be one of central-single-run, ",
-               "central-averaged, or stochastic"))
-  }
-
-  if (type != "stochastic") {
-    if (!is.null(model_run_parameter_set)) {
-      stop("model_run_parameter_set should only be specified for stochastic runs")
-    }
-  }
-
-  if (type == "stochastic") {
-    if (is.null(model_run_parameter_set)) {
-      stop("model_run_parameter_set must be specified for stochastic runs")
-    }
+  if (!type %in% c("central-single-run", "central-averaged")) {
+    stop("Invalid type - must be one of central-single-run or central-averaged.")
   }
 
   path <- sprintf("/modelling-groups/%s/responsibilities/%s/%s/estimate-sets/",
                   modelling_group_id, touchstone_id, scenario_id)
-  data <- list(
-    type = list(type = jsonlite::unbox(type)),
-    model_run_parameter_set = jsonlite::unbox(model_run_parameter_set))
+
+  data <- list(type = list(type = jsonlite::unbox(type)))
+
   if (!is.null(details)) {
     data$type$details <- jsonlite::unbox(details)
   }

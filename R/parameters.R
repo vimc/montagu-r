@@ -110,7 +110,7 @@ montagu_model_run_parameter_set_upload <- function(modelling_group_id,
     file = httr::upload_file(tf, type="text/csv"),
     encode = c("multipart")))
 
-  bits <- unlist(strsplit(res, "/"))
+  bits <- split_by(res, "/")
   bits <- bits[length(bits)]
   as.numeric(bits)
 }

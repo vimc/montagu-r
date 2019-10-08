@@ -1,3 +1,7 @@
+## 0.6.1
+
+* Disable stochastic upload functionality for now; please continue to use dropbox as before. (VIMC-3163)
+
 ## 0.6.0
 
 * All orderly functionality has been moved into the `orderlyweb` package (VIMC-3103)

@@ -1,6 +1,6 @@
 Package: montagu
 Title: Interface with 'montagu'
-Version: 0.6.0
+Version: 0.6.1
 Description: Client for interacting with the montagu API, and
     authentication with the montagu OrderlyWeb instance.  This package
     is part of montagu.

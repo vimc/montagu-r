@@ -1,7 +1,7 @@
 ---
 title: "Montagu API from R"
 author: "VIMC Technical Team"
-date: "2019-06-19"
+date: "2019-10-04"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Montagu API}
@@ -78,11 +78,13 @@ montagu::montagu_touchstone_versions("IC-Garske", require_open = TRUE)
 
 ```
 ##                  id            name version                 description
-## 6      201710gavi-5      201710gavi       5      201710gavi (version 5)
-## 7 201810synthetic-2 201810synthetic       2 201810synthetic (version 2)
+## 4      201910test-1      201910test       1      201910test (version 1)
+## 7      201710gavi-5      201710gavi       5      201710gavi (version 5)
+## 8 201810synthetic-2 201810synthetic       2 201810synthetic (version 2)
 ##   status
-## 6   open
+## 4   open
 ## 7   open
+## 8   open
 ```
 
 If we knew the basic touchstone name (without version) that we were interested in,
@@ -134,7 +136,7 @@ montagu::montagu_scenario_problems("IC-Garske", "201710gavi-5", "yf-routine-gavi
 ```
 
 ```
-## list()
+## NULL
 ```
 
 ### Expectations - years, ages, countries and outcomes
@@ -159,26 +161,6 @@ Some modelling groups model more than one disease, in which case a row appears
 for each disease. And additionally, if there is some reason to have different
 expectations for different scenarios, then multiple lines for the same disease
 may appear, with a difference in the description column indicating the scenario.
-For example:
-
-```r
-montagu::montagu_expectations("CDA-Razavi", "201710gavi-5")
-```
-
-```
-##   id                                            description min_year
-## 1  2                   HepB:CDA-Razavi:hepb-bd-routine-with     2000
-## 2  4 HepB:CDA-Razavi:hepb-bd-routine-with-hepb-routine-with     2000
-## 3  3                 HepB:CDA-Razavi:hepb-hepb-routine-with     2000
-## 4  1                    HepB:CDA-Razavi:hepb-no-vaccination     2000
-## 5  5 HepB:CDA-Razavi:hepb-bd-routine-best-hepb-routine-with     2000
-##   max_year min_age max_age min_birth_cohort max_birth_cohort disease
-## 1     2100       0      85             1915             2100    HepB
-## 2     2100       0      85             1915             2100    HepB
-## 3     2100       0      85             1915             2100    HepB
-## 4     2100       0      85             1915             2100    HepB
-## 5     2100       0      85             1915             2100    HepB
-```
 
 If we already knew the expectation id, we could look up
 a single expectation with
@@ -244,7 +226,28 @@ montagu::montagu_expectation_outcomes("IC-Garske", "201710gavi-5", 30)
 ```
 
 ```
-## [1] "deaths" "cases"  "dalys"
+## [[1]]
+## [[1]]$code
+## [1] "deaths"
+##
+## [[1]]$name
+## [1] "deaths"
+##
+##
+## [[2]]
+## [[2]]$code
+## [1] "cases"
+##
+## [[2]]$name
+## [1] "cases"
+##
+##
+## [[3]]
+## [[3]]$code
+## [1] "dalys"
+##
+## [[3]]$name
+## [1] "dalys"
 ```
 
 And to confirm which scnearios an expectation applies to (which should align
@@ -256,14 +259,6 @@ montagu::montagu_expectation_applicable_scenarios("IC-Garske", "201710gavi-5", 3
 
 ```
 ## [1] "yf-no-vaccination"  "yf-preventive-gavi" "yf-routine-gavi"
-```
-
-```r
-montagu::montagu_expectation_applicable_scenarios("CDA-Razavi", "201710gavi-5", 2)
-```
-
-```
-## [1] "hepb-bd-routine-with"
 ```
 
 ### Demography
@@ -348,13 +343,13 @@ head(cbr)
 ## 4                    4          AFG Afghanistan        0      0 1953
 ## 5                    4          AFG Afghanistan        0      0 1954
 ## 6                    4          AFG Afghanistan        0      0 1955
-##   gender value
-## 1   both  0.05
-## 2   both  0.05
-## 3   both  0.05
-## 4   both  0.05
-## 5   both  0.05
-## 6   both  0.05
+##   gender    value
+## 1   both 0.050000
+## 2   both 0.050082
+## 3   both 0.050244
+## 4   both 0.050399
+## 5   both 0.050546
+## 6   both 0.050688
 ```
 
 #### Gender
@@ -508,13 +503,13 @@ head(cov[cov$coverage > 0, ])
 ## 4      campaign          BEN   Benin 1944         0      100
 ## 5      campaign          BEN   Benin 1948         0      100
 ## 6      campaign          BEN   Benin 1952         0      100
-##   age_range_verbatim     target coverage
-## 1               <NA> 2689316.39     0.25
-## 2               <NA>    7067755     0.03
-## 3               <NA>       <NA>     0.11
-## 4               <NA>       <NA>     0.60
-## 5               <NA>       <NA>     0.60
-## 6               <NA>       <NA>     0.71
+##   age_range_verbatim           target   coverage
+## 1               <NA> 2689316.38932258 0.24926759
+## 2               <NA>          7067755 0.03486047
+## 3               <NA>             <NA> 0.10682008
+## 4               <NA>             <NA> 0.60071624
+## 5               <NA>             <NA> 0.60228038
+## 6               <NA>             <NA> 0.70605678
 ```
 
 ```r
@@ -603,26 +598,7 @@ the full coverage data for all countries. And for some diseases, the historic ef
 in a country that is not required for estimates as present, may have relevance in their model to
 countries that are required.
 
-For those cases, where all countries are required, the optional `all_countries` argument can be used as follows:
-
-
-```r
-cov_all <- montagu::montagu_coverage_data("CDA-Razavi", "201710gavi-5", "hepb-bd-routine-with", all_countries = TRUE)
-cov_not <- montagu::montagu_coverage_data("CDA-Razavi", "201710gavi-5", "hepb-bd-routine-with", all_countries = FALSE)
-length(unique(cov_all$country))
-```
-
-```
-## [1] 98
-```
-
-```r
-length(unique(cov_not$country))
-```
-
-```
-## [1] 19
-```
+For those cases, where all countries are required, the optional `all_countries` argument can be used.
 
 ## Burden Estimate Sets
 
@@ -635,27 +611,21 @@ head(montagu::montagu_burden_estimate_sets("IC-Garske", "201710gavi-5", "yf-no-v
 ```
 
 ```
-##      id              uploaded_on    uploaded_by               type
-## 20  687 2018-04-06T13:08:18.883Z katy.gaythorpe   central-averaged
-## 32  698 2018-05-30T09:27:32.341Z    tini.garske central-single-run
-## 4  1034 2019-04-04T13:01:58.052Z katy.gaythorpe   central-averaged
-## 31 1037 2019-04-05T09:04:59.238Z katy.gaythorpe   central-averaged
-## 6  1098 2019-06-18T11:31:20.370Z      test.user   central-averaged
-## 25 1099 2019-06-18T11:31:22.057Z      test.user   central-averaged
-##                                                                 details
-## 20 Averaged over posterior predictive distribution for model parameters
-## 32                                                                    x
-## 4                       The median of posterior predictive distribution
-## 31                      The median of posterior predictive distribution
-## 6                                                               Details
-## 25                                                              Details
-##      status
-## 20 complete
-## 32    empty
-## 4  complete
-## 31 complete
-## 6   invalid
-## 25 complete
+##     id              uploaded_on    uploaded_by               type
+## 2  687 2018-04-06T13:08:18.883Z katy.gaythorpe   central-averaged
+## 4  698 2018-05-30T09:27:32.341Z    tini.garske central-single-run
+## 1 1034 2019-04-04T13:01:58.052Z katy.gaythorpe   central-averaged
+## 3 1037 2019-04-05T09:04:59.238Z katy.gaythorpe   central-averaged
+##                                                                details
+## 2 Averaged over posterior predictive distribution for model parameters
+## 4                                                                    x
+## 1                      The median of posterior predictive distribution
+## 3                      The median of posterior predictive distribution
+##     status
+## 2 complete
+## 4    empty
+## 1 complete
+## 3 complete
 ```
 
 If we know the burden estimate set id, we can also get a list of information about a burden estimate set with:
@@ -728,17 +698,12 @@ A new burden estimate set can be created as follows:-
 ```r
 bsid <- montagu::montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", "central-averaged",
-    model_run_parameter_set = NULL, details = "Details about model")
+    details = "Details about model")
 ```
 
 The fourth parameter, the type, is either:
 * `central-averaged` - for a central estimate that is calculated by the average of a number of runs
 * `central-single-run` - for a stand-alone central estimate run.
-* `stochastic` - for a run that is part of a stochastic ensemble.
-
-For central estimates, the `model_run_parameter_set` can be ignored, or set to NULL as shown here,
-but it should not have a non-null value. For stochastic estimates, it must be set to a valid
-model run parameter set - see the section below on stochastic runs.
 
 The result of the burden estimate set creation is the id of the newly created burden estimate set,
 which must be given when we later upload results.
@@ -813,8 +778,8 @@ for each instance. We would call the instance number, between 1 and 200, the `ru
 would be a unique set of parameters for each.
 
 It is important that for a given `run_id`, all the
-relevant scenarios are run with the matching set of parameters for that `run_id`, so that we can
-compare scenarios and calculate impacts.
+scenarios are run with the matching set of parameters for that `run_id`, so that we can
+calculate impacts by comparing scenarios.
 
 It is also important that the spread of parameters chosen across the 200 runs significantly captures
 the range of sensible behaviour of the model, and that the central estimates submitted are somewhere
@@ -824,6 +789,12 @@ Lastly, it is desirable to vary as few parameters as possible, so that with 200 
 how the parameter changes affect the model outcomes. If there are too many parameters, it may be
 difficult to ascertain which parameters are causing the changes, or whether the spread of
 parameters really does capture the significant behaviour of the model.
+
+The R client cannot currently support the full upload process of stochastic runs. Because of their
+large volume, and the international locations of modelling groups, dropbox provides a more
+robust service for uploading. It is possible, however, to work with model run parameter sets,
+and using the Montagu client will make it easier to produce the stochastic results (perhaps
+directly into a local dropbox folder), in a systematic way.
 
 ### Model Run Parameter Sets
 
@@ -840,11 +811,11 @@ params
 
 ```
 ##   run_id param_1 param_2
-## 1      1       4       1
-## 2      2       5       2
-## 3      3       3       4
-## 4      4       2       3
-## 5      5       1       5
+## 1      1       3       2
+## 2      2       4       1
+## 3      3       2       3
+## 4      4       5       5
+## 5      5       1       4
 ```
 
 This can then be uploaded as follows:-
@@ -854,14 +825,7 @@ id <- montagu::montagu_model_run_parameter_set_upload(
     "IC-Garske", "201710gavi-5", "YF", params)
 ```
 
-and the id of the newly created parameter set will be returned. For stochastic data, we will
-need to supply this id when creating the associated stochastic burden estimate set:-
-
-```r
-bsid <- montagu::montagu_burden_estimate_set_create(
-    "IC-Garske", "201710gavi-5", "yf-no-vaccination",
-    "stochastic", id, "Stochastic runs")
-```
+The id of the newly created parameter set will be returned.
 
 We can also list the existing model run parameter sets with:-
 
@@ -871,13 +835,10 @@ head(montagu::montagu_model_run_parameter_sets("IC-Garske", "201710gavi-5"))
 ```
 
 ```
-##   id model uploaded_by              uploaded_on disease
-## 1 97  YFIC         wes 2019-06-19T14:18:01.116Z      YF
-## 2 96  YFIC         wes 2019-06-19T14:18:00.946Z      YF
-## 3 95  YFIC         wes 2019-06-19T13:47:10.690Z      YF
-## 4 94  YFIC         wes 2019-06-19T13:47:03.622Z      YF
-## 5 93  YFIC   test.user 2019-06-18T21:13:27.392Z      YF
-## 6 92  YFIC   test.user 2019-06-18T21:13:27.258Z      YF
+##   id model    uploaded_by              uploaded_on disease
+## 1 20  YFIC katy.gaythorpe 2018-04-06T13:10:35.645Z      YF
+## 2 19  YFIC katy.gaythorpe 2018-03-27T10:00:52.710Z      YF
+## 3 15  YFIC katy.gaythorpe 2018-01-23T15:52:58.353Z      YF
 ```
 
 or for a list of information about a single parameter set:
@@ -935,27 +896,27 @@ head(models)
 ```
 
 ```
-##                 id
-## 1         Yakob-YF
-## 2   Winter-Rubella
-## 3        UnknownYF
-## 4   HPVGoldie-flat
-## 5 HPVGoldie-linear
-## 6        PATH-MenA
-##                                                                                                                                                                                                                                                                                                                                                                              description
-## 1                                                                                                                                                                                                                                                                                                                                generic 201810rfp model - to be updated if joining VIMC
-## 2                                                                                                                                                                                                                                                                                                                                generic 201810rfp model - to be updated if joining VIMC
-## 3                                                                                                                                                                                                                                                                                                                                          Yellow fever data imported from the shiny app
-## 4 Used in SDF8 input as flat ages. The model is constructed as a static cohort simulation model based on a structure similar to a simple decision tree, and is programmed using Microsoft Excel and Visual Basic for Applications. The model tracks a cohort of girls at a target age for their lifetimes, comparing health and cost outcomes with and without HPV vaccination programs.
-## 5    Used in SDF8 as linear ages.  The model is constructed as a static cohort simulation model based on a structure similar to a simple decision tree, and is programmed using Microsoft Excel and Visual Basic for Applications. The model tracks a cohort of girls at a target age for their lifetimes, comparing health and cost outcomes with and without HPV vaccination programs.
-## 6                                                                                                                                              MenA model used in SDF8 and SDF12. A static population-based cohort model developed to support the 2008 WHO and UNICEF investment case 'Eliminating serogroup A meningococcal meningitis epidemics as a public health problem in Africa.'
-##                                  citation modelling_group
-## 1                <citation for the model>     LSHTM-Yakob
-## 2                <citation for the model>       PU-Winter
-## 3 https://github.com/royburst/Gavi-Impact         unknown
-## 4                <citation for the model>   Harvard-Sweet
-## 5                <citation for the model>   Harvard-Sweet
-## 6                <citation for the model>    Suraratdecha
+##                id
+## 1        Yakob-YF
+## 2  Winter-Rubella
+## 3         PATH-JE
+## 4 Harvard-Kim-HPV
+## 5        Moore-JE
+## 6      Perkins-YF
+##                                                                       description
+## 1                         generic 201810rfp model - to be updated if joining VIMC
+## 2                         generic 201810rfp model - to be updated if joining VIMC
+## 3 JE model used in SDF8 and SDF12. This is a static population-based cohort model
+## 4                       generic 201804rfp-1 model - to be updated if joining VIMC
+## 5                         generic 201810rfp model - to be updated if joining VIMC
+## 6                         generic 201810rfp model - to be updated if joining VIMC
+##                   citation modelling_group
+## 1 <citation for the model>     LSHTM-Yakob
+## 2 <citation for the model>       PU-Winter
+## 3 <citation for the model>    Suraratdecha
+## 4 <citation for the model>     Harvard-Kim
+## 5                                UND-Moore
+## 6                              UND-Perkins
 ```
 
 and a list of information about a particular model by its id can be retrieved

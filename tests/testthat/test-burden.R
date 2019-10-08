@@ -329,8 +329,8 @@ test_that("Create Burden Estimate - incorrect group", {
   location <- montagu_test_server_user()
 
   expect_error(montagu_burden_estimate_set_create(
-    "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", "stochastic",
-    10, "Details", location),
+    "ZZZIC-Garske", "201710gavi-5", "yf-no-vaccination", "central-averaged",
+    "Details", location),
     paste0("You do not have sufficient permissions ",
            "to access this resource. Missing these permissions: ",
            "modelling-group:ZZZIC-Garske/estimates.write"),
@@ -341,8 +341,8 @@ test_that("Create Burden Estimate Set - incorrect permissions", {
 
   location <- montagu_test_server_user()
   expect_error(montagu_burden_estimate_set_create(
-    "PHE-Vynnycky", "201710gavi-5", "rubella-rcv1-gavi", "stochastic",
-    10, "Details", location),
+    "PHE-Vynnycky", "201710gavi-5", "rubella-rcv1-gavi", "central-averaged",
+    "Details", location),
     paste0("You do not have sufficient permissions ",
            "to access this resource. Missing these permissions: ",
            "modelling-group:PHE-Vynnycky/estimates.write"),
@@ -354,8 +354,8 @@ test_that("Create Burden Estimate - incorrect touchstone", {
   location <- montagu_test_server_user()
 
   expect_error(montagu_burden_estimate_set_create(
-    "IC-Garske", "ZZZ201710gavi-5", "yf-no-vaccination", "stochastic",
-    10, "Details", location),
+    "IC-Garske", "ZZZ201710gavi-5", "yf-no-vaccination", "central-averaged",
+    "Details", location),
     "Unknown touchstone-version with id 'ZZZ201710gavi-5'",
     class = "montagu_api_error")
 })
@@ -364,8 +364,8 @@ test_that("Create Burden Estimate - incorrect scenario", {
   location <- montagu_test_server_user()
 
   expect_error(montagu_burden_estimate_set_create(
-    "IC-Garske", "201710gavi-5", "ZZZyf-no-vaccination", "stochastic",
-    15, "Details", location),
+    "IC-Garske", "201710gavi-5", "ZZZyf-no-vaccination", "central-averaged",
+    "Details", location),
     "Unknown scenario-description with id 'ZZZyf-no-vaccination'",
     class = "montagu_api_error")
 })
@@ -375,50 +375,9 @@ test_that("Create Burden Estimate - incorrect type", {
 
   expect_error(montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", "plastic",
-    10, "Details", location),
-    paste0("Invalid type - must be one of central-single-run, ",
-           "central-averaged, or stochastic"),
+    "Details", location),
+    "Invalid type - must be one of central-single-run or central-averaged.",
     class = "simpleError")
-})
-
-test_that("Create Burden Estimate - incorrect param set for stochastic", {
-  location <- montagu_test_server_user()
-
-  expect_error(montagu_burden_estimate_set_create(
-    "IC-Garske", "201710gavi-5", "yf-no-vaccination", "stochastic",
-    NULL, "Details", location),
-    "model_run_parameter_set must be specified for stochastic runs",
-    class = "simpleError")
-})
-
-test_that("Create Burden Estimate - incorrect param set for non-stochastic", {
-  location <- montagu_test_server_user()
-
-  expect_error(montagu_burden_estimate_set_create(
-    "IC-Garske", "201710gavi-5", "yf-no-vaccination", "central-single-run",
-    123, "Details", location),
-    "model_run_parameter_set should only be specified for stochastic runs",
-    class = "simpleError")
-})
-
-test_that("Create Burden Estimate - absurd parameter set id", {
-  location <- montagu_test_server_user()
-
-  expect_error(montagu_burden_estimate_set_create(
-    "IC-Garske", "201710gavi-5", "yf-no-vaccination", "stochastic",
-    -123, "Details", location),
-    "Unknown model-run-parameter-set with id '-123'",
-    class = "montagu_api_error")
-})
-
-test_that("Create Burden Estimate - misplaced parameter set id (stochastic)", {
-  location <- montagu_test_server_user()
-
-  expect_error(montagu_burden_estimate_set_create(
-    "IC-Garske", "201710gavi-5", "yf-no-vaccination", "stochastic",
-    1, "Details", location),
-    "Unknown model-run-parameter-set with id '1'",
-    class = "montagu_api_error")
 })
 
 test_that("Create Burden Estimate - General usage - central", {
@@ -426,7 +385,7 @@ test_that("Create Burden Estimate - General usage - central", {
 
   bsid <- montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", "central-averaged",
-    NULL, "Details", location)
+    "Details", location)
   expect_is(bsid, "integer")
 
 
@@ -504,7 +463,7 @@ test_that("Create Burden Estimate - with keep_open=FALSE", {
 
   bsid <- montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", "central-averaged",
-    NULL, "Details", location)
+    "Details", location)
   expect_is(bsid, "integer")
 
   # Convert this to use coverage.R when all is merged
@@ -533,7 +492,7 @@ test_that("Create Burden Estimate - with keep_open=TRUE and close", {
 
   bsid <- montagu_burden_estimate_set_create(
     "IC-Garske", "201710gavi-5", "yf-no-vaccination", "central-averaged",
-    NULL, "Details", location)
+    "Details", location)
   expect_is(bsid, "integer")
 
   # Get the template
